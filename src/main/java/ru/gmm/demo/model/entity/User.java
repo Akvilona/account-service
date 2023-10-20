@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@SuppressWarnings("PMD.ShortClassName")
+//@SuppressWarnings("PMD.ShortClassName")
 public class User {
     private Long id;
     private String name;
