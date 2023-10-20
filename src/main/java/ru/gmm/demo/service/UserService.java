@@ -9,25 +9,13 @@ import ru.gmm.demo.model.UserRegistrationRq;
 import ru.gmm.demo.model.UserRs;
 import ru.gmm.demo.model.UserUpdateRq;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 @Service
 public class UserService {
-    private final List<User> userRsList = List.of(
-            User.builder()
-                    .id(new Random().nextLong())
-                    .name("igor")
-                    .serName("simakov")
-                    .password("12345")
-                    .build(),
-            User.builder()
-                    .id(new Random().nextLong())
-                    .name("sasha")
-                    .serName("rumanov")
-                    .password("12345")
-                    .build()
-    );
+    private final List<User> userRsList = new ArrayList<>();
 
     public List<UserRs> getUsers() {
 
@@ -37,8 +25,11 @@ public class UserService {
     }
 
     public UserRs getUser(String id) {
-        // TODO: я не смог повторить запись, поэтому написал простой for и if
-        return toUserRs(userRsList.stream().filter(userRs -> userRs.getId().equals(Long.parseLong(id))).findAny().orElseThrow());
+        User user = userRsList.stream()
+                .filter(userRs -> userRs.getId().equals(Long.parseLong(id)))
+                .findAny()
+                .orElseThrow();
+        return toUserRs(user);
     }
 
     private UserRs toUserRs(User user) {
@@ -58,14 +49,6 @@ public class UserService {
 
         userRsList.add(user);
         return toUserRs(user);
-
-        // TODO: на строке userRsList.add(user) происходит ошибка
-/*        {
-            "timestamp": "2023-10-19T08:38:21.800+00:00",
-                "status": 500,
-                "error": "Internal Server Error",
-                "path": "/api/users"
-        }*/
     }
 
     public UserRs update(UserUpdateRq userUpdateRq) {
@@ -78,14 +61,13 @@ public class UserService {
         forUpdate.setPassword(userUpdateRq.getPassword());
 
         return toUserRs(forUpdate);
-// TODO:  происходит ошибка
-/*
-        {
-            "timestamp": "2023-10-19T09:20:03.206+00:00",
-                "status": 400,
-                "error": "Bad Request",
-                "path": "/api/users"
-        }
- */
+    }
+
+    public void delete(long id) {
+        User user1 = userRsList.stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst()
+                .orElseThrow();
+        userRsList.remove(user1);
     }
 }

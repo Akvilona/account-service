@@ -2,8 +2,8 @@
    port: 8080
    shutdown: graceful
 
- logging:
-   level:
-    root: DEBUG
+# logging:
+#   level:
+#    root: DEBUG
 
 

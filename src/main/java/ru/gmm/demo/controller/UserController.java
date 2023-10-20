@@ -5,6 +5,7 @@
 package ru.gmm.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,8 +29,8 @@ public class UserController {
     @GetMapping("api/users/{id}")
     public UserRs getUser(
             @PathVariable String id,
-            @RequestParam (required = false) String name,
-            @RequestParam (required = false) String serName
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String serName
     ) {
         System.out.printf("id %s name %s surName %s".formatted(id, name, serName));
         return userService.getUser(id);
@@ -42,13 +43,17 @@ public class UserController {
 
 
     @PostMapping("api/users")
-    UserRs postUpdate(@RequestBody UserRegistrationRq userRegistrationRq) {
-        // TODO: не работает
+    public UserRs saveUser(@RequestBody UserRegistrationRq userRegistrationRq) {
         return userService.registration(userRegistrationRq);
     }
 
     @PutMapping("api/users")
-    public UserRs putUser(@RequestBody UserUpdateRq userUpdateRq){
+    public UserRs putUser(@RequestBody UserUpdateRq userUpdateRq) {
         return userService.update(userUpdateRq);
+    }
+
+    @DeleteMapping("api/users/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userService.delete(id);
     }
 }
