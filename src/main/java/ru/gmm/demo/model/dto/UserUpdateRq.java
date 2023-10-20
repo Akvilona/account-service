@@ -1,7 +1,4 @@
-/**
- * Создал Андрей Антонов 10/17/2023 5:12 PM
- **/
-package ru.gmm.demo.model;
+package ru.gmm.demo.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,11 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class User {
+public class UserUpdateRq {
     private Long id;
     private String name;
-    private String serName;
     private String password;
-
-
 }

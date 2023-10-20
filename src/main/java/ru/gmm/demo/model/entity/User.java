@@ -1,7 +1,4 @@
-/**
- * Создал Андрей Антонов 10/17/2023 12:02 PM
- **/
-package ru.gmm.demo.model;
+package ru.gmm.demo.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserRs {
-    private long id;
+@SuppressWarnings("PMD.ShortClassName")
+public class User {
+    private Long id;
     private String name;
-    private String surName;
+    private String surname;
+    private String password;
+
 }
