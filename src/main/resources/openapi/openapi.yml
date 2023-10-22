@@ -2,18 +2,19 @@ openapi: 3.0.2
 info:
   title: demo user app
   description: "demo user app description"
-  termsOfService: http://swagger.io/terms/
+  termsOfService: https://editor.swagger.io/
   contact:
     email: example@gmail.com
+    url: https://swagger.io/specification/
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 0.0.1-SNAPSHOT
-#externalDocs:
-#  description: Find out more about Reflectoring
-#  url: https://reflectoring.io/about/
-#servers:
-#  - url: https://reflectoring.swagger.io/v2
+externalDocs:
+  description: Find out more about swagger
+  url: https://swagger.io/specification/
+servers:
+  - url: http://localhost:8080/api/users
 tags:
   - name: user
     description: Operations about user
@@ -41,34 +42,77 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserRs'
+                $ref: '#/components/schemas/User'
         404:
           description: User not found
-          content: {}
+          content:
+            application/json: {}
+
       x-codegen-request-body-name: body
   /api/user/{id}:
     get:
       tags:
         - user
-      summary: Get user by user name
-      operationId: get
+      summary: Get user by id
+      operationId: getUserById
       parameters:
         - name: id
           in: path
-          description: 'The id that needs to be fetched. Use 123 for testing. '
+          description: 'The id that needs to be fetched. Use 123 for example. '
           required: true
           schema:
             type: string
+          example: 123
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserRs'
+                $ref: '#/components/schemas/User'
         404:
           description: User not found
-          content: {}
+          content:
+            application/json: {}
+    delete:
+      summary: delete user by id
+      tags:
+        - User
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be delete user. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json: {}
+        404:
+          description: User not found
+          content:
+            application/json: {}
+  /api/user/:
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      operationId: getAll
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: User not found
+          content:
+            application/json: {}
+
 #    put:
 #      tags:
 #        - user
@@ -130,18 +174,21 @@ components:
   schemas:
     User:
       type: object
+      required:
+        - name
+        - surname
       properties:
-        name:
-          type: string
-    UserRs:
-      type: object
-      properties:
-        name:
-          type: string
         id:
           type: integer
+          example: 123
+        name:
+          type: string
+          example: Саша
         surname:
           type: string
+          example: Иванов
+
+
 #  securitySchemes:
 #    reflectoring_auth:
 #      type: oauth2
@@ -155,3 +202,4 @@ components:
 #      type: apiKey
 #      name: api_key
 #      in: header
+
