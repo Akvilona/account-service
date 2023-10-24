@@ -14,15 +14,16 @@ externalDocs:
   description: Find out more about swagger
   url: https://swagger.io/specification/
 servers:
-  - url: http://localhost:8080/api/users
+  - url: http://localhost:8080
 tags:
   - name: user
     description: Operations about user
     externalDocs:
       description: Find out more about our store
       url: http://swagger.io
+
 paths:
-  /api/user:
+  /api/users:
     post:
       tags:
         - user
@@ -34,7 +35,7 @@ paths:
         content:
           '*/*':
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRegistrationRq'
         required: true
       responses:
         200:
@@ -42,14 +43,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserRegistrationRs'
         404:
           description: User not found
           content:
-            application/json: {}
+            application/json: { }
 
-      x-codegen-request-body-name: body
-  /api/user/{id}:
+  /api/users/{id}:
     get:
       tags:
         - user
@@ -69,15 +69,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserRs'
         404:
           description: User not found
           content:
-            application/json: {}
+            application/json: { }
     delete:
       summary: delete user by id
+      operationId: deleteUserById
       tags:
-        - User
+        - user
       parameters:
         - name: id
           in: path
@@ -90,116 +91,113 @@ paths:
         200:
           description: successful operation
           content:
-            application/json: {}
+            application/json: { }
         404:
           description: User not found
           content:
-            application/json: {}
-  /api/user/:
+            application/json: { }
+  /api/users/:
     get:
       tags:
         - user
-      summary: Get user by user name
-      operationId: getAll
+      summary: Get all users
+      operationId: getAllUsers
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserRsList'
         404:
           description: User not found
           content:
-            application/json: {}
+            application/json: { }
+    put:
+      tags:
+        - user
+      summary: Updated user
+      operationId: updateUser
+      requestBody:
+        description: Updated user object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/UserUpdateRq'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserUpdateRq'
+        400:
+          description: Invalid user supplied
+          content: { }
+        404:
+          description: User not found
+          content: { }
 
-#    put:
-#      tags:
-#        - user
-#      summary: Updated user
-#      description: This can only be done by the logged in user.
-#      operationId: updateUser
-#      parameters:
-#        - name: username
-#          in: path
-#          description: name that need to be updated
-#          required: true
-#          schema:
-#            type: string
-#      requestBody:
-#        description: Updated user object
-#        content:
-#          '*/*':
-#            schema:
-#              $ref: '#/components/schemas/User'
-#        required: true
-#      responses:
-#        200:
-#          description: successful operation
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/User'
-#        400:
-#          description: Invalid user supplied
-#          content: {}
-#        404:
-#          description: User not found
-#          content: {}
-#      x-codegen-request-body-name: body
-#    delete:
-#      tags:
-#        - user
-#      summary: Delete user
-#      description: This can only be done by the logged in user.
-#      operationId: deleteUser
-#      parameters:
-#        - name: username
-#          in: path
-#          description: The name that needs to be deleted
-#          required: true
-#          schema:
-#            type: string
-#      responses:
-#        201:
-#          description: operation successful
-#          content: {}
-#        400:
-#          description: Invalid username supplied
-#          content: {}
-#        404:
-#          description: User not found
-#          content: {}
 components:
   schemas:
-    User:
+    UserRegistrationRq:
       type: object
       required:
-        - name
-        - surname
+        - password
+        - email
+      properties:
+        password:
+          type: string
+          example: password
+        email:
+          type: string
+          example: example@mail.ru
+    UserRegistrationRs:
+      type: object
+      required:
+        - id
+        - email
+      properties:
+        id:
+          type: integer
+          example: 123
+        email:
+          type: string
+          example: example@mail.ru
+    UserUpdateRq:
+      type: object
+      required:
+        - id
       properties:
         id:
           type: integer
           example: 123
         name:
           type: string
+          example: vasya
+        surname:
+          type: string
+          example: ivanov
+    UserRs:
+      type: object
+      required:
+        - id
+        - email
+      properties:
+        id:
+          type: integer
+          example: 123
+        email:
+          type: string
+          example: example@mail.ru
+        name:
+          type: string
           example: Саша
         surname:
           type: string
           example: Иванов
-
-
-#  securitySchemes:
-#    reflectoring_auth:
-#      type: oauth2
-#      flows:
-#        implicit:
-#          authorizationUrl: http://reflectoring.swagger.io/oauth/dialog
-#          scopes:
-#            write:users: modify users
-#            read:users: read users
-#    api_key:
-#      type: apiKey
-#      name: api_key
-#      in: header
-
+    UserRsList:
+      type: array
+      items:
+        $ref: "#/components/schemas/UserRs"

@@ -1,19 +1,18 @@
-package ru.gmm.demo.model.entity;
+package ru.gmm.demo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
-//@SuppressWarnings("PMD.ShortClassName")
-public class User {
+public class UserEntity {
     private Long id;
+    private String password;
+    private String email;
     private String name;
     private String surname;
-    private String password;
-
 }
