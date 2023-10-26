@@ -18,6 +18,6 @@ public class UserRepository {
         return userEntities.stream()
             .filter(user -> user.getId().equals(id))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Cant find uer by id %s".formatted(id)));
+            .orElseThrow(() -> new IllegalArgumentException(String.format("Cant find uer by id %s", id)));
     }
 }

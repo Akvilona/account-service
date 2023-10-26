@@ -1,3 +1,8 @@
+/**
+ * Mapping in controller.
+ * https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
+ */
+
 package ru.gmm.demo.controller;
 
 import lombok.RequiredArgsConstructor;
@@ -10,14 +15,10 @@ import ru.gmm.demo.model.api.UserRegistrationRq;
 import ru.gmm.demo.model.api.UserRegistrationRs;
 import ru.gmm.demo.service.UserApiService;
 
-/**
- * Mapping in controller:
- * https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
- */
 @Controller
 @RequiredArgsConstructor
 public class UserApiController implements UserApi {
-    private final UserApiService userApiService;
+    private   final UserApiService userApiService;
     private final UserMapper userMapper;
 
     @Override
@@ -25,6 +26,8 @@ public class UserApiController implements UserApi {
         UserEntity userEntity = userMapper.mapToEntity(userRegistrationRq);
         userApiService.createUser(userEntity);
         UserRegistrationRs userRegistrationRs = userMapper.mapToUserRegistrationRs(userEntity);
+        UserApi.super.createUser(userRegistrationRq);
+
         return ResponseEntity.ok(userRegistrationRs);
     }
 }

@@ -193,10 +193,10 @@ components:
           example: example@mail.ru
         name:
           type: string
-          example: Саша
+          example: masha
         surname:
           type: string
-          example: Иванов
+          example: ivanov
     UserRsList:
       type: array
       items:

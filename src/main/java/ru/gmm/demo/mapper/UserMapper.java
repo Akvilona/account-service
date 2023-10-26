@@ -13,7 +13,7 @@ public class UserMapper {
 
     public UserEntity mapToEntity(final UserRegistrationRq userRegistrationRq) {
         return UserEntity.builder()
-            .id(RANDOM.nextLong(1000))
+            .id(RANDOM.nextLong())
             .password(userRegistrationRq.getPassword())
             .email(userRegistrationRq.getEmail())
             .build();
