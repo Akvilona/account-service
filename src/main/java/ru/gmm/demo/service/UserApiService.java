@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.repository.UserRepository;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -17,4 +19,7 @@ public class UserApiService {
         userRepository.save(userEntity);
     }
 
+    public List<UserEntity> getAll() {
+        return userRepository.getAll();
+    }
 }

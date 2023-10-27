@@ -20,4 +20,8 @@ public class UserRepository {
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException(String.format("Cant find uer by id %s", id)));
     }
+
+    public List<UserEntity> getAll() {
+        return userEntities;
+    }
 }

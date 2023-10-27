@@ -24,6 +24,22 @@ tags:
 
 paths:
   /api/users:
+    get:
+      tags:
+        - user
+      summary: Get all users
+      operationId: getAllUsers
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRsList'
+        404:
+          description: User not found
+          content:
+            application/json: { }
     post:
       tags:
         - user
@@ -96,26 +112,17 @@ paths:
           description: User not found
           content:
             application/json: { }
-  /api/users/:
-    get:
-      tags:
-        - user
-      summary: Get all users
-      operationId: getAllUsers
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserRsList'
-        404:
-          description: User not found
-          content:
-            application/json: { }
     put:
       tags:
         - user
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be delete user. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
       summary: Updated user
       operationId: updateUser
       requestBody:

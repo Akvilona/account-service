@@ -13,21 +13,33 @@ import ru.gmm.demo.mapper.UserMapper;
 import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.model.api.UserRegistrationRq;
 import ru.gmm.demo.model.api.UserRegistrationRs;
+import ru.gmm.demo.model.api.UserRs;
 import ru.gmm.demo.service.UserApiService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class UserApiController implements UserApi {
-    private   final UserApiService userApiService;
+    private final UserApiService userApiService;
     private final UserMapper userMapper;
 
     @Override
     public ResponseEntity<UserRegistrationRs> createUser(final UserRegistrationRq userRegistrationRq) {
-        UserEntity userEntity = userMapper.mapToEntity(userRegistrationRq);
+        final UserEntity userEntity = userMapper.mapToEntity(userRegistrationRq);
         userApiService.createUser(userEntity);
-        UserRegistrationRs userRegistrationRs = userMapper.mapToUserRegistrationRs(userEntity);
-        UserApi.super.createUser(userRegistrationRq);
-
+        final UserRegistrationRs userRegistrationRs = userMapper.mapToUserRegistrationRs(userEntity);
         return ResponseEntity.ok(userRegistrationRs);
+    }
+
+    @Override
+    public ResponseEntity<List<UserRs>> getAllUsers() {
+        final List<UserEntity> all = userApiService.getAll();
+        final List<UserRs> userRsList = new ArrayList<>();
+        for (final UserEntity userEntity: all) {
+            userRsList.add(userMapper.mapToUserRs(userEntity));
+        }
+        return ResponseEntity.ok(userRsList);
     }
 }
