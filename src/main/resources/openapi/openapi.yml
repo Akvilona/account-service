@@ -167,7 +167,7 @@ components:
         - email
       properties:
         id:
-          type: integer
+          type: string
           example: 123
         email:
           type: string
@@ -178,7 +178,7 @@ components:
         - id
       properties:
         id:
-          type: integer
+          type: string
           example: 123
         name:
           type: string
@@ -193,7 +193,7 @@ components:
         - email
       properties:
         id:
-          type: integer
+          type: string
           example: 123
         email:
           type: string

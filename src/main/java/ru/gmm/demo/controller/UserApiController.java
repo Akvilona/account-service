@@ -16,7 +16,6 @@ import ru.gmm.demo.model.api.UserRegistrationRs;
 import ru.gmm.demo.model.api.UserRs;
 import ru.gmm.demo.service.UserApiService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -35,11 +34,16 @@ public class UserApiController implements UserApi {
 
     @Override
     public ResponseEntity<List<UserRs>> getAllUsers() {
-        final List<UserEntity> all = userApiService.getAll();
-        final List<UserRs> userRsList = new ArrayList<>();
-        for (final UserEntity userEntity: all) {
-            userRsList.add(userMapper.mapToUserRs(userEntity));
-        }
+        final List<UserRs> userRsList = userApiService.getAll().stream()
+            .map(userMapper::mapToUserRs)
+            .toList();
         return ResponseEntity.ok(userRsList);
+    }
+
+    @Override
+    public ResponseEntity<UserRs> getUserById(final String id) {
+        UserEntity userEntity = userApiService.findById(id);
+        UserRs userRs = userMapper.mapToUserRs(userEntity);
+        return ResponseEntity.ok(userRs);
     }
 }

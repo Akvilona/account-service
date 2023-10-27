@@ -22,14 +22,14 @@ public class UserMapper {
 
     public UserRegistrationRs mapToUserRegistrationRs(final UserEntity userEntity) {
         return UserRegistrationRs.builder()
-            .id(userEntity.getId().intValue())
+            .id(String.valueOf(userEntity.getId()))
             .email(userEntity.getEmail())
             .build();
     }
 
     public UserRs mapToUserRs(final UserEntity userEntity) {
         return UserRs.builder()
-            .id(userEntity.getId().intValue())
+            .id(String.valueOf(userEntity.getId()))
             .email(userEntity.getEmail())
             .name(userEntity.getName())
             .surname(userEntity.getSurname())

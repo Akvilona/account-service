@@ -1,7 +1,10 @@
- server:
-   port: 8080
-   shutdown: graceful
+server:
+  port: 8080
+  shutdown: graceful
 
+spring:
+  main:
+    banner-mode: off
 # logging:
 #   level:
 #    root: DEBUG

@@ -22,4 +22,8 @@ public class UserApiService {
     public List<UserEntity> getAll() {
         return userRepository.getAll();
     }
+
+    public UserEntity findById(final String id) {
+        return userRepository.get(Long.valueOf(id));
+    }
 }
