@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.gmm.demo.model.UserEntity;
+import ru.gmm.demo.model.api.UserUpdateRq;
 import ru.gmm.demo.repository.UserRepository;
 
 import java.util.List;
@@ -25,5 +26,13 @@ public class UserApiService {
 
     public UserEntity findById(final String id) {
         return userRepository.get(Long.valueOf(id));
+    }
+
+    public UserEntity updateUser(final String id, final UserUpdateRq userUpdateRq) {
+        return userRepository.updateUser(id, userUpdateRq);
+    }
+
+    public boolean deleteUserById(final Long id) {
+        return userRepository.deleteUserById(id);
     }
 }

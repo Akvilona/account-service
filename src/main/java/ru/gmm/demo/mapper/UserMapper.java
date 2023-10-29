@@ -5,6 +5,7 @@ import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.model.api.UserRegistrationRq;
 import ru.gmm.demo.model.api.UserRegistrationRs;
 import ru.gmm.demo.model.api.UserRs;
+import ru.gmm.demo.model.api.UserUpdateRq;
 
 import java.util.Random;
 
@@ -31,6 +32,14 @@ public class UserMapper {
         return UserRs.builder()
             .id(String.valueOf(userEntity.getId()))
             .email(userEntity.getEmail())
+            .name(userEntity.getName())
+            .surname(userEntity.getSurname())
+            .build();
+    }
+
+    public UserUpdateRq mapToUserUpdateRq(final UserEntity userEntity) {
+        return UserUpdateRq.builder()
+            .id(String.valueOf(userEntity.getId()))
             .name(userEntity.getName())
             .surname(userEntity.getSurname())
             .build();

@@ -14,6 +14,7 @@ import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.model.api.UserRegistrationRq;
 import ru.gmm.demo.model.api.UserRegistrationRs;
 import ru.gmm.demo.model.api.UserRs;
+import ru.gmm.demo.model.api.UserUpdateRq;
 import ru.gmm.demo.service.UserApiService;
 
 import java.util.List;
@@ -42,8 +43,21 @@ public class UserApiController implements UserApi {
 
     @Override
     public ResponseEntity<UserRs> getUserById(final String id) {
-        UserEntity userEntity = userApiService.findById(id);
-        UserRs userRs = userMapper.mapToUserRs(userEntity);
+        final UserEntity userEntity = userApiService.findById(id);
+        final UserRs userRs = userMapper.mapToUserRs(userEntity);
         return ResponseEntity.ok(userRs);
+    }
+
+    @Override
+    public ResponseEntity<UserUpdateRq> updateUser(final String id, final UserUpdateRq userUpdateRq) {
+        final UserEntity userEntity = userApiService.updateUser(id, userUpdateRq);
+        final UserUpdateRq updateRq = userMapper.mapToUserUpdateRq(userEntity);
+        return ResponseEntity.ok(updateRq);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteUserById(final String id) {
+        userApiService.deleteUserById(Long.parseLong(id));
+        return null;
     }
 }
