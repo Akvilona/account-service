@@ -64,7 +64,6 @@ paths:
           description: User not found
           content:
             application/json: { }
-
   /api/users/{id}:
     get:
       tags:
@@ -118,7 +117,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: 'The id that needs to be delete user. Use 123 for example. '
+          description: 'The id that needs to be update user. Use 123 for example. '
           required: true
           schema:
             type: string
@@ -174,12 +173,7 @@ components:
           example: example@mail.ru
     UserUpdateRq:
       type: object
-      required:
-        - id
       properties:
-        id:
-          type: string
-          example: 123
         name:
           type: string
           example: vasya

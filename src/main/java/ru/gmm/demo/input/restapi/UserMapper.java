@@ -1,4 +1,4 @@
-package ru.gmm.demo.mapper;
+package ru.gmm.demo.input.restapi;
 
 import org.springframework.stereotype.Component;
 import ru.gmm.demo.model.UserEntity;
@@ -21,6 +21,13 @@ public class UserMapper {
             .build();
     }
 
+    public UserEntity mapToEntity(final UserUpdateRq userUpdateRq) {
+        return UserEntity.builder()
+            .name(userUpdateRq.getName())
+            .surname(userUpdateRq.getSurname())
+            .build();
+    }
+
     public UserRegistrationRs mapToUserRegistrationRs(final UserEntity userEntity) {
         return UserRegistrationRs.builder()
             .id(String.valueOf(userEntity.getId()))
@@ -39,7 +46,6 @@ public class UserMapper {
 
     public UserUpdateRq mapToUserUpdateRq(final UserEntity userEntity) {
         return UserUpdateRq.builder()
-            .id(String.valueOf(userEntity.getId()))
             .name(userEntity.getName())
             .surname(userEntity.getSurname())
             .build();

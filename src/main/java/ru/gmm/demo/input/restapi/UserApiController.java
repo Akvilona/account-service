@@ -3,13 +3,12 @@
  * https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
  */
 
-package ru.gmm.demo.controller;
+package ru.gmm.demo.input.restapi;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import ru.gmm.demo.controller.api.UserApi;
-import ru.gmm.demo.mapper.UserMapper;
 import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.model.api.UserRegistrationRq;
 import ru.gmm.demo.model.api.UserRegistrationRs;
@@ -50,7 +49,8 @@ public class UserApiController implements UserApi {
 
     @Override
     public ResponseEntity<UserUpdateRq> updateUser(final String id, final UserUpdateRq userUpdateRq) {
-        final UserEntity userEntity = userApiService.updateUser(id, userUpdateRq);
+        final UserEntity entity = userMapper.mapToEntity(userUpdateRq);
+        final UserEntity userEntity = userApiService.updateUser(id, entity);
         final UserUpdateRq updateRq = userMapper.mapToUserUpdateRq(userEntity);
         return ResponseEntity.ok(updateRq);
     }
@@ -58,6 +58,6 @@ public class UserApiController implements UserApi {
     @Override
     public ResponseEntity<Void> deleteUserById(final String id) {
         userApiService.deleteUserById(Long.parseLong(id));
-        return null;
+        return ResponseEntity.ok(null);
     }
 }
