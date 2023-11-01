@@ -1,4 +1,4 @@
-package ru.gmm.demo.input.restapi;
+package ru.gmm.demo.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

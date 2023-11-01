@@ -21,7 +21,7 @@ public class UserRepository {
     }
 
     public UserEntity updateUser(final String id, final UserEntity userEntity) {
-        UserEntity entity = findById(Long.parseLong(id));
+        final UserEntity entity = findById(Long.parseLong(id));
         return entity
             .setName(userEntity.getName())
             .setSurname(userEntity.getSurname());

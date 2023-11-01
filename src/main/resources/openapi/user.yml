@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: demo user app
-  description: "demo user+account app description"
+  description: "demo user app description"
   termsOfService: https://editor.swagger.io/
   contact:
     email: example@gmail.com
@@ -16,11 +16,6 @@ externalDocs:
 servers:
   - url: http://localhost:8080
 tags:
-  - name: acc
-    description: Operations about acc
-    externalDocs:
-      description: Find out more about our store
-      url: http://swagger.io
   - name: user
     description: Operations about user
     externalDocs:
@@ -67,47 +62,6 @@ paths:
                 $ref: '#/components/schemas/UserRegistrationRs'
         404:
           description: User not found
-          content:
-            application/json: { }
-  /api/acc:
-    get:
-      tags:
-        - acc
-      summary: Get all account
-      operationId: getAllAcc
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccRsList'
-        404:
-          description: account not found
-          content:
-            application/json: { }
-    post:
-      tags:
-        - acc
-      summary: Create acc
-      description: Create acc functionality
-      operationId: createAcc
-      requestBody:
-        description: Created account object
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/AccRegistrationRq'
-        required: true
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccRegistrationRs'
-        404:
-          description: account not found
           content:
             application/json: { }
   /api/users/{id}:
@@ -190,86 +144,7 @@ paths:
         404:
           description: User not found
           content: { }
-  /api/acc/{id}:
-    get:
-      tags:
-        - acc
-      summary: Get account by id
-      operationId: getAccById
-      parameters:
-        - name: id
-          in: path
-          description: 'The id that needs to be fetched. Use 123 for example. '
-          required: true
-          schema:
-            type: string
-          example: 123
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccRs'
-        404:
-          description: acc not found
-          content:
-            application/json: { }
-    delete:
-      summary: delete account by id
-      operationId: deleteAccById
-      tags:
-        - acc
-      parameters:
-        - name: id
-          in: path
-          description: 'The id that needs to be delete acc. Use 123 for example. '
-          required: true
-          schema:
-            type: string
-          example: 123
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json: { }
-        404:
-          description: account not found
-          content:
-            application/json: { }
-    put:
-      tags:
-        - acc
-      parameters:
-        - name: id
-          in: path
-          description: 'The id that needs to be update acc. Use 123 for example. '
-          required: true
-          schema:
-            type: string
-          example: 123
-      summary: Updated account
-      operationId: updateAcc
-      requestBody:
-        description: Updated acc object
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/AccUpdateRq'
-        required: true
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccUpdateRq'
-        400:
-          description: Invalid account supplied
-          content: { }
-        404:
-          description: account not found
-          content: { }
+
 components:
   schemas:
     UserRegistrationRq:
@@ -327,65 +202,3 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/UserRs"
-    AccRegistrationRq:
-      type: object
-      required:
-        - account
-        - sum
-      properties:
-        account:
-          type: string
-          example: 12345_fff_12345
-        sum:
-          type: number
-          example: 12345,99
-        description:
-          type: string
-          example: any comment
-    AccRegistrationRs:
-      type: object
-      required:
-        - id
-        - sum
-      properties:
-        id:
-          type: string
-          example: 123
-        sum:
-          type: number
-          example: 12345,22
-    AccUpdateRq:
-      type: object
-      properties:
-        account:
-          type: string
-          example: 12345_fff_12345
-        sum:
-          type: number
-          example: 1234,22
-        description:
-          type: string
-          example: any comment
-    AccRs:
-      type: object
-      required:
-        - id
-        - account
-        - sum
-      properties:
-        id:
-          type: string
-          example: 123
-        account:
-          type: string
-          example: 12345_fff_12345
-        sum:
-          type: number
-          example: masha
-        description:
-          type: string
-          example: ivanov account
-    AccRsList:
-      type: array
-      items:
-        $ref: "#/components/schemas/AccRs"

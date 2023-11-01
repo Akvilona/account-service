@@ -1,4 +1,4 @@
-package ru.gmm.demo.input.restapi;
+package ru.gmm.demo.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.gmm.demo.model.UserEntity;
