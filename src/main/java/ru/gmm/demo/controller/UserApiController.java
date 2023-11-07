@@ -50,8 +50,7 @@ public class UserApiController implements UserApi {
 
     @Override
     public ResponseEntity<UserUpdateRq> updateUser(final String id, final UserUpdateRq userUpdateRq) {
-        final UserEntity entity = userMapper.mapToEntity(userUpdateRq);
-        final UserEntity userEntity = userApiService.updateUser(id, entity);
+        final UserEntity userEntity = userApiService.updateUser(id, userUpdateRq);
         final UserUpdateRq updateRq = userMapper.mapToUserUpdateRq(userEntity);
         return ResponseEntity.ok(updateRq);
     }

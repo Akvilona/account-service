@@ -21,11 +21,9 @@ public class UserMapper {
             .build();
     }
 
-    public UserEntity mapToEntity(final UserUpdateRq userUpdateRq) {
-        return UserEntity.builder()
-            .name(userUpdateRq.getName())
-            .surname(userUpdateRq.getSurname())
-            .build();
+    public void updateWithUserUpdateRq(final UserEntity userEntity, final UserUpdateRq userUpdateRq) {
+        userEntity.setName(userUpdateRq.getName());
+        userEntity.setSurname(userUpdateRq.getSurname());
     }
 
     public UserRegistrationRs mapToUserRegistrationRs(final UserEntity userEntity) {
