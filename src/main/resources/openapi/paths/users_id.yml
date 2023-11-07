@@ -1,0 +1,79 @@
+get:
+  tags:
+    - user
+  summary: Get user by id
+  operationId: getUserById
+  parameters:
+    - name: id
+      in: path
+      description: 'The id that needs to be fetched. Use 123 for example. '
+      required: true
+      schema:
+        type: string
+      example: 123
+  responses:
+    200:
+      description: successful operation
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/UserRs.yml"
+    404:
+      description: User not found
+      content:
+        application/json: { }
+delete:
+  summary: delete user by id
+  operationId: deleteUserById
+  tags:
+    - user
+  parameters:
+    - name: id
+      in: path
+      description: 'The id that needs to be delete user. Use 123 for example. '
+      required: true
+      schema:
+        type: string
+      example: 123
+  responses:
+    200:
+      description: successful operation
+      content:
+        application/json: { }
+    404:
+      description: User not found
+      content:
+        application/json: { }
+put:
+  tags:
+    - user
+  parameters:
+    - name: id
+      in: path
+      description: 'The id that needs to be update user. Use 123 for example. '
+      required: true
+      schema:
+        type: string
+      example: 123
+  summary: Updated user
+  operationId: updateUser
+  requestBody:
+    description: Updated user object
+    content:
+      '*/*':
+        schema:
+          $ref: '../schemas/UserUpdateRq.yml'
+    required: true
+  responses:
+    200:
+      description: successful operation
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/UserUpdateRq.yml'
+    400:
+      description: Invalid user supplied
+      content: { }
+    404:
+      description: User not found
+      content: { }

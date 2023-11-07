@@ -29,46 +29,10 @@ tags:
 
 paths:
   /api/users:
-    get:
-      tags:
-        - user
-      summary: Get all users
-      operationId: getAllUsers
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserRsList'
-        404:
-          description: User not found
-          content:
-            application/json: { }
-    post:
-      tags:
-        - user
-      summary: Create user
-      description: Create user functionality
-      operationId: createUser
-      requestBody:
-        description: Created user object
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/UserRegistrationRq'
-        required: true
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserRegistrationRs'
-        404:
-          description: User not found
-          content:
-            application/json: { }
+    $ref: "./paths/users.yml"
+  /api/users/{id}:
+    $ref: "./paths/users_id.yml"
+
   /api/acc:
     get:
       tags:
@@ -110,86 +74,6 @@ paths:
           description: account not found
           content:
             application/json: { }
-  /api/users/{id}:
-    get:
-      tags:
-        - user
-      summary: Get user by id
-      operationId: getUserById
-      parameters:
-        - name: id
-          in: path
-          description: 'The id that needs to be fetched. Use 123 for example. '
-          required: true
-          schema:
-            type: string
-          example: 123
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserRs'
-        404:
-          description: User not found
-          content:
-            application/json: { }
-    delete:
-      summary: delete user by id
-      operationId: deleteUserById
-      tags:
-        - user
-      parameters:
-        - name: id
-          in: path
-          description: 'The id that needs to be delete user. Use 123 for example. '
-          required: true
-          schema:
-            type: string
-          example: 123
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json: { }
-        404:
-          description: User not found
-          content:
-            application/json: { }
-    put:
-      tags:
-        - user
-      parameters:
-        - name: id
-          in: path
-          description: 'The id that needs to be update user. Use 123 for example. '
-          required: true
-          schema:
-            type: string
-          example: 123
-      summary: Updated user
-      operationId: updateUser
-      requestBody:
-        description: Updated user object
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/UserUpdateRq'
-        required: true
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserUpdateRq'
-        400:
-          description: Invalid user supplied
-          content: { }
-        404:
-          description: User not found
-          content: { }
   /api/acc/{id}:
     get:
       tags:
@@ -272,61 +156,6 @@ paths:
           content: { }
 components:
   schemas:
-    UserRegistrationRq:
-      type: object
-      required:
-        - password
-        - email
-      properties:
-        password:
-          type: string
-          example: password
-        email:
-          type: string
-          example: example@mail.ru
-    UserRegistrationRs:
-      type: object
-      required:
-        - id
-        - email
-      properties:
-        id:
-          type: string
-          example: 123
-        email:
-          type: string
-          example: example@mail.ru
-    UserUpdateRq:
-      type: object
-      properties:
-        name:
-          type: string
-          example: vasya
-        surname:
-          type: string
-          example: ivanov
-    UserRs:
-      type: object
-      required:
-        - id
-        - email
-      properties:
-        id:
-          type: string
-          example: 123
-        email:
-          type: string
-          example: example@mail.ru
-        name:
-          type: string
-          example: masha
-        surname:
-          type: string
-          example: ivanov
-    UserRsList:
-      type: array
-      items:
-        $ref: "#/components/schemas/UserRs"
     AccRegistrationRq:
       type: object
       required:

@@ -1,0 +1,17 @@
+type: object
+required:
+  - id
+  - email
+properties:
+  id:
+    type: string
+    example: 123
+  email:
+    type: string
+    example: example@mail.ru
+  name:
+    type: string
+    example: masha
+  surname:
+    type: string
+    example: ivanov

@@ -1,0 +1,41 @@
+get:
+  tags:
+    - user
+  summary: Get all users
+  operationId: getAllUsers
+  responses:
+    200:
+      description: successful operation
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/UserRsList.yml'
+    404:
+      description: User not found
+      content:
+        application/json: { }
+
+post:
+  tags:
+    - user
+  summary: Create user
+  description: Create user functionality
+  operationId: createUser
+  requestBody:
+    description: Created user object
+    content:
+      '*/*':
+        schema:
+          $ref: '../schemas/UserRegistrationRq.yml'
+    required: true
+  responses:
+    200:
+      description: successful operation
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/UserRegistrationRs.yml'
+    404:
+      description: User not found
+      content:
+        application/json: { }
