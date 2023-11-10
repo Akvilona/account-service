@@ -19,7 +19,7 @@ post:
     - account
   summary: Create account
   description: Create account functionality
-  operationId: createAcc
+  operationId: createAccount
   requestBody:
     description: Created account object
     content:

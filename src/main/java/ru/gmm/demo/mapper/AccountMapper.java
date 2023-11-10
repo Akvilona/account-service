@@ -6,10 +6,10 @@ package ru.gmm.demo.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.gmm.demo.model.AccountEntity;
-import ru.gmm.demo.model.api.AccRegistrationRq;
-import ru.gmm.demo.model.api.AccRegistrationRs;
-import ru.gmm.demo.model.api.AccRs;
-import ru.gmm.demo.model.api.AccUpdateRq;
+import ru.gmm.demo.model.api.AccountRegistrationRq;
+import ru.gmm.demo.model.api.AccountRegistrationRs;
+import ru.gmm.demo.model.api.AccountRs;
+import ru.gmm.demo.model.api.AccountUpdateRq;
 
 import java.util.Random;
 
@@ -17,7 +17,7 @@ import java.util.Random;
 public class AccountMapper {
     public static final Random RANDOM = new Random();
 
-    public AccountEntity accUpdateRq(final AccRegistrationRq accRegistrationRq) {
+    public AccountEntity accUpdateRq(final AccountRegistrationRq accRegistrationRq) {
         return AccountEntity.builder()
             .id(RANDOM.nextLong())
             .account(accRegistrationRq.getAccount())
@@ -25,29 +25,29 @@ public class AccountMapper {
             .build();
     }
 
-    public AccountEntity accUpdateRq(final AccountEntity accountEntity, final AccUpdateRq accUpdateRq) {
-        accountEntity.setAccount(accUpdateRq.getAccount());
-        accountEntity.setSum(accUpdateRq.getSum());
+    public AccountEntity accUpdateRq(final AccountEntity accountEntity, final AccountUpdateRq accountUpdateRq) {
+        accountEntity.setAccount(accountUpdateRq.getAccount());
+        accountEntity.setSum(accountUpdateRq.getSum());
         return accountEntity;
     }
 
-    public AccRegistrationRs mapToAccRegistrationRs(final AccountEntity accountEntity) {
-        return AccRegistrationRs.builder()
+    public AccountRegistrationRs mapToAccRegistrationRs(final AccountEntity accountEntity) {
+        return AccountRegistrationRs.builder()
             .id(String.valueOf(accountEntity.getId()))
             .sum(accountEntity.getSum())
             .build();
     }
 
-    public AccRs mapToAccRs(final AccountEntity accountEntity) {
-        return AccRs.builder()
+    public AccountRs mapToAccRs(final AccountEntity accountEntity) {
+        return AccountRs.builder()
             .id(String.valueOf(accountEntity.getId()))
             .account(accountEntity.getAccount())
             .sum(accountEntity.getSum())
             .build();
     }
 
-    public AccUpdateRq mapToAccUpdateRq(final AccountEntity accountEntity) {
-        return AccUpdateRq.builder()
+    public AccountUpdateRq mapToAccUpdateRq(final AccountEntity accountEntity) {
+        return AccountUpdateRq.builder()
             .account(accountEntity.getAccount())
             .sum(accountEntity.getSum())
             .build();

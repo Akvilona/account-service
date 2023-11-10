@@ -32,7 +32,7 @@ paths:
     $ref: "./paths/users.yml"
   /api/users/{id}:
     $ref: "./paths/users_id.yml"
-  /api/acc:
+  /api/account:
     $ref: "./paths/account.yml"
-  /api/acc/{id}:
+  /api/account/{id}:
     $ref: "./paths/account_id.yml"

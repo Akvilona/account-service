@@ -1,8 +1,8 @@
 get:
   tags:
-    - acc
+    - account
   summary: Get account by id
-  operationId: getAccById
+  operationId: getAccountById
   parameters:
     - name: id
       in: path
@@ -19,14 +19,14 @@ get:
           schema:
             $ref: '../schemas/account/AccountRs.yml'
     404:
-      description: acc not found
+      description: account not found
       content:
         application/json: { }
 delete:
   summary: delete account by id
-  operationId: deleteAccById
+  operationId: deleteAccountById
   tags:
-    - acc
+    - account
   parameters:
     - name: id
       in: path
@@ -46,7 +46,7 @@ delete:
         application/json: { }
 put:
   tags:
-    - acc
+    - account
   parameters:
     - name: id
       in: path
@@ -56,9 +56,9 @@ put:
         type: string
       example: 123
   summary: Updated account
-  operationId: updateAcc
+  operationId: updateAccount
   requestBody:
-    description: Updated acc object
+    description: Updated account object
     content:
       '*/*':
         schema:

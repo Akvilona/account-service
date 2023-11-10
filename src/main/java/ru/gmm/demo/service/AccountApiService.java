@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.gmm.demo.mapper.AccountMapper;
 import ru.gmm.demo.model.AccountEntity;
-import ru.gmm.demo.model.api.AccUpdateRq;
+import ru.gmm.demo.model.api.AccountUpdateRq;
 import ru.gmm.demo.repository.AccRepository;
 
 import java.util.List;
@@ -33,11 +33,11 @@ public class AccountApiService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public AccountEntity updateAcc(final String id, final AccUpdateRq accUpdateRq) {
+    public AccountEntity updateAcc(final String id, final AccountUpdateRq accountUpdateRq) {
         final AccountEntity acc = accRepository.findById(Long.parseLong(id))
             .orElseThrow();
 
-        return accountMapper.accUpdateRq(acc, accUpdateRq);
+        return accountMapper.accUpdateRq(acc, accountUpdateRq);
     }
 
     public void deleteAccById(final long id) {
