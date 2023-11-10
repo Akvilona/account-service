@@ -17,21 +17,18 @@ import java.util.Random;
 public class AccMapper {
     public static final Random RANDOM = new Random();
 
-    public AccEntity mapToAccEntity(final AccRegistrationRq accRegistrationRq) {
+    public AccEntity accUpdateRq(final AccRegistrationRq accRegistrationRq) {
         return AccEntity.builder()
             .id(RANDOM.nextLong())
             .account(accRegistrationRq.getAccount())
             .sum(accRegistrationRq.getSum())
-            .surname(accRegistrationRq.getDescription())
             .build();
     }
 
-    public AccEntity mapToAccEntity(final AccUpdateRq accUpdateRq) {
-        return AccEntity.builder()
-            .account(accUpdateRq.getAccount())
-            .sum(accUpdateRq.getSum())
-            .surname(accUpdateRq.getDescription())
-            .build();
+    public AccEntity accUpdateRq(final AccEntity accEntity, final AccUpdateRq accUpdateRq) {
+        accEntity.setAccount(accUpdateRq.getAccount());
+        accEntity.setSum(accUpdateRq.getSum());
+        return accEntity;
     }
 
     public AccRegistrationRs mapToAccRegistrationRs(final AccEntity accEntity) {
@@ -46,7 +43,6 @@ public class AccMapper {
             .id(String.valueOf(accEntity.getId()))
             .account(accEntity.getAccount())
             .sum(accEntity.getSum())
-            .description(accEntity.getSurname())
             .build();
     }
 
@@ -54,7 +50,6 @@ public class AccMapper {
         return AccUpdateRq.builder()
             .account(accEntity.getAccount())
             .sum(accEntity.getSum())
-            .description(accEntity.getSurname())
             .build();
     }
 }

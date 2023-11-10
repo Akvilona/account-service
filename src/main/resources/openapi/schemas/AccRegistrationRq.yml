@@ -1,0 +1,14 @@
+type: object
+required:
+  - account
+  - sum
+properties:
+  account:
+    type: string
+    example: 12345_fff_12345
+  sum:
+    type: number
+    example: 12345,99
+  description:
+    type: string
+    example: any comment

@@ -26,7 +26,7 @@ public class AccApiController implements AccApi {
 
     @Override
     public ResponseEntity<AccRegistrationRs> createAcc(final AccRegistrationRq accRegistrationRq) {
-        final AccEntity accEntity = accMapper.mapToAccEntity(accRegistrationRq);
+        final AccEntity accEntity = accMapper.accUpdateRq(accRegistrationRq);
         accApiService.createAcc(accEntity);
         final AccRegistrationRs accRegistrationRs = accMapper.mapToAccRegistrationRs(accEntity);
         return ResponseEntity.ok(accRegistrationRs);
@@ -49,8 +49,7 @@ public class AccApiController implements AccApi {
 
     @Override
     public ResponseEntity<AccUpdateRq> updateAcc(final String id, final AccUpdateRq accUpdateRq) {
-        final AccEntity entity = accMapper.mapToAccEntity(accUpdateRq);
-        final AccEntity accEntity = accApiService.updateAcc(id, entity);
+        final AccEntity accEntity = accApiService.updateAcc(id, accUpdateRq);
         final AccUpdateRq updateRq = accMapper.mapToAccUpdateRq(accEntity);
         return ResponseEntity.ok(updateRq);
     }

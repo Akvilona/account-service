@@ -4,10 +4,13 @@
 
 package ru.gmm.demo.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.gmm.demo.mapper.AccMapper;
 import ru.gmm.demo.model.AccEntity;
+import ru.gmm.demo.model.api.AccUpdateRq;
 import ru.gmm.demo.repository.AccRepository;
 
 import java.util.List;
@@ -17,24 +20,31 @@ import java.util.List;
 @Slf4j
 public class AccApiService {
     private final AccRepository accRepository;
+    private final AccMapper accMapper;
 
     public void createAcc(final AccEntity accEntity) {
         accRepository.save(accEntity);
     }
 
     public List<AccEntity> getAll() {
-        return accRepository.getAll();
+        return accRepository.findAll();
     }
 
     public AccEntity findById(final String id) {
-        return accRepository.get(Long.valueOf(id));
+        return accRepository.findById(Long.valueOf(id))
+            .orElseThrow();
     }
 
-    public AccEntity updateAcc(final String id, final AccEntity accEntity) {
-        return accRepository.updateAcc(id, accEntity);
+    @Transactional
+    public AccEntity updateAcc(final String id, final AccUpdateRq accUpdateRq) {
+        final AccEntity acc = accRepository.findById(Long.parseLong(id))
+            .orElseThrow();
+
+        return accMapper.accUpdateRq(acc, accUpdateRq);
+
     }
 
     public void deleteAccById(final long id) {
-        accRepository.deleteAccById(id);
+        accRepository.deleteById(id);
     }
 }

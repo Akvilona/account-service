@@ -35,7 +35,7 @@ public class UserApiService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity updateUser(final String id, final UserUpdateRq userUpdateRq) {
-        UserEntity user = userRepository.findById(Long.parseLong(id))
+        final UserEntity user = userRepository.findById(Long.parseLong(id))
             .orElseThrow();
 
         userMapper.updateWithUserUpdateRq(user, userUpdateRq);

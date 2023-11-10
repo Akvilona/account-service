@@ -1,0 +1,79 @@
+get:
+  tags:
+    - acc
+  summary: Get account by id
+  operationId: getAccById
+  parameters:
+    - name: id
+      in: path
+      description: 'The id that needs to be fetched. Use 123 for example. '
+      required: true
+      schema:
+        type: string
+      example: 123
+  responses:
+    200:
+      description: successful operation
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/AccRs.yml'
+    404:
+      description: acc not found
+      content:
+        application/json: { }
+delete:
+  summary: delete account by id
+  operationId: deleteAccById
+  tags:
+    - acc
+  parameters:
+    - name: id
+      in: path
+      description: 'The id that needs to be delete acc. Use 123 for example. '
+      required: true
+      schema:
+        type: string
+      example: 123
+  responses:
+    200:
+      description: successful operation
+      content:
+        application/json: { }
+    404:
+      description: account not found
+      content:
+        application/json: { }
+put:
+  tags:
+    - acc
+  parameters:
+    - name: id
+      in: path
+      description: 'The id that needs to be update acc. Use 123 for example. '
+      required: true
+      schema:
+        type: string
+      example: 123
+  summary: Updated account
+  operationId: updateAcc
+  requestBody:
+    description: Updated acc object
+    content:
+      '*/*':
+        schema:
+          $ref: '../schemas/AccUpdateRq.yml'
+    required: true
+  responses:
+    200:
+      description: successful operation
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/AccUpdateRq.yml'
+    400:
+      description: Invalid account supplied
+      content: { }
+    404:
+      description: account not found
+      content: { }
