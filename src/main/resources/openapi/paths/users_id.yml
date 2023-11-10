@@ -17,7 +17,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: "../schemas/UserRs.yml"
+            $ref: "../schemas/user/UserRs.yml"
     404:
       description: User not found
       content:
@@ -62,7 +62,7 @@ put:
     content:
       '*/*':
         schema:
-          $ref: '../schemas/UserUpdateRq.yml'
+          $ref: '../schemas/user/UserUpdateRq.yml'
     required: true
   responses:
     200:
@@ -70,7 +70,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: '../schemas/UserUpdateRq.yml'
+            $ref: '../schemas/user/UserUpdateRq.yml'
     400:
       description: Invalid user supplied
       content: { }

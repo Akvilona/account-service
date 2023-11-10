@@ -17,7 +17,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../schemas/AccRs.yml'
+            $ref: '../schemas/account/AccountRs.yml'
     404:
       description: acc not found
       content:
@@ -62,7 +62,7 @@ put:
     content:
       '*/*':
         schema:
-          $ref: '../schemas/AccUpdateRq.yml'
+          $ref: '../schemas/account/AccountUpdateRq.yml'
     required: true
   responses:
     200:
@@ -70,7 +70,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: '../schemas/AccUpdateRq.yml'
+            $ref: '../schemas/account/AccountUpdateRq.yml'
     400:
       description: Invalid account supplied
       content: { }

@@ -7,24 +7,24 @@ package ru.gmm.demo.repository;
 import org.springframework.stereotype.Component;
 import ru.gmm.demo.exception.ErrorCode;
 import ru.gmm.demo.exception.ServiceException;
-import ru.gmm.demo.model.AccEntity;
+import ru.gmm.demo.model.AccountEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class ListAccRepository {
-    private final List<AccEntity> accEntities = new ArrayList<>();
+    private final List<AccountEntity> accEntities = new ArrayList<>();
 
-    public void save(final AccEntity accEntity) {
-        accEntities.add(accEntity);
+    public void save(final AccountEntity accountEntity) {
+        accEntities.add(accountEntity);
     }
 
-    public AccEntity get(final Long id) {
+    public AccountEntity get(final Long id) {
         return findById(id);
     }
 
-    public List<AccEntity> getAll() {
+    public List<AccountEntity> getAll() {
         return accEntities;
     }
 
@@ -32,7 +32,7 @@ public class ListAccRepository {
         return accEntities.removeIf(accEntity -> accEntity.getId().equals(id));
     }
 
-    private AccEntity findById(final Long id) {
+    private AccountEntity findById(final Long id) {
         return accEntities.stream()
             .filter(accEntity -> accEntity.getId().equals(id))
             .findFirst()

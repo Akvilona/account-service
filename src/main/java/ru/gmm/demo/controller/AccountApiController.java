@@ -8,55 +8,55 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import ru.gmm.demo.controller.api.AccApi;
-import ru.gmm.demo.mapper.AccMapper;
-import ru.gmm.demo.model.AccEntity;
+import ru.gmm.demo.mapper.AccountMapper;
+import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.api.AccRegistrationRq;
 import ru.gmm.demo.model.api.AccRegistrationRs;
 import ru.gmm.demo.model.api.AccRs;
 import ru.gmm.demo.model.api.AccUpdateRq;
-import ru.gmm.demo.service.AccApiService;
+import ru.gmm.demo.service.AccountApiService;
 
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class AccApiController implements AccApi {
-    private final AccApiService accApiService;
-    private final AccMapper accMapper;
+public class AccountApiController implements AccApi {
+    private final AccountApiService accountApiService;
+    private final AccountMapper accountMapper;
 
     @Override
     public ResponseEntity<AccRegistrationRs> createAcc(final AccRegistrationRq accRegistrationRq) {
-        final AccEntity accEntity = accMapper.accUpdateRq(accRegistrationRq);
-        accApiService.createAcc(accEntity);
-        final AccRegistrationRs accRegistrationRs = accMapper.mapToAccRegistrationRs(accEntity);
+        final AccountEntity accountEntity = accountMapper.accUpdateRq(accRegistrationRq);
+        accountApiService.createAcc(accountEntity);
+        final AccRegistrationRs accRegistrationRs = accountMapper.mapToAccRegistrationRs(accountEntity);
         return ResponseEntity.ok(accRegistrationRs);
     }
 
     @Override
     public ResponseEntity<List<AccRs>> getAllAcc() {
-        final List<AccRs> accRsList = accApiService.getAll().stream()
-            .map(accMapper::mapToAccRs)
+        final List<AccRs> accRsList = accountApiService.getAll().stream()
+            .map(accountMapper::mapToAccRs)
             .toList();
         return ResponseEntity.ok(accRsList);
     }
 
     @Override
     public ResponseEntity<AccRs> getAccById(final String id) {
-        final AccEntity accEntity = accApiService.findById(id);
-        final AccRs accRs = accMapper.mapToAccRs(accEntity);
+        final AccountEntity accountEntity = accountApiService.findById(id);
+        final AccRs accRs = accountMapper.mapToAccRs(accountEntity);
         return ResponseEntity.ok(accRs);
     }
 
     @Override
     public ResponseEntity<AccUpdateRq> updateAcc(final String id, final AccUpdateRq accUpdateRq) {
-        final AccEntity accEntity = accApiService.updateAcc(id, accUpdateRq);
-        final AccUpdateRq updateRq = accMapper.mapToAccUpdateRq(accEntity);
+        final AccountEntity accountEntity = accountApiService.updateAcc(id, accUpdateRq);
+        final AccUpdateRq updateRq = accountMapper.mapToAccUpdateRq(accountEntity);
         return ResponseEntity.ok(updateRq);
     }
 
     @Override
     public ResponseEntity<Void> deleteAccById(final String id) {
-        accApiService.deleteAccById(Long.parseLong(id));
+        accountApiService.deleteAccById(Long.parseLong(id));
         return ResponseEntity.ok(null);
     }
 }

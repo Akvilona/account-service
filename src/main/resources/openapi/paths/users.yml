@@ -9,7 +9,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../schemas/UserRsList.yml'
+            $ref: '../schemas/user/UserRsList.yml'
     404:
       description: User not found
       content:
@@ -26,7 +26,7 @@ post:
     content:
       '*/*':
         schema:
-          $ref: '../schemas/UserRegistrationRq.yml'
+          $ref: '../schemas/user/UserRegistrationRq.yml'
     required: true
   responses:
     200:
@@ -34,7 +34,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../schemas/UserRegistrationRs.yml'
+            $ref: '../schemas/user/UserRegistrationRs.yml'
     404:
       description: User not found
       content:

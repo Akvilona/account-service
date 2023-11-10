@@ -1,31 +1,31 @@
 get:
   tags:
-    - acc
+    - account
   summary: Get all account
-  operationId: getAllAcc
+  operationId: getAllAccount
   responses:
     200:
       description: successful operation
       content:
         application/json:
           schema:
-            $ref: '../schemas/AccRsList.yml'
+            $ref: '../schemas/account/AccountRsList.yml'
     404:
       description: account not found
       content:
         application/json: { }
 post:
   tags:
-    - acc
-  summary: Create acc
-  description: Create acc functionality
+    - account
+  summary: Create account
+  description: Create account functionality
   operationId: createAcc
   requestBody:
     description: Created account object
     content:
       '*/*':
         schema:
-          $ref: '../schemas/AccRegistrationRq.yml'
+          $ref: '../schemas/account/AccountRegistrationRq.yml'
     required: true
   responses:
     200:
@@ -33,7 +33,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../schemas/AccRegistrationRs.yml'
+            $ref: '../schemas/account/AccountRegistrationRs.yml'
     404:
       description: account not found
       content:

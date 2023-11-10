@@ -16,8 +16,8 @@ externalDocs:
 servers:
   - url: http://localhost:8080
 tags:
-  - name: acc
-    description: Operations about acc
+  - name: account
+    description: Operations about account
     externalDocs:
       description: Find out more about our store
       url: http://swagger.io
@@ -33,6 +33,6 @@ paths:
   /api/users/{id}:
     $ref: "./paths/users_id.yml"
   /api/acc:
-    $ref: "./paths/acc.yml"
+    $ref: "./paths/account.yml"
   /api/acc/{id}:
-    $ref: "./paths/acc_id.yml"
+    $ref: "./paths/account_id.yml"
