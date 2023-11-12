@@ -2,7 +2,7 @@
  * Создал Андрей Антонов 10/31/2023 6:36 PM.
  **/
 
-package ru.gmm.demo.repository;
+package ru.gmm.demo.repository.list;
 
 import org.springframework.stereotype.Component;
 import ru.gmm.demo.exception.ErrorCode;

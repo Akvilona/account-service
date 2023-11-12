@@ -1,0 +1,26 @@
+type: object
+required:
+  - id
+  - accountFrom
+  - accountTo
+  - sum
+  - status
+properties:
+  id:
+    type: string
+    example: 123
+  accountFrom:
+    type: string
+    example: 12345_fff_12345
+  accountTo:
+    type: string
+    example: 12345_fff_12345
+  sum:
+    type: number
+    example: 12345,22
+  status:
+    type: string
+    example: TRANSFER; WITHDRAWAL; DEPOSIT.
+  description:
+    type: string
+    example: any comment

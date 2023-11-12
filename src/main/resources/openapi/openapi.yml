@@ -2,7 +2,7 @@ openapi: 3.0.2
 info:
   title: demo user app
   description: "demo user+account app description"
-  termsOfService: https://editor.swagger.io/
+  termsOfService: https://editor.swagger.io/ or https://editor-next.swagger.io/
   contact:
     email: example@gmail.com
     url: https://swagger.io/specification/
@@ -20,13 +20,17 @@ tags:
     description: Operations about account
     externalDocs:
       description: Find out more about our store
-      url: http://swagger.io
+      url: https://editor-next.swagger.io/
   - name: user
     description: Operations about user
     externalDocs:
       description: Find out more about our store
-      url: http://swagger.io
-
+      url: https://editor-next.swagger.io/
+  - name: transaction
+    description: Operations about Transaction
+    externalDocs:
+      description: Find out more about our store
+      url: https://editor-next.swagger.io/
 paths:
   /api/users:
     $ref: "./paths/users.yml"
@@ -36,3 +40,8 @@ paths:
     $ref: "./paths/account.yml"
   /api/account/{id}:
     $ref: "./paths/account_id.yml"
+  /api/transaction:
+    $ref: "./paths/transaction.yml"
+  /api/transaction/{id}:
+    $ref: "./paths/transaction_id.yml"
+

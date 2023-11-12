@@ -1,0 +1,40 @@
+get:
+  tags:
+    - Transaction
+  summary: Get all Transaction
+  operationId: getAllTransaction
+  responses:
+    200:
+      description: successful operation
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/transaction/TransactionRsList.yml'
+    404:
+      description: Transaction not found
+      content:
+        application/json: { }
+post:
+  tags:
+    - Transaction
+  summary: Create Transaction
+  description: Create Transaction functionality
+  operationId: createTransaction
+  requestBody:
+    description: Created Transaction object
+    content:
+      '*/*':
+        schema:
+          $ref: '../schemas/transaction/TransactionRegistrationRq.yml'
+    required: true
+  responses:
+    200:
+      description: successful operation
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/transaction/TransactionRegistrationRs.yml'
+    404:
+      description: Transaction not found
+      content:
+        application/json: { }

@@ -1,4 +1,4 @@
-package ru.gmm.demo.repository;
+package ru.gmm.demo.repository.list;
 
 import org.springframework.stereotype.Component;
 import ru.gmm.demo.exception.ErrorCode;

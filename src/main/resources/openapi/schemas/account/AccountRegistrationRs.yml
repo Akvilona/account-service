@@ -1,11 +1,11 @@
-      type: object
-      required:
-        - id
-        - sum
-      properties:
-        id:
-          type: string
-          example: 123
-        sum:
-          type: number
-          example: 12345,22
+type: object
+required:
+  - id
+  - sum
+properties:
+  id:
+    type: string
+    example: 123
+  sum:
+    type: number
+    example: 12345,22

@@ -1,0 +1,34 @@
+type: object
+required:
+  - id
+  - accountFrom
+  - accountTo
+  - sum
+  - status
+  - createDateTime
+  - updateDateTime
+properties:
+  id:
+    type: string
+    example: 123
+  accountFrom:
+    type: string
+    example: 12345_fff_12345
+  accountTo:
+    type: string
+    example: 12345_fff_12345
+  sum:
+    type: number
+    example: masha
+  status:
+    type: string
+    example: TRANSFER; WITHDRAWAL; DEPOSIT.
+  createDateTime:
+    type: string
+    example: 2008-05-30 08:20:12
+  updateDateTime:
+    type: string
+    example: 2008-05-30 08:20:12
+  description:
+    type: string
+    example: ivanov account

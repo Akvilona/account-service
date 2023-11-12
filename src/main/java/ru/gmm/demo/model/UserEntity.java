@@ -16,8 +16,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
-import ru.gmm.demo.model.support.Audit;
 import ru.gmm.demo.model.support.BaseEntity;
+import ru.gmm.demo.model.support.CDTEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ import java.util.List;
 public class UserEntity extends BaseEntity {
 
     @Embedded
-    private Audit audit;
+    private CDTEntity cdtEntity;
 
     @Column(name = "password", nullable = false)
     private String password;

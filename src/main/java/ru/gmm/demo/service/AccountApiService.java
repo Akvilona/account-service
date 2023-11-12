@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.gmm.demo.mapper.AccountMapper;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.api.AccountUpdateRq;
-import ru.gmm.demo.repository.AccRepository;
+import ru.gmm.demo.repository.id.AccRepository;
 
 import java.util.List;
 

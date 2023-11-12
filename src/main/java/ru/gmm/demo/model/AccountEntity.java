@@ -4,6 +4,7 @@
 
 package ru.gmm.demo.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -13,9 +14,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,10 +27,12 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 import ru.gmm.demo.model.enums.AccountStatus;
-import ru.gmm.demo.model.support.Audit;
 import ru.gmm.demo.model.support.BaseEntity;
+import ru.gmm.demo.model.support.CDTEntity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -43,11 +48,14 @@ import java.math.BigDecimal;
 public class AccountEntity extends BaseEntity {
 
     @Embedded
-    private Audit audit;
+    private CDTEntity cdtEntity;
+
     @Column(name = "account", nullable = false, updatable = false)
     private String account;
+
     @Column(name = "sum", nullable = false)
     private BigDecimal sum;
+
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private AccountStatus status;
@@ -57,11 +65,20 @@ public class AccountEntity extends BaseEntity {
     @ToString.Exclude
     private UserEntity user;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountEntityIdFrom")
+    @ToString.Exclude
+    @Builder.Default
+    private List<TransactionEntity> accountsIdFrom = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountEntityIdTo")
+    @ToString.Exclude
+    @Builder.Default
+    private List<TransactionEntity> accountsIdTo = new ArrayList<>();
+
     @PrePersist
     public void prePersist() {
         if (status == null) {
             status = AccountStatus.OPENED;
         }
     }
-
 }
