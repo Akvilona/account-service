@@ -6,6 +6,7 @@ package ru.gmm.demo.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.gmm.demo.model.AccountEntity;
+import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.model.api.AccountRegistrationRq;
 import ru.gmm.demo.model.api.AccountRegistrationRs;
 import ru.gmm.demo.model.api.AccountRs;
@@ -29,6 +30,16 @@ public class AccountMapper {
         accountEntity.setNumber(accountUpdateRq.getAccount());
         accountEntity.setSum(accountUpdateRq.getSum());
         return accountEntity;
+    }
+
+    public AccountEntity toAccountEntityAndUserEntity(final AccountEntity accountEntity, final UserEntity userEntity) {
+        return AccountEntity.builder()
+            .id(RANDOM.nextLong())
+            .user(userEntity)
+            .number(accountEntity.getNumber())
+            .status(accountEntity.getStatus())
+            .sum(accountEntity.getSum())
+            .build();
     }
 
     public AccountRegistrationRs toAccountRegistrationRs(final AccountEntity accountEntity) {

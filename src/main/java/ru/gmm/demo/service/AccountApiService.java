@@ -7,8 +7,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.gmm.demo.mapper.AccountMapper;
 import ru.gmm.demo.model.AccountEntity;
+import ru.gmm.demo.model.UserEntity;
+import ru.gmm.demo.model.api.AccountRegistrationRq;
 import ru.gmm.demo.model.api.AccountUpdateRq;
 import ru.gmm.demo.repository.AccountRepository;
+import ru.gmm.demo.repository.UserRepository;
 
 import java.util.List;
 
@@ -18,9 +21,13 @@ import java.util.List;
 public class AccountApiService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
+    private final UserRepository userRepository;
 
-    public void createAccount(final AccountEntity accountEntity) {
-        accountRepository.save(accountEntity);
+    public void createAccount(final AccountEntity accountEntity, final AccountRegistrationRq accRegistrationRq) {
+
+        final UserEntity userEntity = userRepository.findById(accRegistrationRq.getUserId().longValue()).orElseThrow();
+        final AccountEntity account = accountMapper.toAccountEntityAndUserEntity(accountEntity, userEntity);
+        accountRepository.save(account);
     }
 
     public List<AccountEntity> getAll() {

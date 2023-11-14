@@ -6,4 +6,7 @@ import ru.gmm.demo.model.UserEntity;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
+
+    //    public Optional<UserEntity> findById(Long id);
+
 }

@@ -51,12 +51,16 @@ public class TransactionMapper {
     public TransactionRs toTransactionRs(final TransactionEntity transactionEntity) {
         return TransactionRs.builder()
             .id(String.valueOf(transactionEntity.getId()))
-            .accountFrom(transactionEntity.getAccountFrom().getNumber())
+            .accountFrom(transactionEntity.getAccountFrom() != null
+                        ? transactionEntity.getAccountFrom().getNumber()
+                        : null)
             .accountTo(transactionEntity.getAccountTo() != null
                        ? transactionEntity.getAccountTo().getNumber()
                        : null)
             .sum(transactionEntity.getSum())
-            .status(String.valueOf(transactionEntity.getStatus()))
+            .status(transactionEntity.getAccountFrom() != null || transactionEntity.getAccountTo() != null
+                    ? String.valueOf(TransactionStatus.WITHDRAWAL)
+                    : String.valueOf(transactionEntity.getStatus()))
             .description(transactionEntity.getDescription())
             .createDateTime(transactionEntity.getAudit().getCreateDateTime().toString())
             .updateDateTime(transactionEntity.getAudit().getUpdateDateTime().toString())

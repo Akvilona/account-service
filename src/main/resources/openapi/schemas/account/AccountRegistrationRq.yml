@@ -1,8 +1,12 @@
 type: object
 required:
+  - user_id
   - account
   - sum
 properties:
+  user_id:
+    type: number
+    example: 1
   account:
     type: string
     example: 12345_fff_12345

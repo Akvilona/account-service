@@ -1,5 +1,6 @@
 openapi: 3.0.2
-
+# for build full openapi file:
+# swagger-cli bundle openapi.yml --outfile _build/openapi.yaml --type yaml
 components:
   schemas:
 
@@ -66,6 +67,3 @@ paths:
     $ref: "./paths/transaction.yml"
   /api/transaction/{id}:
     $ref: "./paths/transaction_id.yml"
-
-# for build full openapi file:
-# swagger-cli bundle openapi.yml --outfile _build/openapi.yaml --type yaml

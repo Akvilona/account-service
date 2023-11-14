@@ -16,6 +16,7 @@ import ru.gmm.demo.model.enums.AccountStatus;
 import ru.gmm.demo.repository.AccountRepository;
 import ru.gmm.demo.repository.TransactionRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,6 +32,16 @@ public class TransactionApiService {
             .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, createTransactionRq.getAccountFrom()));
         final AccountEntity accountTo = accountRepository.findByNumberAndStatus(createTransactionRq.getAccountTo(), AccountStatus.OPENED)
             .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, createTransactionRq.getAccountTo()));
+
+        // todo: При создании транзакции СНИМАТЬ и НАЧИСЛЯТЬ деньги на счета, проверять достаточность средств
+        accountFrom.setSum(createTransactionRq.getSum().subtract(createTransactionRq.getSum()));
+        accountTo.setSum(createTransactionRq.getSum().add(createTransactionRq.getSum()));
+        if (accountFrom.getSum().compareTo(BigDecimal.ZERO) < 0) {
+            throw new ServiceException(ErrorCode.ERR_CODE_004, accountFrom.getId());
+        } else {
+            accountRepository.save(accountFrom);
+            accountRepository.save(accountTo);
+        }
 
         final TransactionEntity transactionEntity = transactionMapper.toTransactionEntity(createTransactionRq, accountFrom, accountTo);
         return transactionRepository.save(transactionEntity);

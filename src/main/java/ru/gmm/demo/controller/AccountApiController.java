@@ -27,7 +27,7 @@ public class AccountApiController implements AccountApi {
     @Override
     public ResponseEntity<AccountRegistrationRs> createAccount(final AccountRegistrationRq accRegistrationRq) {
         final AccountEntity accountEntity = accountMapper.toAccountEntity(accRegistrationRq);
-        accountApiService.createAccount(accountEntity);
+        accountApiService.createAccount(accountEntity, accRegistrationRq);
         final AccountRegistrationRs accRegistrationRs = accountMapper.toAccountRegistrationRs(accountEntity);
         return ResponseEntity.ok(accRegistrationRs);
     }
