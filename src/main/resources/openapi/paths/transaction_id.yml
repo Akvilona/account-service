@@ -1,6 +1,6 @@
 get:
   tags:
-    - Transaction
+    - transaction
   summary: Get Transaction by id
   operationId: getTransactionById
   parameters:
@@ -26,7 +26,7 @@ delete:
   summary: delete Transaction by id
   operationId: deleteTransactionById
   tags:
-    - Transaction
+    - transaction
   parameters:
     - name: id
       in: path
@@ -46,7 +46,7 @@ delete:
         application/json: { }
 put:
   tags:
-    - Transaction
+    - transaction
   parameters:
     - name: id
       in: path

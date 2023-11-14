@@ -10,8 +10,8 @@ import org.springframework.stereotype.Controller;
 import ru.gmm.demo.controller.api.TransactionApi;
 import ru.gmm.demo.mapper.TransactionMapper;
 import ru.gmm.demo.model.TransactionEntity;
-import ru.gmm.demo.model.api.TransactionRegistrationRq;
-import ru.gmm.demo.model.api.TransactionRegistrationRs;
+import ru.gmm.demo.model.api.CreateTransactionRq;
+import ru.gmm.demo.model.api.CreateTransactionRs;
 import ru.gmm.demo.model.api.TransactionRs;
 import ru.gmm.demo.model.api.TransactionUpdateRq;
 import ru.gmm.demo.service.TransactionApiService;
@@ -20,28 +20,30 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class TransactionController implements TransactionApi {
+public class TransactionApiController implements TransactionApi {
     private final TransactionApiService transactionApiService;
     private final TransactionMapper transactionMapper;
 
     @Override
-    public ResponseEntity<TransactionRegistrationRs> createTransaction(final TransactionRegistrationRq transactionRegistrationRq) {
-        final TransactionEntity transactionEntity = transactionMapper.transactionUpdateRq(transactionRegistrationRq);
-        transactionApiService.createTransaction(transactionEntity);
-        final TransactionRegistrationRs transactionRegistrationRs = transactionMapper.mapToTransactionRegistrationRs(transactionEntity);
+    public ResponseEntity<CreateTransactionRs> createTransaction(final CreateTransactionRq request) {
+        final TransactionEntity transactionEntity = transactionApiService.createTransaction(request);
+        final CreateTransactionRs transactionRegistrationRs = transactionMapper.mapToTransactionRegistrationRs(transactionEntity);
         return ResponseEntity.ok(transactionRegistrationRs);
     }
 
     @Override
     public ResponseEntity<List<TransactionRs>> getAllTransaction() {
-        final List<TransactionRs> transactionRs = transactionApiService.getAll().stream().map(transactionMapper::mapToTransactionRs).toList();
+        final List<TransactionRs> transactionRs = transactionApiService.getAll()
+            .stream()
+            .map(transactionMapper::toTransactionRs)
+            .toList();
         return ResponseEntity.ok(transactionRs);
     }
 
     @Override
     public ResponseEntity<TransactionRs> getTransactionById(final String id) {
         final TransactionEntity transactionEntity = transactionApiService.findById(id);
-        final TransactionRs transactionRs = transactionMapper.mapToTransactionRs(transactionEntity);
+        final TransactionRs transactionRs = transactionMapper.toTransactionRs(transactionEntity);
         return ResponseEntity.ok(transactionRs);
     }
 

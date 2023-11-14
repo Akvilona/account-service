@@ -1,6 +1,6 @@
 get:
   tags:
-    - Transaction
+    - transaction
   summary: Get all Transaction
   operationId: getAllTransaction
   responses:
@@ -16,7 +16,7 @@ get:
         application/json: { }
 post:
   tags:
-    - Transaction
+    - transaction
   summary: Create Transaction
   description: Create Transaction functionality
   operationId: createTransaction
@@ -25,7 +25,7 @@ post:
     content:
       '*/*':
         schema:
-          $ref: '../schemas/transaction/TransactionRegistrationRq.yml'
+          $ref: '../schemas/transaction/CreateTransactionRq.yml'
     required: true
   responses:
     200:
@@ -33,7 +33,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../schemas/transaction/TransactionRegistrationRs.yml'
+            $ref: '../schemas/transaction/CreateTransactionRs.yml'
     404:
       description: Transaction not found
       content:

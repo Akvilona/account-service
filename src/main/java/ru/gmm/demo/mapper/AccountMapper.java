@@ -17,21 +17,21 @@ import java.util.Random;
 public class AccountMapper {
     public static final Random RANDOM = new Random();
 
-    public AccountEntity accUpdateRq(final AccountRegistrationRq accRegistrationRq) {
+    public AccountEntity toAccountEntity(final AccountRegistrationRq accRegistrationRq) {
         return AccountEntity.builder()
             .id(RANDOM.nextLong())
-            .account(accRegistrationRq.getAccount())
+            .number(accRegistrationRq.getAccount())
             .sum(accRegistrationRq.getSum())
             .build();
     }
 
-    public AccountEntity accUpdateRq(final AccountEntity accountEntity, final AccountUpdateRq accountUpdateRq) {
-        accountEntity.setAccount(accountUpdateRq.getAccount());
+    public AccountEntity toAccountEntity(final AccountEntity accountEntity, final AccountUpdateRq accountUpdateRq) {
+        accountEntity.setNumber(accountUpdateRq.getAccount());
         accountEntity.setSum(accountUpdateRq.getSum());
         return accountEntity;
     }
 
-    public AccountRegistrationRs mapToAccRegistrationRs(final AccountEntity accountEntity) {
+    public AccountRegistrationRs toAccountRegistrationRs(final AccountEntity accountEntity) {
         return AccountRegistrationRs.builder()
             .id(String.valueOf(accountEntity.getId()))
             .sum(accountEntity.getSum())
@@ -41,14 +41,14 @@ public class AccountMapper {
     public AccountRs mapToAccRs(final AccountEntity accountEntity) {
         return AccountRs.builder()
             .id(String.valueOf(accountEntity.getId()))
-            .account(accountEntity.getAccount())
+            .account(accountEntity.getNumber())
             .sum(accountEntity.getSum())
             .build();
     }
 
     public AccountUpdateRq mapToAccUpdateRq(final AccountEntity accountEntity) {
         return AccountUpdateRq.builder()
-            .account(accountEntity.getAccount())
+            .account(accountEntity.getNumber())
             .sum(accountEntity.getSum())
             .build();
     }

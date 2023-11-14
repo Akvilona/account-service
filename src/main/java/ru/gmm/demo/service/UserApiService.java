@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.gmm.demo.mapper.UserMapper;
 import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.model.api.UserUpdateRq;
-import ru.gmm.demo.repository.id.UserRepository;
+import ru.gmm.demo.repository.UserRepository;
 
 import java.util.List;
 

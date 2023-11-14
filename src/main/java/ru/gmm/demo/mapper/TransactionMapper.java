@@ -5,9 +5,10 @@
 package ru.gmm.demo.mapper;
 
 import org.springframework.stereotype.Component;
+import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.TransactionEntity;
-import ru.gmm.demo.model.api.TransactionRegistrationRq;
-import ru.gmm.demo.model.api.TransactionRegistrationRs;
+import ru.gmm.demo.model.api.CreateTransactionRq;
+import ru.gmm.demo.model.api.CreateTransactionRs;
 import ru.gmm.demo.model.api.TransactionRs;
 import ru.gmm.demo.model.api.TransactionUpdateRq;
 import ru.gmm.demo.model.enums.TransactionStatus;
@@ -18,53 +19,53 @@ import java.util.Random;
 public class TransactionMapper {
     public static final Random RANDOM = new Random();
 
-    public TransactionEntity transactionUpdateRq(final TransactionRegistrationRq transactionRegistrationRq) {
+    public TransactionEntity toTransactionEntity(final CreateTransactionRq createTransactionRq,
+                                                 final AccountEntity accountFrom,
+                                                 final AccountEntity accountTo) {
         return TransactionEntity.builder()
             .id(RANDOM.nextLong())
-            .accountFrom(transactionRegistrationRq.getAccountFrom())
-            .accountTo(transactionRegistrationRq.getAccountTo())
-            .sum(transactionRegistrationRq.getSum())
-            .status(TransactionStatus.valueOf(transactionRegistrationRq.getStatus()))
-            .description(transactionRegistrationRq.getDescription())
+            .sum(createTransactionRq.getSum())
+            .status(TransactionStatus.valueOf(createTransactionRq.getStatus().toString()))
+            .accountFrom(accountFrom)
+            .accountTo(accountTo)
+            .description(createTransactionRq.getDescription())
             .build();
     }
 
-    public TransactionEntity transactionUpdateRq(final TransactionEntity transactionEntity, final TransactionUpdateRq transactionUpdateRq) {
-        transactionEntity.setAccountFrom(transactionUpdateRq.getAccountFrom());
-        transactionEntity.setAccountTo(transactionUpdateRq.getAccountTo());
+    public TransactionEntity toTransactionEntity(final TransactionEntity transactionEntity, final TransactionUpdateRq transactionUpdateRq) {
         transactionEntity.setSum(transactionUpdateRq.getSum());
         transactionEntity.setStatus(TransactionStatus.valueOf(transactionUpdateRq.getStatus()));
         transactionEntity.setDescription(transactionUpdateRq.getDescription());
         return transactionEntity;
     }
 
-    public TransactionRegistrationRs mapToTransactionRegistrationRs(final TransactionEntity transactionEntity) {
-        return TransactionRegistrationRs.builder()
+    public CreateTransactionRs mapToTransactionRegistrationRs(final TransactionEntity transactionEntity) {
+        return CreateTransactionRs.builder()
             .id(String.valueOf(transactionEntity.getId()))
-            .accountFrom(transactionEntity.getAccountFrom())
-            .accountTo(transactionEntity.getAccountTo())
             .sum(transactionEntity.getSum())
             .status(String.valueOf(transactionEntity.getStatus()))
             .description(transactionEntity.getDescription())
             .build();
     }
 
-    public TransactionRs mapToTransactionRs(final TransactionEntity transactionEntity) {
+    public TransactionRs toTransactionRs(final TransactionEntity transactionEntity) {
         return TransactionRs.builder()
             .id(String.valueOf(transactionEntity.getId()))
-            .accountFrom(transactionEntity.getAccountFrom())
-            .accountTo(transactionEntity.getAccountTo())
+            .accountFrom(transactionEntity.getAccountFrom().getNumber())
+            .accountTo(transactionEntity.getAccountTo() != null
+                       ? transactionEntity.getAccountTo().getNumber()
+                       : null)
             .sum(transactionEntity.getSum())
             .status(String.valueOf(transactionEntity.getStatus()))
             .description(transactionEntity.getDescription())
+            .createDateTime(transactionEntity.getAudit().getCreateDateTime().toString())
+            .updateDateTime(transactionEntity.getAudit().getUpdateDateTime().toString())
             .build();
     }
 
     public TransactionUpdateRq mapToTransactionUpdateRq(final TransactionEntity transactionEntity) {
         return TransactionUpdateRq.builder()
             .id(String.valueOf(transactionEntity.getId()))
-            .accountFrom(transactionEntity.getAccountFrom())
-            .accountTo(transactionEntity.getAccountTo())
             .sum(transactionEntity.getSum())
             .status(String.valueOf(transactionEntity.getStatus()))
             .description(transactionEntity.getDescription())

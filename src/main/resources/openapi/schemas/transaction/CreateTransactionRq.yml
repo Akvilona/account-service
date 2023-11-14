@@ -16,7 +16,11 @@ properties:
     example: 12345,99
   status:
     type: string
-    example: TRANSFER; WITHDRAWAL; DEPOSIT.
+    enum:
+      - TRANSFER
+      - WITHDRAWAL
+      - DEPOSIT
+    example: TRANSFER
   description:
     type: string
     example: any comment

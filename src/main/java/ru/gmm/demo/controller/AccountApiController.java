@@ -26,9 +26,9 @@ public class AccountApiController implements AccountApi {
 
     @Override
     public ResponseEntity<AccountRegistrationRs> createAccount(final AccountRegistrationRq accRegistrationRq) {
-        final AccountEntity accountEntity = accountMapper.accUpdateRq(accRegistrationRq);
-        accountApiService.createAcc(accountEntity);
-        final AccountRegistrationRs accRegistrationRs = accountMapper.mapToAccRegistrationRs(accountEntity);
+        final AccountEntity accountEntity = accountMapper.toAccountEntity(accRegistrationRq);
+        accountApiService.createAccount(accountEntity);
+        final AccountRegistrationRs accRegistrationRs = accountMapper.toAccountRegistrationRs(accountEntity);
         return ResponseEntity.ok(accRegistrationRs);
     }
 
@@ -49,7 +49,7 @@ public class AccountApiController implements AccountApi {
 
     @Override
     public ResponseEntity<AccountUpdateRq> updateAccount(final String id, final AccountUpdateRq accUpdateRq) {
-        final AccountEntity accountEntity = accountApiService.updateAcc(id, accUpdateRq);
+        final AccountEntity accountEntity = accountApiService.updateAccount(id, accUpdateRq);
         final AccountUpdateRq updateRq = accountMapper.mapToAccUpdateRq(accountEntity);
         return ResponseEntity.ok(updateRq);
     }

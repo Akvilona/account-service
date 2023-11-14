@@ -1,4 +1,26 @@
 openapi: 3.0.2
+
+components:
+  schemas:
+
+    UserRs: { $ref: "./schemas/user/UserRs.yml" }
+    UserRsList: { $ref: "./schemas/user/UserRsList.yml" }
+    UserRegistrationRq: { $ref: "./schemas/user/UserRegistrationRq.yml" }
+    UserRegistrationRs: { $ref: "./schemas/user/UserRegistrationRs.yml" }
+    UserUpdateRq: { $ref: "./schemas/user/UserUpdateRq.yml" }
+
+    AccountRs: { $ref: "./schemas/account/AccountRs.yml" }
+    AccountRsList: { $ref: "./schemas/account/AccountRsList.yml" }
+    AccountUpdateRq: { $ref: "./schemas/account/AccountUpdateRq.yml" }
+    AccountRegistrationRq: { $ref: "./schemas/account/AccountRegistrationRq.yml" }
+    AccountRegistrationRs: { $ref: "./schemas/account/AccountRegistrationRs.yml" }
+
+    TransactionRs: { $ref: "./schemas/transaction/TransactionRs.yml" }
+    TransactionRsList: { $ref: "./schemas/transaction/TransactionRsList.yml" }
+    TransactionRegistrationRq: { $ref: "./schemas/transaction/CreateTransactionRq.yml" }
+    TransactionRegistrationRs: { $ref: "./schemas/transaction/CreateTransactionRs.yml" }
+    TransactionUpdateRq: { $ref: "./schemas/transaction/TransactionUpdateRq.yml" }
+
 info:
   title: demo user app
   description: "demo user+account app description"
@@ -45,3 +67,5 @@ paths:
   /api/transaction/{id}:
     $ref: "./paths/transaction_id.yml"
 
+# for build full openapi file:
+# swagger-cli bundle openapi.yml --outfile _build/openapi.yaml --type yaml

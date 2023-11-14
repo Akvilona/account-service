@@ -19,8 +19,8 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 import ru.gmm.demo.model.enums.TransactionStatus;
+import ru.gmm.demo.model.support.Audit;
 import ru.gmm.demo.model.support.BaseEntity;
-import ru.gmm.demo.model.support.CDTEntity;
 
 import java.math.BigDecimal;
 
@@ -38,15 +38,9 @@ import java.math.BigDecimal;
 public class TransactionEntity extends BaseEntity {
 
     @Embedded
-    private CDTEntity cdtEntity;
+    private Audit audit;
 
-    @Column(name = "accountFrom", nullable = false, updatable = false)
-    private String accountFrom;
-
-    @Column(name = "accountTo", nullable = false, updatable = false)
-    private String accountTo;
-
-    @Column(name = "sum", nullable = false, updatable = true)
+    @Column(name = "sum", nullable = false)
     private BigDecimal sum;
 
     //типы транзакции: депозит, снятие/зачисление, перевод
@@ -54,16 +48,16 @@ public class TransactionEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 
-    @Column(name = "description", nullable = true)
+    @Column(name = "description")
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_entity_id_from", foreignKey = @ForeignKey(name = "fk_account_entity_id_from"))
+    @JoinColumn(name = "account_from_id", foreignKey = @ForeignKey(name = "fk_account_from_id_accounts"))
     @ToString.Exclude
-    private AccountEntity accountEntityIdFrom;
+    private AccountEntity accountFrom;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_entity_id_to", foreignKey = @ForeignKey(name = "fk_account_entity_id_to"))
+    @JoinColumn(name = "account_to_id", foreignKey = @ForeignKey(name = "fk_account_to_id_accounts"))
     @ToString.Exclude
-    private AccountEntity accountEntityIdTo;
+    private AccountEntity accountTo;
 }

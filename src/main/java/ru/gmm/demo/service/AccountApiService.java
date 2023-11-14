@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.gmm.demo.mapper.AccountMapper;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.api.AccountUpdateRq;
-import ru.gmm.demo.repository.id.AccRepository;
+import ru.gmm.demo.repository.AccountRepository;
 
 import java.util.List;
 
@@ -16,31 +16,31 @@ import java.util.List;
 @Service
 @Slf4j
 public class AccountApiService {
-    private final AccRepository accRepository;
+    private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
 
-    public void createAcc(final AccountEntity accountEntity) {
-        accRepository.save(accountEntity);
+    public void createAccount(final AccountEntity accountEntity) {
+        accountRepository.save(accountEntity);
     }
 
     public List<AccountEntity> getAll() {
-        return accRepository.findAll();
+        return accountRepository.findAll();
     }
 
     public AccountEntity findById(final String id) {
-        return accRepository.findById(Long.valueOf(id))
+        return accountRepository.findById(Long.valueOf(id))
             .orElseThrow();
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public AccountEntity updateAcc(final String id, final AccountUpdateRq accountUpdateRq) {
-        final AccountEntity acc = accRepository.findById(Long.parseLong(id))
+    public AccountEntity updateAccount(final String id, final AccountUpdateRq accountUpdateRq) {
+        final AccountEntity acc = accountRepository.findById(Long.parseLong(id))
             .orElseThrow();
 
-        return accountMapper.accUpdateRq(acc, accountUpdateRq);
+        return accountMapper.toAccountEntity(acc, accountUpdateRq);
     }
 
     public void deleteAccById(final long id) {
-        accRepository.deleteById(id);
+        accountRepository.deleteById(id);
     }
 }

@@ -3,11 +3,17 @@ package ru.gmm.demo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+// todo: Доработка метода createTransaction в зависимости от статуса тразакции
+// todo: Если нет юзера то нельзя создавать счет
+// todo: При создании транзакции СНИМАТЬ и НАЧИСЛЯТЬ деньги на счета, проверять достаточность средств
+// todo: возвращать статус аккаунт (Сделать в виде перечисления enum)
+// todo: Сделать end point который будет возращать пользователя и список его аккаунтов (id + номер + статус + сумма)
+// todo: При удалении пользователя удалять все связи каскадно (Сделать мягкое удаление soft deleted)
+
 @SpringBootApplication
 public class DemoApplication {
 
     public static void main(final String[] args) {
-
         SpringApplication.run(DemoApplication.class, args);
     }
 }

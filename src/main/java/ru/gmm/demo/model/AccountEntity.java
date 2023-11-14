@@ -27,8 +27,8 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 import ru.gmm.demo.model.enums.AccountStatus;
+import ru.gmm.demo.model.support.Audit;
 import ru.gmm.demo.model.support.BaseEntity;
-import ru.gmm.demo.model.support.CDTEntity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -48,10 +48,10 @@ import java.util.List;
 public class AccountEntity extends BaseEntity {
 
     @Embedded
-    private CDTEntity cdtEntity;
+    private Audit audit;
 
-    @Column(name = "account", nullable = false, updatable = false)
-    private String account;
+    @Column(name = "number", nullable = false, updatable = false, unique = true)
+    private String number;
 
     @Column(name = "sum", nullable = false)
     private BigDecimal sum;
@@ -65,12 +65,12 @@ public class AccountEntity extends BaseEntity {
     @ToString.Exclude
     private UserEntity user;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountEntityIdFrom")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountFrom")
     @ToString.Exclude
     @Builder.Default
     private List<TransactionEntity> accountsIdFrom = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountEntityIdTo")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountTo")
     @ToString.Exclude
     @Builder.Default
     private List<TransactionEntity> accountsIdTo = new ArrayList<>();
