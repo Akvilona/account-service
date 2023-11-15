@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import ru.gmm.demo.controller.api.UserApi;
 import ru.gmm.demo.mapper.UserMapper;
 import ru.gmm.demo.model.UserEntity;
+import ru.gmm.demo.model.api.UserAccountRs;
 import ru.gmm.demo.model.api.UserRegistrationRq;
 import ru.gmm.demo.model.api.UserRegistrationRs;
 import ru.gmm.demo.model.api.UserRs;
@@ -24,6 +25,7 @@ import java.util.List;
 public class UserApiController implements UserApi {
     private final UserApiService userApiService;
     private final UserMapper userMapper;
+    //private final UserRepository userRepository;
 
     @Override
     public ResponseEntity<UserRegistrationRs> createUser(final UserRegistrationRq userRegistrationRq) {
@@ -61,4 +63,10 @@ public class UserApiController implements UserApi {
         return ResponseEntity.ok(null);
     }
 
+    @Override
+    public ResponseEntity<List<UserAccountRs>> getUserAccounts(final String id) {
+        //Long userId = Long.valueOf(id);
+        //List<UserAccountRs> userAccountRsList /*= userRepository.getUserAccountInfo(userId);*/
+        return null; //ResponseEntity.ok(userAccountRsList);
+        }
 }

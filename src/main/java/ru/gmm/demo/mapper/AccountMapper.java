@@ -54,6 +54,7 @@ public class AccountMapper {
             .id(String.valueOf(accountEntity.getId()))
             .account(accountEntity.getNumber())
             .sum(accountEntity.getSum())
+            .status(AccountRs.StatusEnum.valueOf(accountEntity.getStatus().toString()))
             .build();
     }
 

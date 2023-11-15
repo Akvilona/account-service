@@ -9,6 +9,7 @@ components:
     UserRegistrationRq: { $ref: "./schemas/user/UserRegistrationRq.yml" }
     UserRegistrationRs: { $ref: "./schemas/user/UserRegistrationRs.yml" }
     UserUpdateRq: { $ref: "./schemas/user/UserUpdateRq.yml" }
+    UserAccountRs: { $ref: "./schemas/user/UserAccountRs.yml" }
 
     AccountRs: { $ref: "./schemas/account/AccountRs.yml" }
     AccountRsList: { $ref: "./schemas/account/AccountRsList.yml" }
@@ -59,6 +60,8 @@ paths:
     $ref: "./paths/users.yml"
   /api/users/{id}:
     $ref: "./paths/users_id.yml"
+  /api/users/{id}/accounts:
+    $ref: "./paths/users_id_account.yml"
   /api/account:
     $ref: "./paths/account.yml"
   /api/account/{id}:

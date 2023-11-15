@@ -1,0 +1,712 @@
+openapi: 3.0.2
+components:
+  schemas:
+    UserRs:
+      type: object
+      required:
+        - id
+        - email
+      properties:
+        id:
+          type: string
+          example: 123
+        email:
+          type: string
+          example: example@mail.ru
+        name:
+          type: string
+          example: masha
+        surname:
+          type: string
+          example: ivanov
+    UserRsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/UserRs'
+    UserRegistrationRq:
+      type: object
+      required:
+        - password
+        - email
+      properties:
+        password:
+          type: string
+          example: password
+        email:
+          type: string
+          example: example@mail.ru
+    UserRegistrationRs:
+      type: object
+      required:
+        - id
+        - email
+      properties:
+        id:
+          type: string
+          example: 123
+        email:
+          type: string
+          example: example@mail.ru
+    UserUpdateRq:
+      type: object
+      properties:
+        name:
+          type: string
+          example: vasya
+        surname:
+          type: string
+          example: ivanov
+    UserAccountRs:
+      type: object
+      required:
+        - user_id
+        - user_email
+        - account_id
+        - account_account
+        - account_status
+        - account_sum
+      properties:
+        user_id:
+          type: string
+          example: 123
+        user_email:
+          type: string
+          example: example@mail.ru
+        user_name:
+          type: string
+          example: masha
+        user_surname:
+          type: string
+          example: ivanova
+        account_id:
+          type: string
+          example: 123
+        account_account:
+          type: string
+          example: 12345_fff_12345
+        account_status:
+          type: string
+          enum:
+            - OPENED
+            - CLOSED
+        account_sum:
+          type: number
+          example: 0
+        account_description:
+          type: string
+          example: ivanova masha account
+    AccountRs:
+      type: object
+      required:
+        - id
+        - account
+        - status
+        - sum
+      properties:
+        id:
+          type: string
+          example: 123
+        account:
+          type: string
+          example: 12345_fff_12345
+        status:
+          type: string
+          enum:
+            - OPENED
+            - CLOSED
+        sum:
+          type: number
+          example: masha
+        description:
+          type: string
+          example: ivanov account
+    AccountRsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/AccountRs'
+    AccountUpdateRq:
+      type: object
+      properties:
+        account:
+          type: string
+          example: 12345_fff_12345
+        sum:
+          type: number
+          example: '1234,22'
+        description:
+          type: string
+          example: any comment
+    AccountRegistrationRq:
+      type: object
+      required:
+        - user_id
+        - account
+        - sum
+      properties:
+        user_id:
+          type: number
+          example: 1
+        account:
+          type: string
+          example: 12345_fff_12345
+        sum:
+          type: number
+          example: '12345,99'
+        description:
+          type: string
+          example: any comment
+    AccountRegistrationRs:
+      type: object
+      required:
+        - id
+        - sum
+      properties:
+        id:
+          type: string
+          example: 123
+        sum:
+          type: number
+          example: '12345,22'
+    TransactionRs:
+      type: object
+      required:
+        - id
+        - accountFrom
+        - accountTo
+        - sum
+        - status
+        - createDateTime
+        - updateDateTime
+      properties:
+        id:
+          type: string
+          example: 123
+        accountFrom:
+          type: string
+          example: 12345_fff_12345
+        accountTo:
+          type: string
+          example: 12345_fff_12345
+        sum:
+          type: number
+          example: masha
+        status:
+          type: string
+          example: TRANSFER; WITHDRAWAL; DEPOSIT.
+        createDateTime:
+          type: string
+          example: 2008-05-30T08:20:12.000Z
+        updateDateTime:
+          type: string
+          example: 2008-05-30T08:20:12.000Z
+        description:
+          type: string
+          example: ivanov account
+    TransactionRsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransactionRs'
+    TransactionRegistrationRq:
+      type: object
+      required:
+        - accountFrom
+        - accountTo
+        - sum
+        - status
+      properties:
+        accountFrom:
+          type: string
+          example: 12345_fff_12345
+        accountTo:
+          type: string
+          example: 12345_fff_12345
+        sum:
+          type: number
+          example: '12345,99'
+        status:
+          type: string
+          enum:
+            - TRANSFER
+            - WITHDRAWAL
+            - DEPOSIT
+          example: TRANSFER
+        description:
+          type: string
+          example: any comment
+    TransactionRegistrationRs:
+      type: object
+      required:
+        - id
+        - accountFrom
+        - accountTo
+        - sum
+        - status
+      properties:
+        id:
+          type: string
+          example: 123
+        accountFrom:
+          type: string
+          example: 12345_fff_12345
+        accountTo:
+          type: string
+          example: 12345_fff_12345
+        sum:
+          type: number
+          example: '12345,22'
+        status:
+          type: string
+          example: TRANSFER; WITHDRAWAL; DEPOSIT.
+        description:
+          type: string
+          example: any comment
+    TransactionUpdateRq:
+      type: object
+      required:
+        - id
+        - accountFrom
+        - accountTo
+        - sum
+        - status
+      properties:
+        id:
+          type: string
+          example: 123
+        accountFrom:
+          type: string
+          example: 12345_fff_12345
+        accountTo:
+          type: string
+          example: 12345_fff_12345
+        sum:
+          type: number
+          example: '1234,22'
+        status:
+          type: string
+          example: TRANSFER; WITHDRAWAL; DEPOSIT.
+        description:
+          type: string
+          example: any comment
+info:
+  title: demo user app
+  description: demo user+account app description
+  termsOfService: 'https://editor.swagger.io/ or https://editor-next.swagger.io/'
+  contact:
+    email: example@gmail.com
+    url: 'https://swagger.io/specification/'
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 0.0.1-SNAPSHOT
+externalDocs:
+  description: Find out more about swagger
+  url: 'https://swagger.io/specification/'
+servers:
+  - url: 'http://localhost:8080'
+tags:
+  - name: account
+    description: Operations about account
+    externalDocs:
+      description: Find out more about our store
+      url: 'https://editor-next.swagger.io/'
+  - name: user
+    description: Operations about user
+    externalDocs:
+      description: Find out more about our store
+      url: 'https://editor-next.swagger.io/'
+  - name: transaction
+    description: Operations about Transaction
+    externalDocs:
+      description: Find out more about our store
+      url: 'https://editor-next.swagger.io/'
+paths:
+  /api/users:
+    get:
+      tags:
+        - user
+      summary: Get all users
+      operationId: getAllUsers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRsList'
+        '404':
+          description: User not found
+          content:
+            application/json: {}
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: Create user functionality
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRq'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRegistrationRs'
+        '404':
+          description: User not found
+          content:
+            application/json: {}
+  '/api/users/{id}':
+    get:
+      tags:
+        - user
+      summary: Get user by id
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be fetched. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRs'
+        '404':
+          description: User not found
+          content:
+            application/json: {}
+    delete:
+      summary: delete user by id
+      operationId: deleteUserById
+      tags:
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be delete user. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json: {}
+        '404':
+          description: User not found
+          content:
+            application/json: {}
+    put:
+      tags:
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be update user. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
+      summary: Updated user
+      operationId: updateUser
+      requestBody:
+        description: Updated user object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/UserUpdateRq'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserUpdateRq'
+        '400':
+          description: Invalid user supplied
+          content: {}
+        '404':
+          description: User not found
+          content: {}
+  '/api/users/{id}/accounts':
+    get:
+      tags:
+        - user
+      summary: Get list user accounts by user id
+      operationId: getUserAccounts
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be fetched. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserAccountRs'
+        '404':
+          description: User not found
+          content:
+            application/json: {}
+  /api/account:
+    get:
+      tags:
+        - account
+      summary: Get all account
+      operationId: getAllAccount
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountRsList'
+        '404':
+          description: account not found
+          content:
+            application/json: {}
+    post:
+      tags:
+        - account
+      summary: Create account
+      description: Create account functionality
+      operationId: createAccount
+      requestBody:
+        description: Created account object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/AccountRegistrationRq'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountRegistrationRs'
+        '404':
+          description: account not found
+          content:
+            application/json: {}
+  '/api/account/{id}':
+    get:
+      tags:
+        - account
+      summary: Get account by id
+      operationId: getAccountById
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be fetched. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountRs'
+        '404':
+          description: account not found
+          content:
+            application/json: {}
+    delete:
+      summary: delete account by id
+      operationId: deleteAccountById
+      tags:
+        - account
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be delete acc. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json: {}
+        '404':
+          description: account not found
+          content:
+            application/json: {}
+    put:
+      tags:
+        - account
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be update acc. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
+      summary: Updated account
+      operationId: updateAccount
+      requestBody:
+        description: Updated account object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/AccountUpdateRq'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountUpdateRq'
+        '400':
+          description: Invalid account supplied
+          content: {}
+        '404':
+          description: account not found
+          content: {}
+  /api/transaction:
+    get:
+      tags:
+        - transaction
+      summary: Get all Transaction
+      operationId: getAllTransaction
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRsList'
+        '404':
+          description: Transaction not found
+          content:
+            application/json: {}
+    post:
+      tags:
+        - transaction
+      summary: Create Transaction
+      description: Create Transaction functionality
+      operationId: createTransaction
+      requestBody:
+        description: Created Transaction object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/TransactionRegistrationRq'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRegistrationRs'
+        '404':
+          description: Transaction not found
+          content:
+            application/json: {}
+  '/api/transaction/{id}':
+    get:
+      tags:
+        - transaction
+      summary: Get Transaction by id
+      operationId: getTransactionById
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be fetched. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRs'
+        '404':
+          description: Transaction not found
+          content:
+            application/json: {}
+    delete:
+      summary: delete Transaction by id
+      operationId: deleteTransactionById
+      tags:
+        - transaction
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be delete Transaction. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json: {}
+        '404':
+          description: Transaction not found
+          content:
+            application/json: {}
+    put:
+      tags:
+        - transaction
+      parameters:
+        - name: id
+          in: path
+          description: 'The id that needs to be update Transaction. Use 123 for example. '
+          required: true
+          schema:
+            type: string
+          example: 123
+      summary: Updated Transaction
+      operationId: updateTransaction
+      requestBody:
+        description: Updated Transaction object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/TransactionUpdateRq'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionUpdateRq'
+        '400':
+          description: Invalid Transaction supplied
+          content: {}
+        '404':
+          description: Transaction not found
+          content: {}

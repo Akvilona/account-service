@@ -1,0 +1,26 @@
+get:
+  tags:
+    - user
+  summary: Get list user accounts by user id
+  operationId: getUserAccounts
+  parameters:
+    - name: id
+      in: path
+      description: 'The id that needs to be fetched. Use 123 for example. '
+      required: true
+      schema:
+        type: string
+      example: 123
+  responses:
+    200:
+      description: successful operation
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../schemas/user/UserAccountRs.yml"
+    404:
+      description: User not found
+      content:
+        application/json: { }

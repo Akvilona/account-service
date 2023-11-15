@@ -1,0 +1,39 @@
+type: object
+required:
+  - user_id
+  - user_email
+  - account_id
+  - account_account
+  - account_status
+  - account_sum
+properties:
+  user_id:
+    type: string
+    example: 123
+  user_email:
+    type: string
+    example: example@mail.ru
+  user_name:
+    type: string
+    example: masha
+  user_surname:
+    type: string
+    example: ivanova
+  account_id:
+    type: string
+    example: 123
+  account_account:
+    type: string
+    example: 12345_fff_12345
+  account_status:
+    type: string
+    enum:
+      - OPENED
+      - CLOSED
+  account_sum:
+    type: number
+    example: 0.00
+  account_description:
+    type: string
+    example: ivanova masha account
+

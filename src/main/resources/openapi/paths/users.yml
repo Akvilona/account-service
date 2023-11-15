@@ -14,7 +14,6 @@ get:
       description: User not found
       content:
         application/json: { }
-
 post:
   tags:
     - user
