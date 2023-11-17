@@ -2,7 +2,7 @@ get:
   tags:
     - user
   summary: Get list user accounts by user id
-  operationId: getUserAccounts
+  operationId: findUserAccounts
   parameters:
     - name: id
       in: path
@@ -17,9 +17,7 @@ get:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: "../schemas/user/UserAccountRs.yml"
+            $ref: "../schemas/user/UserAccountRs.yml"
     404:
       description: User not found
       content:

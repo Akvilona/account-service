@@ -68,12 +68,12 @@ public class AccountEntity extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountFrom")
     @ToString.Exclude
     @Builder.Default
-    private List<TransactionEntity> accountsIdFrom = new ArrayList<>();
+    private List<TransactionEntity> accountsFrom = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountTo")
     @ToString.Exclude
     @Builder.Default
-    private List<TransactionEntity> accountsIdTo = new ArrayList<>();
+    private List<TransactionEntity> accountsTo = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

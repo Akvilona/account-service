@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // todo: СДЕЛАНО -> возвращать статус аккаунт (Сделать в виде перечисления enum)
 // todo: Сделать end point который будет возвращать пользователя и список его аккаунтов (id + номер + статус + сумма)
 // todo: При удалении пользователя удалять все связи каскадно (Сделать мягкое удаление soft deleted)
-
+// todo: переписать мапперы с использованием map struct
 @SpringBootApplication
 public class DemoApplication {
 

@@ -11,14 +11,22 @@ properties:
   account:
     type: string
     example: 12345_fff_12345
-  status:
-    type: string
-    enum:
-      - OPENED
-      - CLOSED
   sum:
     type: number
     example: masha
   description:
     type: string
     example: ivanov account
+  status:
+    type: string
+    enum:
+      - OPENED
+      - CLOSED
+  transactionsFrom:
+    type: array
+    items:
+      $ref: "../transaction/TransactionRs.yml"
+  transactionsTo:
+    type: array
+    items:
+      $ref: "../transaction/TransactionRs.yml"

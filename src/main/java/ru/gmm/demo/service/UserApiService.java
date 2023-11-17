@@ -5,8 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.gmm.demo.exception.ErrorCode;
+import ru.gmm.demo.exception.ServiceException;
 import ru.gmm.demo.mapper.UserMapper;
 import ru.gmm.demo.model.UserEntity;
+import ru.gmm.demo.model.api.UserAccountRs;
 import ru.gmm.demo.model.api.UserUpdateRq;
 import ru.gmm.demo.repository.UserRepository;
 
@@ -45,5 +48,12 @@ public class UserApiService {
 
     public void deleteUserById(final Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public UserAccountRs findUserAccountInfo(final String id) {
+        return userRepository.findUserAccountInfo(Long.parseLong(id))
+            .map(userMapper::mapToUserAccountRs)
+            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_002, id));
     }
 }

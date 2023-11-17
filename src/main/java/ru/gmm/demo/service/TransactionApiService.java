@@ -27,21 +27,29 @@ public class TransactionApiService {
     private final AccountRepository accountRepository;
     private final TransactionMapper transactionMapper;
 
+    @Transactional
     public TransactionEntity createTransaction(final CreateTransactionRq createTransactionRq) {
+        return switch (createTransactionRq.getType()) {
+            case TRANSFER -> createTransferTransaction(createTransactionRq);
+            case DEPOSIT, WITHDRAWAL -> throw new IllegalStateException();
+        };
+    }
+
+    private TransactionEntity createTransferTransaction(final CreateTransactionRq createTransactionRq) {
         final AccountEntity accountFrom = accountRepository.findByNumberAndStatus(createTransactionRq.getAccountFrom(), AccountStatus.OPENED)
             .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, createTransactionRq.getAccountFrom()));
+        final BigDecimal transactionSum = createTransactionRq.getSum();
+        final BigDecimal remainingBalance = accountFrom.getSum().subtract(transactionSum);
+
+        if (remainingBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ServiceException(ErrorCode.ERR_CODE_004, accountFrom.getId());
+        }
+
         final AccountEntity accountTo = accountRepository.findByNumberAndStatus(createTransactionRq.getAccountTo(), AccountStatus.OPENED)
             .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, createTransactionRq.getAccountTo()));
-
-        // todo: При создании транзакции СНИМАТЬ и НАЧИСЛЯТЬ деньги на счета, проверять достаточность средств
-        accountFrom.setSum(createTransactionRq.getSum().subtract(createTransactionRq.getSum()));
-        accountTo.setSum(createTransactionRq.getSum().add(createTransactionRq.getSum()));
-        if (accountFrom.getSum().compareTo(BigDecimal.ZERO) < 0) {
-            throw new ServiceException(ErrorCode.ERR_CODE_004, accountFrom.getId());
-        } else {
-            accountRepository.save(accountFrom);
-            accountRepository.save(accountTo);
-        }
+        final BigDecimal newBalance = accountTo.getSum().add(transactionSum);
+        accountFrom.setSum(remainingBalance);
+        accountTo.setSum(newBalance);
 
         final TransactionEntity transactionEntity = transactionMapper.toTransactionEntity(createTransactionRq, accountFrom, accountTo);
         return transactionRepository.save(transactionEntity);

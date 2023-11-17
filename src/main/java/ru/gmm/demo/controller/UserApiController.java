@@ -25,7 +25,6 @@ import java.util.List;
 public class UserApiController implements UserApi {
     private final UserApiService userApiService;
     private final UserMapper userMapper;
-    //private final UserRepository userRepository;
 
     @Override
     public ResponseEntity<UserRegistrationRs> createUser(final UserRegistrationRq userRegistrationRq) {
@@ -64,9 +63,7 @@ public class UserApiController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<List<UserAccountRs>> getUserAccounts(final String id) {
-        //Long userId = Long.valueOf(id);
-        //List<UserAccountRs> userAccountRsList /*= userRepository.getUserAccountInfo(userId);*/
-        return null; //ResponseEntity.ok(userAccountRsList);
-        }
+    public ResponseEntity<UserAccountRs> findUserAccounts(final String id) {
+        return ResponseEntity.ok(userApiService.findUserAccountInfo(id));
+    }
 }

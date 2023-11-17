@@ -4,21 +4,25 @@
 
 package ru.gmm.demo.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Named;
 import ru.gmm.demo.model.AccountEntity;
+import ru.gmm.demo.model.TransactionEntity;
 import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.model.api.AccountRegistrationRq;
 import ru.gmm.demo.model.api.AccountRegistrationRs;
 import ru.gmm.demo.model.api.AccountRs;
 import ru.gmm.demo.model.api.AccountUpdateRq;
+import ru.gmm.demo.model.api.TransactionRs;
 
+import java.util.List;
 import java.util.Random;
 
-@Component
-public class AccountMapper {
-    public static final Random RANDOM = new Random();
+@Mapper(config = MapperConfiguration.class)
+public interface AccountMapper {
+    Random RANDOM = new Random();
 
-    public AccountEntity toAccountEntity(final AccountRegistrationRq accRegistrationRq) {
+    default AccountEntity toAccountEntity(final AccountRegistrationRq accRegistrationRq) {
         return AccountEntity.builder()
             .id(RANDOM.nextLong())
             .number(accRegistrationRq.getAccount())
@@ -26,13 +30,13 @@ public class AccountMapper {
             .build();
     }
 
-    public AccountEntity toAccountEntity(final AccountEntity accountEntity, final AccountUpdateRq accountUpdateRq) {
+    default AccountEntity toAccountEntity(final AccountEntity accountEntity, final AccountUpdateRq accountUpdateRq) {
         accountEntity.setNumber(accountUpdateRq.getAccount());
         accountEntity.setSum(accountUpdateRq.getSum());
         return accountEntity;
     }
 
-    public AccountEntity toAccountEntityAndUserEntity(final AccountEntity accountEntity, final UserEntity userEntity) {
+    default AccountEntity toAccountEntityAndUserEntity(final AccountEntity accountEntity, final UserEntity userEntity) {
         return AccountEntity.builder()
             .id(RANDOM.nextLong())
             .user(userEntity)
@@ -42,23 +46,43 @@ public class AccountMapper {
             .build();
     }
 
-    public AccountRegistrationRs toAccountRegistrationRs(final AccountEntity accountEntity) {
+    default AccountRegistrationRs toAccountRegistrationRs(final AccountEntity accountEntity) {
         return AccountRegistrationRs.builder()
             .id(String.valueOf(accountEntity.getId()))
             .sum(accountEntity.getSum())
             .build();
     }
 
-    public AccountRs mapToAccRs(final AccountEntity accountEntity) {
+    @Named("mapToAccRs")
+    default AccountRs mapToAccRs(final AccountEntity accountEntity) {
+        List<TransactionRs> transactionFromRs = accountEntity.getAccountsFrom().stream()
+            .map(this::mapToTransactionRs)
+            .toList();
+        List<TransactionRs> transactionToRs = accountEntity.getAccountsTo().stream()
+            .map(this::mapToTransactionRs)
+            .toList();
+
         return AccountRs.builder()
             .id(String.valueOf(accountEntity.getId()))
             .account(accountEntity.getNumber())
             .sum(accountEntity.getSum())
+            .transactionsFrom(transactionFromRs)
+            .transactionsTo(transactionToRs)
             .status(AccountRs.StatusEnum.valueOf(accountEntity.getStatus().toString()))
             .build();
     }
 
-    public AccountUpdateRq mapToAccUpdateRq(final AccountEntity accountEntity) {
+    private TransactionRs mapToTransactionRs(final TransactionEntity transaction) {
+        return TransactionRs.builder()
+            .id(String.valueOf(transaction.getId()))
+            .status(String.valueOf(transaction.getType()))
+            .sum(transaction.getSum())
+            .description(transaction.getDescription())
+            .createDateTime(transaction.getAudit().getCreateDateTime().toString())
+            .build();
+    }
+
+    default AccountUpdateRq mapToAccUpdateRq(final AccountEntity accountEntity) {
         return AccountUpdateRq.builder()
             .account(accountEntity.getNumber())
             .sum(accountEntity.getSum())

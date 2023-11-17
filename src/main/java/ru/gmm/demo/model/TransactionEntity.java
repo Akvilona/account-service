@@ -18,7 +18,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
-import ru.gmm.demo.model.enums.TransactionStatus;
+import ru.gmm.demo.model.enums.TransactionType;
 import ru.gmm.demo.model.support.Audit;
 import ru.gmm.demo.model.support.BaseEntity;
 
@@ -46,7 +46,7 @@ public class TransactionEntity extends BaseEntity {
     //типы транзакции: депозит, снятие/зачисление, перевод
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private TransactionStatus status;
+    private TransactionType type;
 
     @Column(name = "description")
     private String description;

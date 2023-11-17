@@ -14,7 +14,7 @@ properties:
   sum:
     type: number
     example: 12345,99
-  status:
+  type:
     type: string
     enum:
       - TRANSFER

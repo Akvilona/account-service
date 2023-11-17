@@ -4,6 +4,6 @@
 
 package ru.gmm.demo.model.enums;
 
-public enum TransactionStatus {
+public enum TransactionType {
     DEPOSIT, WITHDRAWAL, TRANSFER
 }
