@@ -27,28 +27,11 @@ public interface UserMapper {
         userEntity.setSurname(userUpdateRq.getSurname());
     }
 
-    default UserRegistrationRs mapToUserRegistrationRs(final UserEntity userEntity) {
-        return UserRegistrationRs.builder()
-            .id(String.valueOf(userEntity.getId()))
-            .email(userEntity.getEmail())
-            .build();
-    }
+    UserRegistrationRs mapToUserRegistrationRs(UserEntity userEntity);
 
-    default UserRs mapToUserRs(final UserEntity userEntity) {
-        return UserRs.builder()
-            .id(String.valueOf(userEntity.getId()))
-            .email(userEntity.getEmail())
-            .name(userEntity.getName())
-            .surname(userEntity.getSurname())
-            .build();
-    }
+    UserRs mapToUserRs(UserEntity userEntity);
 
-    default UserUpdateRq mapToUserUpdateRq(final UserEntity userEntity) {
-        return UserUpdateRq.builder()
-            .name(userEntity.getName())
-            .surname(userEntity.getSurname())
-            .build();
-    }
+    UserUpdateRq mapToUserUpdateRq(UserEntity userEntity);
 
     UserAccountRs mapToUserAccountRs(UserEntity userEntity);
 }
