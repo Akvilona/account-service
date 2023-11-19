@@ -1,11 +1,10 @@
-/**
- * Создал Андрей Антонов 11/1/2023 9:03 AM.
- **/
-
 package ru.gmm.demo.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.Named;
+import org.springframework.stereotype.Component;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.TransactionEntity;
 import ru.gmm.demo.model.UserEntity;
@@ -18,40 +17,41 @@ import ru.gmm.demo.model.api.TransactionRs;
 import java.util.List;
 import java.util.Random;
 
+@Component
 @Mapper(config = MapperConfiguration.class)
 public interface AccountMapper {
     Random RANDOM = new Random();
 
-    default AccountEntity toAccountEntity(final AccountRegistrationRq accRegistrationRq) {
-        return AccountEntity.builder()
-            .id(RANDOM.nextLong())
-            .number(accRegistrationRq.getAccount())
-            .sum(accRegistrationRq.getSum())
-            .build();
-    }
 
-    default AccountEntity toAccountEntity(final AccountEntity accountEntity, final AccountUpdateRq accountUpdateRq) {
-        accountEntity.setNumber(accountUpdateRq.getAccount());
-        accountEntity.setSum(accountUpdateRq.getSum());
-        return accountEntity;
-    }
+    @Mappings({
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "number", source = "accRegistrationRq.account"),
+        @Mapping(target = "sum", source = "accRegistrationRq.sum")
+    })
+    AccountEntity toAccountEntity(AccountRegistrationRq accRegistrationRq);
 
-    default AccountEntity toAccountEntityAndUserEntity(final AccountEntity accountEntity, final UserEntity userEntity) {
-        return AccountEntity.builder()
-            .id(RANDOM.nextLong())
-            .user(userEntity)
-            .number(accountEntity.getNumber())
-            .status(accountEntity.getStatus())
-            .sum(accountEntity.getSum())
-            .build();
-    }
+    @Mappings({
+        @Mapping(target = "number", source = "accountUpdateRq.account"),
+        @Mapping(target = "sum", source = "accountUpdateRq.sum")
+    })
+    AccountEntity toAccountEntity(AccountEntity accountEntity, AccountUpdateRq accountUpdateRq);
 
-    default AccountRegistrationRs toAccountRegistrationRs(final AccountEntity accountEntity) {
-        return AccountRegistrationRs.builder()
-            .id(String.valueOf(accountEntity.getId()))
-            .sum(accountEntity.getSum())
-            .build();
-    }
+    @Mappings({
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "user", source = "userEntity"),
+        @Mapping(target = "number", source = "accountEntity.number"),
+        @Mapping(target = "status", source = "accountEntity.status"),
+        @Mapping(target = "sum", source = "accountEntity.sum"),
+        @Mapping(target = "audit.createDateTime", source = "userEntity.audit.createDateTime"),
+        @Mapping(target = "audit.updateDateTime", source = "userEntity.audit.updateDateTime")
+    })
+    AccountEntity toAccountEntityAndUserEntity(AccountEntity accountEntity, UserEntity userEntity);
+
+    @Mappings({
+        @Mapping(target = "id", source = "accountEntity.id"),
+        @Mapping(target = "sum", source = "accountEntity.sum")
+    })
+    AccountRegistrationRs toAccountRegistrationRs(AccountEntity accountEntity);
 
     @Named("mapToAccRs")
     default AccountRs mapToAccRs(final AccountEntity accountEntity) {
@@ -82,10 +82,9 @@ public interface AccountMapper {
             .build();
     }
 
-    default AccountUpdateRq mapToAccUpdateRq(final AccountEntity accountEntity) {
-        return AccountUpdateRq.builder()
-            .account(accountEntity.getNumber())
-            .sum(accountEntity.getSum())
-            .build();
-    }
+    @Mappings({
+        @Mapping(target = "account", source = "accountEntity.number"),
+        @Mapping(target = "sum", source = "accountEntity.sum")
+    })
+    AccountUpdateRq mapToAccUpdateRq(AccountEntity accountEntity);
 }
