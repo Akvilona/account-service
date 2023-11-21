@@ -5,7 +5,8 @@ required:
   - sum
 properties:
   user_id:
-    type: number
+    type: integer
+    format: int64
     example: 1
   account:
     type: string

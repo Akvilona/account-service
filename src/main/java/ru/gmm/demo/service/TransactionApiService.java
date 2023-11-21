@@ -68,7 +68,9 @@ public class TransactionApiService {
         final TransactionEntity transactionEntity = transactionRepository.findById(Long.parseLong(id))
             .orElseThrow();
 
-        return transactionMapper.toTransactionEntity(transactionEntity, transactionUpdateRq);
+        transactionMapper.toTransactionEntity(transactionEntity, transactionUpdateRq);
+
+        return transactionEntity;
     }
 
     public void deleteTransactionById(final Long id) {

@@ -4,75 +4,62 @@
 
 package ru.gmm.demo.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.TransactionEntity;
 import ru.gmm.demo.model.api.CreateTransactionRq;
 import ru.gmm.demo.model.api.CreateTransactionRs;
 import ru.gmm.demo.model.api.TransactionRs;
 import ru.gmm.demo.model.api.TransactionUpdateRq;
-import ru.gmm.demo.model.enums.TransactionType;
 
 import java.util.Random;
 
-@Component
-public class TransactionMapper {
-    public static final Random RANDOM = new Random();
+@Mapper(config = MapperConfiguration.class)
+public interface TransactionMapper {
+    Random RANDOM = new Random();
 
-    public TransactionEntity toTransactionEntity(final CreateTransactionRq createTransactionRq,
-                                                 final AccountEntity accountFrom,
-                                                 final AccountEntity accountTo) {
-        return TransactionEntity.builder()
-            .id(RANDOM.nextLong())
-            .sum(createTransactionRq.getSum())
-            .type(TransactionType.valueOf(createTransactionRq.getType().toString()))
-            .accountFrom(accountFrom)
-            .accountTo(accountTo)
-            .description(createTransactionRq.getDescription())
-            .build();
-    }
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", expression = "java( RANDOM.nextLong() )")
+    @Mapping(target = "sum", source = "sum")
+    @Mapping(target = "type", source = "type")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "accountFrom", source = "accountFrom")
+    @Mapping(target = "accountTo", source = "accountTo")
+    TransactionEntity toTransactionEntity(CreateTransactionRq createTransactionRq,
+                                          AccountEntity accountFrom,
+                                          AccountEntity accountTo);
 
-    public TransactionEntity toTransactionEntity(final TransactionEntity transactionEntity, final TransactionUpdateRq transactionUpdateRq) {
-        transactionEntity.setSum(transactionUpdateRq.getSum());
-        transactionEntity.setType(TransactionType.valueOf(transactionUpdateRq.getStatus()));
-        transactionEntity.setDescription(transactionUpdateRq.getDescription());
-        return transactionEntity;
-    }
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "sum", source = "sum")
+    @Mapping(target = "type", source = "status")
+    @Mapping(target = "description", source = "description")
+    void toTransactionEntity(@MappingTarget TransactionEntity transactionEntity, TransactionUpdateRq request);
 
-    public CreateTransactionRs mapToTransactionRegistrationRs(final TransactionEntity transactionEntity) {
-        return CreateTransactionRs.builder()
-            .id(String.valueOf(transactionEntity.getId()))
-            .sum(transactionEntity.getSum())
-            .status(String.valueOf(transactionEntity.getType()))
-            .description(transactionEntity.getDescription())
-            .build();
-    }
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "sum", source = "sum")
+    @Mapping(target = "status", source = "type")
+    @Mapping(target = "description", source = "description")
+    CreateTransactionRs toCreateTransactionRs(final TransactionEntity transactionEntity);
 
-    public TransactionRs toTransactionRs(final TransactionEntity transactionEntity) {
-        return TransactionRs.builder()
-            .id(String.valueOf(transactionEntity.getId()))
-            .accountFrom(transactionEntity.getAccountFrom() != null
-                         ? transactionEntity.getAccountFrom().getNumber()
-                         : null)
-            .accountTo(transactionEntity.getAccountTo() != null
-                       ? transactionEntity.getAccountTo().getNumber()
-                       : null)
-            .sum(transactionEntity.getSum())
-            .status(transactionEntity.getAccountFrom() != null || transactionEntity.getAccountTo() != null
-                    ? String.valueOf(TransactionType.WITHDRAWAL)
-                    : String.valueOf(transactionEntity.getType()))
-            .description(transactionEntity.getDescription())
-            .createDateTime(transactionEntity.getAudit().getCreateDateTime().toString())
-            .updateDateTime(transactionEntity.getAudit().getUpdateDateTime().toString())
-            .build();
-    }
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "status", source = "type")
+    @Mapping(target = "sum", source = "sum")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "accountFrom", source = "accountFrom.number")
+    @Mapping(target = "accountTo", source = "accountTo.number")
+    @Mapping(target = "createDateTime", source = "audit.createDateTime")
+    @Mapping(target = "updateDateTime", source = "audit.updateDateTime")
+    TransactionRs toTransactionRs(TransactionEntity transaction);
 
-    public TransactionUpdateRq mapToTransactionUpdateRq(final TransactionEntity transactionEntity) {
-        return TransactionUpdateRq.builder()
-            .id(String.valueOf(transactionEntity.getId()))
-            .sum(transactionEntity.getSum())
-            .status(String.valueOf(transactionEntity.getType()))
-            .description(transactionEntity.getDescription())
-            .build();
-    }
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "sum", source = "sum")
+    @Mapping(target = "status", source = "type")
+    @Mapping(target = "description", source = "description")
+    TransactionUpdateRq toTransactionUpdateRq(final TransactionEntity transactionEntity);
 }

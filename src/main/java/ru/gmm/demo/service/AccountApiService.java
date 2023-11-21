@@ -23,11 +23,12 @@ public class AccountApiService {
     private final AccountMapper accountMapper;
     private final UserRepository userRepository;
 
-    public void createAccount(final AccountEntity accountEntity, final AccountRegistrationRq accRegistrationRq) {
+    public AccountEntity createAccount(final AccountRegistrationRq request) {
+        final UserEntity userEntity = userRepository.findById(request.getUserId())
+            .orElseThrow();
 
-        final UserEntity userEntity = userRepository.findById(accRegistrationRq.getUserId().longValue()).orElseThrow();
-        final AccountEntity account = accountMapper.toAccountEntityAndUserEntity(accountEntity, userEntity);
-        accountRepository.save(account);
+        final AccountEntity account = accountMapper.toAccountEntityAndUserEntity(request, userEntity);
+        return accountRepository.save(account);
     }
 
     public List<AccountEntity> getAll() {
@@ -44,7 +45,8 @@ public class AccountApiService {
         final AccountEntity acc = accountRepository.findById(Long.parseLong(id))
             .orElseThrow();
 
-        return accountMapper.toAccountEntity(acc, accountUpdateRq);
+        accountMapper.updateAccountEntity(acc, accountUpdateRq);
+        return acc;
     }
 
     public void deleteAccById(final long id) {

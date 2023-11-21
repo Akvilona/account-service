@@ -25,17 +25,16 @@ public class AccountApiController implements AccountApi {
     private final AccountMapper accountMapper;
 
     @Override
-    public ResponseEntity<AccountRegistrationRs> createAccount(final AccountRegistrationRq accRegistrationRq) {
-        final AccountEntity accountEntity = accountMapper.toAccountEntity(accRegistrationRq);
-        accountApiService.createAccount(accountEntity, accRegistrationRq);
-        final AccountRegistrationRs accRegistrationRs = accountMapper.toAccountRegistrationRs(accountEntity);
+    public ResponseEntity<AccountRegistrationRs> createAccount(final AccountRegistrationRq request) {
+        final AccountEntity account = accountApiService.createAccount(request);
+        final AccountRegistrationRs accRegistrationRs = accountMapper.toAccountRegistrationRs(account);
         return ResponseEntity.ok(accRegistrationRs);
     }
 
     @Override
     public ResponseEntity<List<AccountRs>> getAllAccount() {
         final List<AccountRs> accRsList = accountApiService.getAll().stream()
-            .map(accountMapper::mapToAccRs)
+            .map(accountMapper::toAccountRs)
             .toList();
         return ResponseEntity.ok(accRsList);
     }
@@ -43,15 +42,14 @@ public class AccountApiController implements AccountApi {
     @Override
     public ResponseEntity<AccountRs> getAccountById(final String id) {
         final AccountEntity accountEntity = accountApiService.findById(id);
-        final AccountRs accRs = accountMapper.mapToAccRs(accountEntity);
+        final AccountRs accRs = accountMapper.toAccountRs(accountEntity);
         return ResponseEntity.ok(accRs);
     }
 
     @Override
-    public ResponseEntity<AccountUpdateRq> updateAccount(final String id, final AccountUpdateRq accUpdateRq) {
-        final AccountEntity accountEntity = accountApiService.updateAccount(id, accUpdateRq);
-        final AccountUpdateRq updateRq = accountMapper.mapToAccUpdateRq(accountEntity);
-        return ResponseEntity.ok(updateRq);
+    public ResponseEntity<AccountUpdateRq> updateAccount(final String id, final AccountUpdateRq request) {
+        final AccountEntity accountEntity = accountApiService.updateAccount(id, request);
+        return ResponseEntity.ok(accountMapper.toAccountUpdateRq(accountEntity));
     }
 
     @Override

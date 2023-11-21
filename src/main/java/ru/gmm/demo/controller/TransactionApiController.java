@@ -27,7 +27,7 @@ public class TransactionApiController implements TransactionApi {
     @Override
     public ResponseEntity<CreateTransactionRs> createTransaction(final CreateTransactionRq request) {
         final TransactionEntity transactionEntity = transactionApiService.createTransaction(request);
-        final CreateTransactionRs transactionRegistrationRs = transactionMapper.mapToTransactionRegistrationRs(transactionEntity);
+        final CreateTransactionRs transactionRegistrationRs = transactionMapper.toCreateTransactionRs(transactionEntity);
         return ResponseEntity.ok(transactionRegistrationRs);
     }
 
@@ -50,7 +50,7 @@ public class TransactionApiController implements TransactionApi {
     @Override
     public ResponseEntity<TransactionUpdateRq> updateTransaction(final String id, final TransactionUpdateRq transactionUpdateRq) {
         final TransactionEntity transactionEntity = transactionApiService.updateTransaction(id, transactionUpdateRq);
-        final TransactionUpdateRq updateRq = transactionMapper.mapToTransactionUpdateRq(transactionEntity);
+        final TransactionUpdateRq updateRq = transactionMapper.toTransactionUpdateRq(transactionEntity);
         return ResponseEntity.ok(updateRq);
     }
 
