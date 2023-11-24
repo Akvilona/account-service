@@ -19,8 +19,8 @@ import lombok.experimental.SuperBuilder;
 import ru.gmm.demo.model.support.Audit;
 import ru.gmm.demo.model.support.BaseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -49,6 +49,6 @@ public class UserEntity extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @ToString.Exclude
     @Builder.Default
-    private List<AccountEntity> accounts = new ArrayList<>();
+    private Set<AccountEntity> accounts = new HashSet<>();
 
 }

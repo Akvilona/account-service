@@ -32,7 +32,7 @@ public class AccountApiService {
     }
 
     public List<AccountEntity> getAll() {
-        return accountRepository.findAll();
+        return accountRepository.fetchAll();
     }
 
     public AccountEntity findById(final String id) {

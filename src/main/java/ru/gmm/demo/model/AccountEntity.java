@@ -31,8 +31,8 @@ import ru.gmm.demo.model.support.Audit;
 import ru.gmm.demo.model.support.BaseEntity;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -68,12 +68,12 @@ public class AccountEntity extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountFrom")
     @ToString.Exclude
     @Builder.Default
-    private List<TransactionEntity> transactionsFrom = new ArrayList<>();
+    private Set<TransactionEntity> transactionsFrom = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountTo")
     @ToString.Exclude
     @Builder.Default
-    private List<TransactionEntity> transactionsTo = new ArrayList<>();
+    private Set<TransactionEntity> transactionsTo = new HashSet<>();
 
     @PrePersist
     public void prePersist() {

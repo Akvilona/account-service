@@ -12,7 +12,6 @@ import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.TransactionEntity;
 import ru.gmm.demo.model.api.CreateTransactionRq;
 import ru.gmm.demo.model.api.TransactionUpdateRq;
-import ru.gmm.demo.model.enums.AccountStatus;
 import ru.gmm.demo.repository.AccountRepository;
 import ru.gmm.demo.repository.TransactionRepository;
 
@@ -31,37 +30,57 @@ public class TransactionApiService {
     public TransactionEntity createTransaction(final CreateTransactionRq createTransactionRq) {
         return switch (createTransactionRq.getType()) {
             case TRANSFER -> createTransferTransaction(createTransactionRq);
-            case DEPOSIT, WITHDRAWAL -> throw new IllegalStateException();
+            case DEPOSIT -> createDepositTransaction(createTransactionRq);
+            case WITHDRAWAL -> createWithdrawalTransaction(createTransactionRq);
         };
     }
 
-    private TransactionEntity createTransferTransaction(final CreateTransactionRq createTransactionRq) {
-        final AccountEntity accountFrom = accountRepository.findByNumber(createTransactionRq.getAccountFrom())
-            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, createTransactionRq.getAccountFrom()));
-        final BigDecimal transactionSum = createTransactionRq.getSum();
-        final BigDecimal remainingBalance = accountFrom.getSum().subtract(transactionSum);
+    private TransactionEntity createDepositTransaction(final CreateTransactionRq request) {
+        final AccountEntity accountTo = accountRepository.findOpenedAccountByNumber(request.getAccountTo())
+            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, request.getAccountTo()));
 
+        final BigDecimal transactionSum = request.getSum();
+        accountTo.setSum(accountTo.getSum().add(transactionSum));
+
+        final TransactionEntity transactionEntity = transactionMapper.toTransactionEntity(request, null, accountTo);
+        return transactionRepository.save(transactionEntity);
+    }
+
+    private TransactionEntity createWithdrawalTransaction(final CreateTransactionRq request) {
+        final AccountEntity accountFrom = accountRepository.findOpenedAccountByNumber(request.getAccountFrom())
+            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, request.getAccountTo()));
+
+        final BigDecimal transactionSum = request.getSum();
+        final BigDecimal remainingBalance = accountFrom.getSum().subtract(transactionSum);
         if (remainingBalance.compareTo(BigDecimal.ZERO) < 0) {
             throw new ServiceException(ErrorCode.ERR_CODE_004, accountFrom.getId());
         }
 
-        final AccountEntity accountTo = accountRepository.findByNumber(createTransactionRq.getAccountTo())
-            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, createTransactionRq.getAccountTo()));
+        accountFrom.setSum(remainingBalance);
+
+        final TransactionEntity transactionEntity = transactionMapper.toTransactionEntity(request, null, accountFrom);
+        return transactionRepository.save(transactionEntity);
+    }
+
+    private TransactionEntity createTransferTransaction(final CreateTransactionRq request) {
+        final AccountEntity accountFrom = accountRepository.findOpenedAccountByNumber(request.getAccountFrom())
+            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, request.getAccountFrom()));
+
+        final BigDecimal transactionSum = request.getSum();
+        final BigDecimal remainingBalance = accountFrom.getSum().subtract(transactionSum);
+        if (remainingBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ServiceException(ErrorCode.ERR_CODE_004, accountFrom.getId());
+        }
+
+        final AccountEntity accountTo = accountRepository.findOpenedAccountByNumber(request.getAccountTo())
+            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, request.getAccountTo()));
+
         final BigDecimal newBalance = accountTo.getSum().add(transactionSum);
         accountFrom.setSum(remainingBalance);
         accountTo.setSum(newBalance);
 
-        accountClosed(accountFrom);
-        accountClosed(accountTo);
-
-        final TransactionEntity transactionEntity = transactionMapper.toTransactionEntity(createTransactionRq, accountFrom, accountTo);
+        final TransactionEntity transactionEntity = transactionMapper.toTransactionEntity(request, accountFrom, accountTo);
         return transactionRepository.save(transactionEntity);
-    }
-
-    private static void accountClosed(final AccountEntity accountFrom) {
-        if (accountFrom.getStatus().equals(AccountStatus.CLOSED)) {
-            throw new ServiceException(ErrorCode.ERR_CODE_005, accountFrom.getId());
-        }
     }
 
     public List<TransactionEntity> getAll() {

@@ -1,7 +1,3 @@
-/**
- * Создал Андрей Антонов 10/31/2023 5:35 PM.
- **/
-
 package ru.gmm.demo.controller;
 
 import lombok.RequiredArgsConstructor;
@@ -20,9 +16,12 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+//@RequiredArgsConstructor(onConstructor_ = {@Lazy})
 public class AccountApiController implements AccountApi {
     private final AccountApiService accountApiService;
     private final AccountMapper accountMapper;
+    //    @Lazy
+    //    private final AccountApiController self;
 
     @Override
     public ResponseEntity<AccountRegistrationRs> createAccount(final AccountRegistrationRq request) {
@@ -37,7 +36,16 @@ public class AccountApiController implements AccountApi {
             .map(accountMapper::toAccountRs)
             .toList();
         return ResponseEntity.ok(accRsList);
+        //  return self.getAccountList();
     }
+
+    /*  @Transactional(readOnly = true)
+    public ResponseEntity<List<AccountRs>> getAccountList() {
+        final List<AccountRs> accRsList = accountApiService.getAll().stream()
+            .map(accountMapper::toAccountRs)
+            .toList();
+        return ResponseEntity.ok(accRsList);
+    }*/
 
     @Override
     public ResponseEntity<AccountRs> getAccountById(final String id) {
