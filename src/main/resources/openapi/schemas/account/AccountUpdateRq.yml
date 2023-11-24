@@ -6,6 +6,12 @@ properties:
   sum:
     type: number
     example: 1234,22
+  status:
+    type: string
+    enum:
+      - OPENED
+      - CLOSED
+    example: CLOSED
   description:
     type: string
-    example: any comment
+    example: any comment, for example status can be OPENED

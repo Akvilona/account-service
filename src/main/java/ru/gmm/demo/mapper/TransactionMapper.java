@@ -23,9 +23,9 @@ public interface TransactionMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", expression = "java( RANDOM.nextLong() )")
-    @Mapping(target = "sum", source = "sum")
-    @Mapping(target = "type", source = "type")
-    @Mapping(target = "description", source = "description")
+    @Mapping(target = "sum", source = "createTransactionRq.sum")
+    @Mapping(target = "type", source = "createTransactionRq.type")
+    @Mapping(target = "description", source = "createTransactionRq.description")
     @Mapping(target = "accountFrom", source = "accountFrom")
     @Mapping(target = "accountTo", source = "accountTo")
     TransactionEntity toTransactionEntity(CreateTransactionRq createTransactionRq,
@@ -36,14 +36,14 @@ public interface TransactionMapper {
     @Mapping(target = "sum", source = "sum")
     @Mapping(target = "type", source = "status")
     @Mapping(target = "description", source = "description")
-    void toTransactionEntity(@MappingTarget TransactionEntity transactionEntity, TransactionUpdateRq request);
+    TransactionEntity toTransactionEntity(@MappingTarget TransactionEntity transactionEntity, TransactionUpdateRq request);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     @Mapping(target = "sum", source = "sum")
     @Mapping(target = "status", source = "type")
     @Mapping(target = "description", source = "description")
-    CreateTransactionRs toCreateTransactionRs(final TransactionEntity transactionEntity);
+    CreateTransactionRs toCreateTransactionRs(TransactionEntity transactionEntity);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
@@ -61,5 +61,5 @@ public interface TransactionMapper {
     @Mapping(target = "sum", source = "sum")
     @Mapping(target = "status", source = "type")
     @Mapping(target = "description", source = "description")
-    TransactionUpdateRq toTransactionUpdateRq(final TransactionEntity transactionEntity);
+    TransactionUpdateRq toTransactionUpdateRq(TransactionEntity transactionEntity);
 }

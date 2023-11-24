@@ -36,7 +36,7 @@ public class TransactionApiService {
     }
 
     private TransactionEntity createTransferTransaction(final CreateTransactionRq createTransactionRq) {
-        final AccountEntity accountFrom = accountRepository.findByNumberAndStatus(createTransactionRq.getAccountFrom(), AccountStatus.OPENED)
+        final AccountEntity accountFrom = accountRepository.findByNumber(createTransactionRq.getAccountFrom())
             .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, createTransactionRq.getAccountFrom()));
         final BigDecimal transactionSum = createTransactionRq.getSum();
         final BigDecimal remainingBalance = accountFrom.getSum().subtract(transactionSum);
@@ -45,14 +45,23 @@ public class TransactionApiService {
             throw new ServiceException(ErrorCode.ERR_CODE_004, accountFrom.getId());
         }
 
-        final AccountEntity accountTo = accountRepository.findByNumberAndStatus(createTransactionRq.getAccountTo(), AccountStatus.OPENED)
+        final AccountEntity accountTo = accountRepository.findByNumber(createTransactionRq.getAccountTo())
             .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, createTransactionRq.getAccountTo()));
         final BigDecimal newBalance = accountTo.getSum().add(transactionSum);
         accountFrom.setSum(remainingBalance);
         accountTo.setSum(newBalance);
 
+        accountClosed(accountFrom);
+        accountClosed(accountTo);
+
         final TransactionEntity transactionEntity = transactionMapper.toTransactionEntity(createTransactionRq, accountFrom, accountTo);
         return transactionRepository.save(transactionEntity);
+    }
+
+    private static void accountClosed(final AccountEntity accountFrom) {
+        if (accountFrom.getStatus().equals(AccountStatus.CLOSED)) {
+            throw new ServiceException(ErrorCode.ERR_CODE_005, accountFrom.getId());
+        }
     }
 
     public List<TransactionEntity> getAll() {
@@ -68,9 +77,7 @@ public class TransactionApiService {
         final TransactionEntity transactionEntity = transactionRepository.findById(Long.parseLong(id))
             .orElseThrow();
 
-        transactionMapper.toTransactionEntity(transactionEntity, transactionUpdateRq);
-
-        return transactionEntity;
+        return transactionMapper.toTransactionEntity(transactionEntity, transactionUpdateRq);
     }
 
     public void deleteTransactionById(final Long id) {

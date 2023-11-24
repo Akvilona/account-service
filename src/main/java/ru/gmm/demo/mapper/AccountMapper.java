@@ -25,6 +25,7 @@ public interface AccountMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "number", source = "accountUpdateRq.account")
     @Mapping(target = "sum", source = "accountUpdateRq.sum")
+    @Mapping(target = "status", source = "accountUpdateRq.status")
     void updateAccountEntity(@MappingTarget AccountEntity accountEntity, AccountUpdateRq accountUpdateRq);
 
     @BeanMapping(ignoreByDefault = true)
@@ -51,5 +52,6 @@ public interface AccountMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "account", source = "accountEntity.number")
     @Mapping(target = "sum", source = "accountEntity.sum")
+    @Mapping(target = "status", source = "accountEntity.status")
     AccountUpdateRq toAccountUpdateRq(AccountEntity accountEntity);
 }
