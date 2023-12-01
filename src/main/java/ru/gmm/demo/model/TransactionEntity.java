@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,7 +26,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @Getter
 @Setter
@@ -43,7 +41,6 @@ public class TransactionEntity extends BaseEntity {
     @Column(name = "sum", nullable = false)
     private BigDecimal sum;
 
-    //типы транзакции: депозит, снятие/зачисление, перевод
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private TransactionType type;

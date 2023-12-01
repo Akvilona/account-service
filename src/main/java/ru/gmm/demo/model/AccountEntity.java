@@ -19,7 +19,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,13 +30,12 @@ import ru.gmm.demo.model.support.Audit;
 import ru.gmm.demo.model.support.BaseEntity;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @Getter
 @Setter
@@ -68,12 +66,12 @@ public class AccountEntity extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountFrom")
     @ToString.Exclude
     @Builder.Default
-    private Set<TransactionEntity> transactionsFrom = new HashSet<>();
+    private List<TransactionEntity> transactionsFrom = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "accountTo")
     @ToString.Exclude
     @Builder.Default
-    private Set<TransactionEntity> transactionsTo = new HashSet<>();
+    private List<TransactionEntity> transactionsTo = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

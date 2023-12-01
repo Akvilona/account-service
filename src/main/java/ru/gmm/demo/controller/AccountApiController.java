@@ -32,11 +32,7 @@ public class AccountApiController implements AccountApi {
 
     @Override
     public ResponseEntity<List<AccountRs>> getAllAccount() {
-        final List<AccountRs> accRsList = accountApiService.getAll().stream()
-            .map(accountMapper::toAccountRs)
-            .toList();
-        return ResponseEntity.ok(accRsList);
-        //  return self.getAccountList();
+        return ResponseEntity.ok(accountApiService.getAll());
     }
 
     /*  @Transactional(readOnly = true)

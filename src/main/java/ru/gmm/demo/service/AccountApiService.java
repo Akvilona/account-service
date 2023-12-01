@@ -9,6 +9,7 @@ import ru.gmm.demo.mapper.AccountMapper;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.model.api.AccountRegistrationRq;
+import ru.gmm.demo.model.api.AccountRs;
 import ru.gmm.demo.model.api.AccountUpdateRq;
 import ru.gmm.demo.repository.AccountRepository;
 import ru.gmm.demo.repository.UserRepository;
@@ -31,8 +32,11 @@ public class AccountApiService {
         return accountRepository.save(account);
     }
 
-    public List<AccountEntity> getAll() {
-        return accountRepository.fetchAll();
+    @Transactional(readOnly = true)
+    public List<AccountRs> getAll() {
+        return accountRepository.findAll().stream()
+            .map(accountMapper::toAccountRs)
+            .toList();
     }
 
     public AccountEntity findById(final String id) {
