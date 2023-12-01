@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.gmm.demo.exception.ErrorCode;
+import ru.gmm.demo.exception.ServiceException;
 import ru.gmm.demo.mapper.AccountMapper;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.UserEntity;
@@ -26,7 +28,7 @@ public class AccountApiService {
 
     public AccountEntity createAccount(final AccountRegistrationRq request) {
         final UserEntity userEntity = userRepository.findById(request.getUserId())
-            .orElseThrow();
+            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_006));
 
         final AccountEntity account = accountMapper.toAccountEntityAndUserEntity(request, userEntity);
         return accountRepository.save(account);
