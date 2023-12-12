@@ -10,9 +10,9 @@
     </parent>
 
     <groupId>ru.gmm</groupId>
-    <artifactId>accountservice</artifactId>
+    <artifactId>account-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
+    <name>account-service</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
