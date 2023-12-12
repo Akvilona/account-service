@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.gmm.demo.client.FraudClient;
 import ru.gmm.demo.exception.ErrorCode;
 import ru.gmm.demo.exception.ServiceException;
 import ru.gmm.demo.mapper.UserMapper;
@@ -22,9 +23,14 @@ public class UserApiService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final FraudClient fraudClient;
 
     public void createUser(final UserEntity userEntity) {
-        userRepository.save(userEntity);
+        if (fraudClient.checkFraud(userEntity.getEmail())) {
+            log.info("User with email {} in fraud list!", userEntity.getEmail());
+        } else {
+            userRepository.save(userEntity);
+        }
     }
 
     public List<UserEntity> getAll() {

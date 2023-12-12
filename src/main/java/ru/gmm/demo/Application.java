@@ -14,10 +14,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // todo: Отмена транзакции (при отмене транзакции возвращать деньги на счета)
 
 @SpringBootApplication
-public class DemoApplication {
+public class Application {
 
     public static void main(final String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
 }
