@@ -1,0 +1,37 @@
+get:
+  tags:
+    - Fraud User
+  summary: Check Fraud User by email number
+  operationId: checkFraudUserByEmail
+  parameters:
+    - name: email
+      in: query
+      required: true
+      schema:
+        type: string
+      description: email of the Fraud User
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/user/FraudUser.yml'
+      description: ID, email, number of the Fraud User
+post:
+  tags:
+    - Fraud User
+  summary: Add Fraud User to base
+  operationId: postFraudUserById
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../schemas/user/FraudUser.yml'
+  responses:
+    '200':
+      description: Successful operation
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/user/FraudUser.yml'

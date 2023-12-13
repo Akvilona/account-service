@@ -1,0 +1,15 @@
+delete:
+  tags:
+    - Fraud User
+  summary: Delete Fraud User by email
+  operationId: deleteFraudUserByEmail
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: the email address of the fraudulent user being deleted
+  responses:
+    '200':
+      description: Successful operation

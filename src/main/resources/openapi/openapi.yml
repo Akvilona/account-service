@@ -1,6 +1,9 @@
 openapi: 3.0.2
 # for build full openapi file:
-# swagger-cli bundle openapi.yml --outfile _build/openapi.yaml --type yaml
+# create one file   -> Created C:\Java\account-service\src\main\resources\openapi\openapi.yaml from C:\Java\account-service\src\main\resources\openapi\openapi.yml
+#PS C:\Java\account-service>
+# Swagger Editor    -> https://editor-next.swagger.io/ or https://editor.swagger.io/
+# start the program -> http://localhost:8080/swagger-ui/index.html
 components:
   schemas:
 
@@ -23,10 +26,11 @@ components:
     TransactionRegistrationRs: { $ref: "./schemas/transaction/CreateTransactionRs.yml" }
     TransactionUpdateRq: { $ref: "./schemas/transaction/TransactionUpdateRq.yml" }
 
+    FraudUserList: {$ref: "./schemas/user/FraudUser.yml"}
 info:
   title: demo user app
   description: "demo user+account app description"
-  termsOfService: https://editor.swagger.io/ or https://editor-next.swagger.io/
+  termsOfService: 'https://editor.swagger.io/'
   contact:
     email: example@gmail.com
     url: https://swagger.io/specification/
@@ -55,6 +59,11 @@ tags:
     externalDocs:
       description: Find out more about our store
       url: https://editor-next.swagger.io/
+  - name: Fraud User
+    description: Operations about Fraud user
+    externalDocs:
+      description: Find out more about our store
+      url: https://editor-next.swagger.io/
 paths:
   /api/users:
     $ref: "./paths/users.yml"
@@ -70,3 +79,7 @@ paths:
     $ref: "./paths/transaction.yml"
   /api/transaction/{id}:
     $ref: "./paths/transaction_id.yml"
+  /api/fraudUsers/{id}:
+    $ref: "./paths/fraudUsers_id.yml"
+  /api/fraudUsers:
+    $ref: "./paths/fraudUsers.yml"
