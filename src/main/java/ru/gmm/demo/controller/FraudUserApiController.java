@@ -24,6 +24,6 @@ public class FraudUserApiController implements FraudUserApi {
     @Override
     public ResponseEntity<Void> deleteFraudUserByEmail(final String id) {
         fraudUserService.deleteFraudUserByIdInInFraudService(Long.valueOf(id));
-        return FraudUserApi.super.deleteFraudUserByEmail(id);
+        return ResponseEntity.ok(null);
     }
 }
