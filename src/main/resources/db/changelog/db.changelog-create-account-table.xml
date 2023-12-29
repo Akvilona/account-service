@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="202329121158" author="simakov">
+        <createTable tableName="accounts">
+            <column name="id" type="bigserial">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="create_date_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date_time" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="number" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="sum" type="decimal(12,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_account_users"
+                             referencedTableName="users" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

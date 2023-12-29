@@ -20,12 +20,14 @@ spring:
     properties.hibernate:
       enable_lazy_load_no_trans: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: 'true'
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
 
 logging:
   level:

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="202329121211" author="simakov">
+        <createTable tableName="transactions">
+            <column name="id" type="bigserial">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="create_date_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date_time" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="sum" type="decimal(12,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="varchar">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="account_from_id" type="bigint">
+                <constraints nullable="true" foreignKeyName="fk_account_from_id_accounts"
+                             referencedTableName="accounts" referencedColumnNames="id"/>
+            </column>
+            <column name="account_to_id" type="bigint">
+                <constraints nullable="true" foreignKeyName="fk_account_to_id_accounts"
+                             referencedTableName="accounts" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
