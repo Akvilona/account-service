@@ -28,7 +28,7 @@ public class AccountApiService {
 
     public AccountEntity createAccount(final AccountRegistrationRq request) {
         final UserEntity userEntity = userRepository.findById(request.getUserId())
-            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_006));
+            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_002, request.getUserId()));
 
         final AccountEntity account = accountMapper.toAccountEntityAndUserEntity(request, userEntity);
         return accountRepository.save(account);
