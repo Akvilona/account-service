@@ -23,6 +23,7 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <liquibase-core.version>4.25.1</liquibase-core.version>
         <postgresql.version>1.19.3</postgresql.version>
+        <annotations.version>3.0.1</annotations.version>
     </properties>
 
     <dependencyManagement>
@@ -94,6 +95,12 @@
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <version>${annotations.version}</version>
         </dependency>
     </dependencies>
 

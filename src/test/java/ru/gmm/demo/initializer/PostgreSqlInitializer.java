@@ -28,4 +28,3 @@ public class PostgreSqlInitializer implements ApplicationContextInitializer<Conf
         ).applyTo(context.getEnvironment());
     }
 }
-
