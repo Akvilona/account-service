@@ -13,7 +13,10 @@ import ru.gmm.demo.model.api.UserUpdateRq;
 
 import java.util.Random;
 
-@Mapper(config = MapperConfiguration.class)
+@Mapper(
+    config = MapperConfiguration.class,
+    uses = AccountMapper.class
+)
 public interface UserMapper {
 
     Random RANDOM = new Random();
@@ -35,7 +38,11 @@ public interface UserMapper {
 
     UserUpdateRq mapToUserUpdateRq(UserEntity userEntity);
 
-    // todo: mapToUserAccountRs
     @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "surname", source = "surname")
+    @Mapping(target = "accounts", source = "accounts")
     UserAccountRs mapToUserAccountRs(UserEntity userEntity);
 }

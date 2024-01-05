@@ -7,7 +7,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import ru.gmm.demo.client.FraudClient;
+import ru.gmm.demo.exception.Result;
+import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.UserEntity;
+import ru.gmm.demo.model.api.AccountRs;
+import ru.gmm.demo.model.api.UserAccountRs;
 import ru.gmm.demo.model.api.UserRegistrationRq;
 import ru.gmm.demo.model.api.UserRegistrationRs;
 import ru.gmm.demo.model.api.UserRs;
@@ -16,12 +20,14 @@ import ru.gmm.demo.model.support.BaseEntity;
 import ru.gmm.demo.repository.UserRepository;
 import ru.gmm.demo.support.DatabaseAwareTestBase;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
+@SuppressWarnings({"IllegalMethodCall", "PMD.TooManyMethods", "PMD.JUnitTestsShouldIncludeAssert"})
 class UserApiControllerTest extends DatabaseAwareTestBase {
 
     @Autowired
@@ -67,19 +73,6 @@ class UserApiControllerTest extends DatabaseAwareTestBase {
             .isNotNull();
     }
 
-    private UserRegistrationRs postUser(final UserRegistrationRq request, final int status) {
-        return webTestClient.post()
-            .uri(uriBuilder -> uriBuilder
-                .pathSegment("api", "users")
-                .build())
-            .bodyValue(request)
-            .exchange()
-            .expectStatus().isEqualTo(status)
-            .expectBody(UserRegistrationRs.class)
-            .returnResult()
-            .getResponseBody();
-    }
-
     @Test
     void getAllUsersSuccess() {
         UserEntity userEntity1 = UserEntity.builder()
@@ -116,29 +109,8 @@ class UserApiControllerTest extends DatabaseAwareTestBase {
             );
     }
 
-    private List<UserRs> getAllUsers() {
-        return webTestClient.get()
-            .uri(uriBuilder -> uriBuilder
-                .pathSegment("api", "users")
-                .build())
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(new ParameterizedTypeReference<List<UserRs>>() {
-            })
-            .returnResult()
-            .getResponseBody();
-
-    }
-
     @Test
-    void getUserById() {
-        UserEntity userEntity1 = UserEntity.builder()
-            .id(1L)
-            .name("test1_name")
-            .email("test1@email.com")
-            .surname("test1_surname")
-            .password("test1_password")
-            .build();
+    void getUserByIdShouldWork() {
         UserEntity userEntity2 = UserEntity.builder()
             .id(2L)
             .name("test2_name")
@@ -147,34 +119,27 @@ class UserApiControllerTest extends DatabaseAwareTestBase {
             .password("test2_password")
             .build();
 
-        userRepository.save(userEntity1);
         userRepository.save(userEntity2);
 
-        UserRs userRs = getUserById(userEntity2.getId().toString(), 200);
-
-        assertThat(userRs)
+        assertThat(getUserById(userEntity2.getId().toString(), 200))
             .hasFieldOrPropertyWithValue("id", userEntity2.getId().toString())
             .hasFieldOrPropertyWithValue("name", userEntity2.getName())
             .hasFieldOrPropertyWithValue("email", userEntity2.getEmail())
-            .hasFieldOrPropertyWithValue("surname", userEntity2.getSurname())
-            .isNotNull();
-
-    }
-
-    private UserRs getUserById(final String id, final int status) {
-        return webTestClient.get()
-            .uri(uriBuilder -> uriBuilder
-                .pathSegment("api", "users", id)
-                .build())
-            .exchange()
-            .expectStatus().isEqualTo(status)
-            .expectBody(UserRs.class)
-            .returnResult()
-            .getResponseBody();
+            .hasFieldOrPropertyWithValue("surname", userEntity2.getSurname());
     }
 
     @Test
-    void updateUser() {
+    void getUserByIdShouldReturnErrCode002() {
+        assertThat(getUserByIdError("999", 400))
+            .isEqualTo(Result.builder()
+                .code("ERR.CODE.002")
+                .description("Пользователь с id 999 не найден")
+                .build());
+
+    }
+
+    @Test
+    void updateUserShouldWork() {
         UserEntity userEntity = UserEntity.builder()
             .id(1L)
             .name("test1_name")
@@ -185,16 +150,146 @@ class UserApiControllerTest extends DatabaseAwareTestBase {
 
         userRepository.save(userEntity);
 
-        UserUpdateRq userUpdateRq = new UserUpdateRq("vasya", "ivanov");
+        UserUpdateRq request = UserUpdateRq.builder()
+            .name("vasya")
+            .surname("ivanov")
+            .build();
 
         // Обновление имени и фамилии пользователя
-        UserUpdateRq userUpdateRq1 = updateUser(userEntity.getId().toString(), userUpdateRq, 200);
+        UserUpdateRq response = updateUser(userEntity.getId().toString(), request, 200);
 
         // Проверки на успешное обновление
-        assertThat(userUpdateRq1)
-            .hasFieldOrPropertyWithValue("name", userUpdateRq.getName())
-            .hasFieldOrPropertyWithValue("surname", userUpdateRq.getSurname())
+        assertThat(response)
+            .hasFieldOrPropertyWithValue("name", request.getName())
+            .hasFieldOrPropertyWithValue("surname", request.getSurname())
             .isNotNull();
+    }
+
+    @Test
+    void updateUserShouldReturnErrCode002() {
+        UserUpdateRq request = UserUpdateRq.builder()
+            .name("vasya")
+            .surname("ivanov")
+            .build();
+
+        assertThat(updateUserError("999", request, 400))
+            .isEqualTo(Result.builder()
+                .code("ERR.CODE.002")
+                .description("Пользователь с id 999 не найден")
+                .build());
+    }
+
+    @Test
+    void findUserAccountsShouldWork() {
+        UserEntity userEntity = UserEntity.builder()
+            .id(1L)
+            .name("test1_name")
+            .email("test_email")
+            .surname("test1_surname")
+            .password("test1_password")
+            .build()
+            .withAccount(AccountEntity.builder()
+                .number("123456")
+                .sum(new BigDecimal("1000.00"))
+                .build())
+            .withAccount(AccountEntity.builder()
+                .number("4321")
+                .sum(new BigDecimal("2000.00"))
+                .build());
+
+        userRepository.save(userEntity);
+
+        assertThat(getUserAccountRs(userEntity.getId().toString(), 200))
+            .hasFieldOrPropertyWithValue("id", userEntity.getId().toString())
+            .hasFieldOrPropertyWithValue("name", userEntity.getName())
+            .hasFieldOrPropertyWithValue("email", userEntity.getEmail())
+            .hasFieldOrPropertyWithValue("surname", userEntity.getSurname())
+            .extracting(UserAccountRs::getAccounts)
+            .asList()
+            .hasSize(2)
+            .containsExactlyInAnyOrder(
+                AccountRs.builder()
+                    .id(userEntity.getAccounts().get(0).getId().toString())
+                    .account(userEntity.getAccounts().get(0).getNumber())
+                    .sum(userEntity.getAccounts().get(0).getSum())
+                    .status(AccountRs.StatusEnum.OPENED)
+                    .transactionsFrom(List.of())
+                    .transactionsTo(List.of())
+                    .build(),
+                AccountRs.builder()
+                    .id(userEntity.getAccounts().get(1).getId().toString())
+                    .account(userEntity.getAccounts().get(1).getNumber())
+                    .sum(userEntity.getAccounts().get(1).getSum())
+                    .status(AccountRs.StatusEnum.OPENED)
+                    .transactionsFrom(List.of())
+                    .transactionsTo(List.of())
+                    .build()
+            );
+
+    }
+
+    @Test
+    void findUserAccountsShouldReturnErrCode002() {
+        assertThat(getUserAccountRsError("999", 400))
+            .isEqualTo(Result.builder()
+                .code("ERR.CODE.002")
+                .description("Пользователь с id 999 не найден")
+                .build());
+    }
+
+    @Test
+    void deleteUserByIdShouldWorkWithOneUser() {
+        UserEntity userEntity = UserEntity.builder()
+            .id(1L)
+            .name("test1_name")
+            .email("test_email")
+            .surname("test1_surname")
+            .password("test1_password")
+            .build();
+
+        userRepository.save(userEntity);
+
+        deleteUser(userEntity.getId().toString());
+
+        assertThat(userRepository.findAll())
+            .isEmpty();
+    }
+
+    @Test
+    void deleteUserByIdShouldWorkWithMultipleUsers() {
+        UserEntity userEntity = UserEntity.builder()
+            .name("test1_name")
+            .email("test_email")
+            .surname("test1_surname")
+            .password("test1_password")
+            .build();
+        UserEntity userEntity2 = UserEntity.builder()
+            .name("test2_name")
+            .email("test2_email")
+            .surname("test2_surname")
+            .password("test2_password")
+            .build();
+
+        userRepository.saveAll(List.of(userEntity, userEntity2));
+
+        deleteUser(userEntity.getId().toString());
+
+        executeInTransaction(() ->
+            assertThat(userRepository.findAll())
+                .hasSize(1)
+                .first()
+                .usingRecursiveComparison()
+                // .ignoringFields("accounts")
+                .isEqualTo(userEntity2));
+    }
+
+    private void deleteUser(final String id) {
+        webTestClient.delete()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "users", id)
+                .build())
+            .exchange()
+            .expectStatus().isOk();
     }
 
     private UserUpdateRq updateUser(final String id, final UserUpdateRq userUpdateRq, final int status) {
@@ -209,4 +304,93 @@ class UserApiControllerTest extends DatabaseAwareTestBase {
             .returnResult()
             .getResponseBody();
     }
+
+    private Result updateUserError(final String id, final UserUpdateRq userUpdateRq, final int status) {
+        return webTestClient.put()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "users", id)
+                .build())
+            .bodyValue(userUpdateRq)
+            .exchange()
+            .expectStatus().isEqualTo(status)
+            .expectBody(Result.class)
+            .returnResult()
+            .getResponseBody();
+    }
+
+    private UserRegistrationRs postUser(final UserRegistrationRq request, final int status) {
+        return webTestClient.post()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "users")
+                .build())
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isEqualTo(status)
+            .expectBody(UserRegistrationRs.class)
+            .returnResult()
+            .getResponseBody();
+    }
+
+    private UserRs getUserById(final String id, final int status) {
+        return webTestClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "users", id)
+                .build())
+            .exchange()
+            .expectStatus().isEqualTo(status)
+            .expectBody(UserRs.class)
+            .returnResult()
+            .getResponseBody();
+    }
+
+    private Result getUserByIdError(final String id, final int status) {
+        return webTestClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "users", id)
+                .build())
+            .exchange()
+            .expectStatus().isEqualTo(status)
+            .expectBody(Result.class)
+            .returnResult()
+            .getResponseBody();
+    }
+
+    private List<UserRs> getAllUsers() {
+        return webTestClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "users")
+                .build())
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(new ParameterizedTypeReference<List<UserRs>>() {
+            })
+            .returnResult()
+            .getResponseBody();
+
+    }
+
+    private UserAccountRs getUserAccountRs(final String id, final int status) {
+        return webTestClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "users", id, "accounts")
+                .build())
+            .exchange()
+            .expectStatus().isEqualTo(status)
+            .expectBody(UserAccountRs.class)
+            .returnResult()
+            .getResponseBody();
+    }
+
+    private Result getUserAccountRsError(final String id, final int status) {
+        return webTestClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "users", id, "accounts")
+                .build())
+            .exchange()
+            .expectStatus().isEqualTo(status)
+            .expectBody(Result.class)
+            .returnResult()
+            .getResponseBody();
+    }
+
 }

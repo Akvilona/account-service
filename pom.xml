@@ -222,12 +222,12 @@
                                         <limit>
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.34</minimum>
+                                            <minimum>0.50</minimum>
                                         </limit>
                                         <limit>
                                             <counter>BRANCH</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.03</minimum>
+                                            <minimum>0.25</minimum>
                                         </limit>
                                         <limit>
                                             <counter>CLASS</counter>
@@ -237,7 +237,7 @@
                                         <limit>
                                             <counter>METHOD</counter>
                                             <value>MISSEDCOUNT</value>
-                                            <maximum>51</maximum>
+                                            <maximum>38</maximum>
                                         </limit>
                                     </limits>
                                 </rule>

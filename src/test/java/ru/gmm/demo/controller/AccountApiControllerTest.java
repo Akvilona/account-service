@@ -83,7 +83,7 @@ class AccountApiControllerTest extends DatabaseAwareTestBase {
             .userId(999L)
             .build();
 
-        Result result = createAccountException(registrationRq, 404);
+        Result result = createAccountException(registrationRq, 400);
         assertThat(result.getCode()).isEqualTo("ERR.CODE.002");
         assertThat(result.getDescription()).isEqualTo("Пользователь с id 999 не найден");
     }

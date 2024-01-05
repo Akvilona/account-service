@@ -39,13 +39,13 @@ public class UserApiService {
 
     public UserEntity findById(final String id) {
         return userRepository.findById(Long.valueOf(id))
-            .orElseThrow();
+            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_002, id));
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity updateUser(final String id, final UserUpdateRq userUpdateRq) {
         final UserEntity user = userRepository.findById(Long.parseLong(id))
-            .orElseThrow();
+            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_002, id));
 
         userMapper.updateWithUserUpdateRq(user, userUpdateRq);
 
