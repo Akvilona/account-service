@@ -1,5 +1,6 @@
 package ru.gmm.demo.controller;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -131,6 +132,42 @@ class AccountApiControllerTest extends DatabaseAwareTestBase {
                     .build());
     }
 
+    @Test
+    @Disabled
+    void getAccountByIdShutBeWork() {
+        UserEntity userEntity = UserEntity.builder()
+            .name("test")
+            .password("123")
+            .build();
+        userRepository.save(userEntity);
+
+        AccountEntity account = AccountEntity.builder()
+            .sum(BigDecimal.valueOf(123))
+            .number("123456")
+            .user(userEntity)
+            .build();
+
+        accountRepository.save(account);
+
+        assertThat(getAccountById(account.getId().toString(), 200))
+            .hasFieldOrPropertyWithValue("id", account.getId().toString())
+            .hasFieldOrPropertyWithValue("account", account.getNumber())
+            .hasFieldOrPropertyWithValue("sum", account.getSum().toString());
+
+    }
+
+    private AccountRs getAccountById(final String id, final int status) {
+        return webTestClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "account", id)
+                .build())
+            .exchange()
+            .expectStatus().isEqualTo(status)
+            .expectBody(AccountRs.class)
+            .returnResult()
+            .getResponseBody();
+    }
+
     private AccountRegistrationRs createAccount(final AccountRegistrationRq request, final int status) {
         return webTestClient.post()
             .uri(uriBuilder -> uriBuilder
@@ -169,4 +206,5 @@ class AccountApiControllerTest extends DatabaseAwareTestBase {
             .returnResult()
             .getResponseBody();
     }
+
 }
