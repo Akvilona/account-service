@@ -45,9 +45,7 @@ public class AccountApiController implements AccountApi {
 
     @Override
     public ResponseEntity<AccountRs> getAccountById(final String id) {
-        final AccountEntity accountEntity = accountApiService.findById(id);
-        final AccountRs accRs = accountMapper.toAccountRs(accountEntity);
-        return ResponseEntity.ok(accRs);
+        return ResponseEntity.ok(accountApiService.findById(id));
     }
 
     @Override

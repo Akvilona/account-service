@@ -17,6 +17,7 @@ import ru.gmm.demo.repository.AccountRepository;
 import ru.gmm.demo.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -41,9 +42,13 @@ public class AccountApiService {
             .toList();
     }
 
-    public AccountEntity findById(final String id) {
-        return accountRepository.findById(Long.valueOf(id))
-            .orElseThrow();
+    @Transactional(readOnly = true)
+    public AccountRs findById(final String id) {
+        Optional<AccountEntity> byId = accountRepository.findById(Long.valueOf(id));
+        if (byId.isEmpty()) {
+            throw new ServiceException(ErrorCode.ERR_CODE_007, Long.valueOf(id));
+        }
+        return accountMapper.toAccountRs(byId.get());
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
