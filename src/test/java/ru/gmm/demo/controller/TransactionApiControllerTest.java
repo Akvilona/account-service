@@ -1,58 +1,26 @@
 package ru.gmm.demo.controller;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.transaction.annotation.Transactional;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.model.api.CreateTransactionRq;
 import ru.gmm.demo.model.api.CreateTransactionRs;
 import ru.gmm.demo.model.enums.AccountStatus;
-import ru.gmm.demo.repository.AccountRepository;
-import ru.gmm.demo.repository.TransactionRepository;
-import ru.gmm.demo.repository.UserRepository;
-import ru.gmm.demo.support.DatabaseAwareTestBase;
+import ru.gmm.demo.support.IntegrationTestBase;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@AutoConfigureWebTestClient(timeout = "360000")
-class TransactionApiControllerTest extends DatabaseAwareTestBase {
-    @Autowired
-    protected WebTestClient webTestClient;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private TransactionRepository transactionRepository;
-
-    @Override
-    protected String getSchema() {
-        return "public";
-    }
-
-    @Override
-    protected Set<String> getTables() {
-        return Set.of("users", "accounts", "transactions");
-    }
+class TransactionApiControllerTest extends IntegrationTestBase {
 
     @Test
-    @Transactional
-    @Disabled
     void createTransaction() {
-
         AccountEntity accountEntity = AccountEntity.builder()
             .sum(new BigDecimal("123"))
             .status(AccountStatus.OPENED)
             .number("123456")
             .build();
-
         UserEntity userEntity = UserEntity.builder()
             .name("test")
             .password("123")
@@ -62,16 +30,21 @@ class TransactionApiControllerTest extends DatabaseAwareTestBase {
         userRepository.save(userEntity);
 
         CreateTransactionRq request = CreateTransactionRq.builder()
-            .accountTo(accountEntity.getId().toString())
-            .accountFrom(accountEntity.getId().toString())
+            .accountTo(accountEntity.getNumber())
+            .accountFrom(accountEntity.getNumber())
             .sum(new BigDecimal("1000.00"))
             .type(CreateTransactionRq.TypeEnum.DEPOSIT)
             .build();
 
         CreateTransactionRs createTransactionRs = createTransaction(request, 200);
-        assertThat(createTransactionRs.getId()).isNotNull();
-        assertThat(createTransactionRs.getAccountTo()).isEqualTo(accountEntity.getId().toString());
-        assertThat(createTransactionRs.getSum()).isEqualTo(request.getSum());
+
+        assertThat(createTransactionRs)
+            .usingRecursiveComparison()
+            .ignoringFields("id")
+            .isEqualTo(CreateTransactionRs.builder()
+                .status(CreateTransactionRq.TypeEnum.DEPOSIT.name())
+                .sum(request.getSum())
+                .build());
 
         assertThat(transactionRepository.findAll())
             .hasSize(1)

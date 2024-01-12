@@ -2,10 +2,8 @@ package ru.gmm.demo.controller;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import ru.gmm.demo.client.FraudClient;
 import ru.gmm.demo.exception.Result;
 import ru.gmm.demo.model.AccountEntity;
@@ -17,35 +15,16 @@ import ru.gmm.demo.model.api.UserRegistrationRs;
 import ru.gmm.demo.model.api.UserRs;
 import ru.gmm.demo.model.api.UserUpdateRq;
 import ru.gmm.demo.model.support.BaseEntity;
-import ru.gmm.demo.repository.UserRepository;
-import ru.gmm.demo.support.DatabaseAwareTestBase;
+import ru.gmm.demo.support.IntegrationTestBase;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 @SuppressWarnings({"IllegalMethodCall", "PMD.TooManyMethods", "PMD.JUnitTestsShouldIncludeAssert"})
-class UserApiControllerTest extends DatabaseAwareTestBase {
-
-    @Autowired
-    protected WebTestClient webTestClient;
-    @Autowired
-    private UserRepository userRepository;
-    @MockBean
-    private FraudClient fraudClient;
-
-    @Override
-    protected String getSchema() {
-        return "public";
-    }
-
-    @Override
-    protected Set<String> getTables() {
-        return Set.of("users", "accounts", "transactions");
-    }
+class UserApiControllerTest extends IntegrationTestBase {
 
     @Test
     void createUser() {

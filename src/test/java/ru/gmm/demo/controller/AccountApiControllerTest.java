@@ -2,9 +2,8 @@ package ru.gmm.demo.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import ru.gmm.demo.client.FraudClient;
 import ru.gmm.demo.exception.Result;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.UserEntity;
@@ -13,36 +12,15 @@ import ru.gmm.demo.model.api.AccountRegistrationRs;
 import ru.gmm.demo.model.api.AccountRs;
 import ru.gmm.demo.model.api.AccountUpdateRq;
 import ru.gmm.demo.model.enums.AccountStatus;
-import ru.gmm.demo.repository.AccountRepository;
-import ru.gmm.demo.repository.UserRepository;
-import ru.gmm.demo.support.DatabaseAwareTestBase;
+import ru.gmm.demo.support.IntegrationTestBase;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@AutoConfigureWebTestClient(timeout = "360000")
 @SuppressWarnings("PMD.TooManyMethods")
-class AccountApiControllerTest extends DatabaseAwareTestBase {
-
-    @Autowired
-    protected WebTestClient webTestClient;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private AccountRepository accountRepository;
-
-    @Override
-    protected String getSchema() {
-        return "public";
-    }
-
-    @Override
-    protected Set<String> getTables() {
-        return Set.of("users", "accounts", "transactions");
-    }
+class AccountApiControllerTest extends IntegrationTestBase {
 
     @Test
     void createAccountSuccess() {
