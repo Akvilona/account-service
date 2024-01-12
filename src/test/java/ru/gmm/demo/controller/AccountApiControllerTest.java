@@ -11,6 +11,7 @@ import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.model.api.AccountRegistrationRq;
 import ru.gmm.demo.model.api.AccountRegistrationRs;
 import ru.gmm.demo.model.api.AccountRs;
+import ru.gmm.demo.model.api.AccountUpdateRq;
 import ru.gmm.demo.model.enums.AccountStatus;
 import ru.gmm.demo.repository.AccountRepository;
 import ru.gmm.demo.repository.UserRepository;
@@ -23,6 +24,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AutoConfigureWebTestClient(timeout = "360000")
+@SuppressWarnings("PMD.TooManyMethods")
 class AccountApiControllerTest extends DatabaseAwareTestBase {
 
     @Autowired
@@ -58,10 +60,8 @@ class AccountApiControllerTest extends DatabaseAwareTestBase {
             .build();
 
         AccountRegistrationRs accountRegistrationRs = createAccount(registrationRq, 200);
-        assertThat(accountRegistrationRs.getId())
-            .isNotNull();
-        assertThat(accountRegistrationRs.getSum())
-            .isEqualTo(BigDecimal.valueOf(1000));
+        assertThat(accountRegistrationRs.getId()).isNotNull();
+        assertThat(accountRegistrationRs.getSum()).isEqualTo(BigDecimal.valueOf(1000));
 
         assertThat(accountRepository.findAll())
             .hasSize(1)
@@ -228,6 +228,47 @@ class AccountApiControllerTest extends DatabaseAwareTestBase {
 
     }
 
+    @Test
+    void updateAccountShouldWork() {
+        UserEntity userEntity = UserEntity.builder()
+            .name("test")
+            .password("123")
+            .build();
+        userRepository.save(userEntity);
+
+        AccountEntity account = AccountEntity.builder()
+            .sum(new BigDecimal("123.00"))
+            .number("123456")
+            .user(userEntity)
+            .build();
+
+        accountRepository.save(account);
+
+        AccountUpdateRq request = AccountUpdateRq.builder()
+            .account("654321")
+            .sum(new BigDecimal("321.00"))
+            .status(AccountUpdateRq.StatusEnum.CLOSED)
+            .build();
+
+        AccountUpdateRq accountUpdateRq = updateAccount(account.getId().toString(), request, 200);
+        assertThat(accountUpdateRq.getAccount()).isEqualTo(request.getAccount());
+        assertThat(accountUpdateRq.getSum()).isEqualTo(request.getSum());
+    }
+
+    private AccountUpdateRq updateAccount(final String id, final AccountUpdateRq request, final int status) {
+        return webTestClient.put()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "account", id)
+                .build())
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isEqualTo(status)
+            .expectBody(AccountUpdateRq.class)
+            .returnResult()
+            .getResponseBody();
+
+    }
+
     private Result getAccountByIdCode007(final String id, final int status) {
         return webTestClient.get()
             .uri(uriBuilder -> uriBuilder
@@ -290,5 +331,4 @@ class AccountApiControllerTest extends DatabaseAwareTestBase {
             .returnResult()
             .getResponseBody();
     }
-
 }

@@ -5,6 +5,7 @@
 package ru.gmm.demo.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import ru.gmm.demo.controller.api.TransactionApi;
@@ -24,11 +25,17 @@ public class TransactionApiController implements TransactionApi {
     private final TransactionApiService transactionApiService;
     private final TransactionMapper transactionMapper;
 
-    @Override
     public ResponseEntity<CreateTransactionRs> createTransaction(final CreateTransactionRq request) {
-        final TransactionEntity transactionEntity = transactionApiService.createTransaction(request);
-        final CreateTransactionRs transactionRegistrationRs = transactionMapper.toCreateTransactionRs(transactionEntity);
-        return ResponseEntity.ok(transactionRegistrationRs);
+        try {
+            final TransactionEntity transactionEntity = transactionApiService.createTransaction(request);
+            final CreateTransactionRs transactionRegistrationRs = transactionMapper.toCreateTransactionRs(transactionEntity);
+            return ResponseEntity.ok(transactionRegistrationRs);
+        } catch (Exception e) {
+            e.printStackTrace(); // Выводим стек трейс для отладки
+            CreateTransactionRs errorResponse = new CreateTransactionRs();
+            errorResponse.setId(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @Override
