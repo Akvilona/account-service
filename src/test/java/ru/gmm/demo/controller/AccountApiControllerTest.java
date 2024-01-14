@@ -1,9 +1,7 @@
 package ru.gmm.demo.controller;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import ru.gmm.demo.client.FraudClient;
 import ru.gmm.demo.exception.Result;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.UserEntity;

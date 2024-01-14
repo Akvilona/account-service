@@ -2,9 +2,7 @@ package ru.gmm.demo.controller;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
-import ru.gmm.demo.client.FraudClient;
 import ru.gmm.demo.exception.Result;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.UserEntity;

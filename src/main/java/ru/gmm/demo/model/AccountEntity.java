@@ -81,4 +81,16 @@ public class AccountEntity extends BaseEntity {
             status = AccountStatus.OPENED;
         }
     }
+
+    public AccountEntity withTransactionsFrom(final TransactionEntity transactionEntity) {
+        this.transactionsFrom.add(transactionEntity);
+        transactionEntity.setAccountFrom(this);
+        return this;
+    }
+
+    public AccountEntity withTransactionTo(final TransactionEntity transactionEntity) {
+        this.transactionsTo.add(transactionEntity);
+        transactionEntity.setAccountTo(this);
+        return this;
+    }
 }
