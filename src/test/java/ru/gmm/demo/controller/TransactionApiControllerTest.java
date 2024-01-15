@@ -2,16 +2,20 @@ package ru.gmm.demo.controller;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.ParameterizedTypeReference;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.TransactionEntity;
 import ru.gmm.demo.model.UserEntity;
 import ru.gmm.demo.model.api.CreateTransactionRq;
 import ru.gmm.demo.model.api.CreateTransactionRs;
+import ru.gmm.demo.model.api.TransactionRs;
+import ru.gmm.demo.model.api.TransactionUpdateRq;
 import ru.gmm.demo.model.enums.AccountStatus;
 import ru.gmm.demo.model.enums.TransactionType;
 import ru.gmm.demo.support.IntegrationTestBase;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -66,22 +70,25 @@ class TransactionApiControllerTest extends IntegrationTestBase {
         final UserEntity userEntity = getUserEntity();
 
         userRepository.save(userEntity);
-        // Простое утверждение для успешного завершения теста
+        // Самое простое утверждение для успешного завершения теста
         Assert.assertTrue(true);
 
-        /*ListAssert<TransactionRs> transactionRsListAssert = assertThat(getAllTransaction(200))
+        assertThat(getAllTransaction(200))
             .hasSize(2)
+            .usingElementComparatorIgnoringFields("createDateTime", "updateDateTime")
             .containsExactlyInAnyOrder(
                 TransactionRs.builder()
-                    .id(transactionEntityTwo.getId().toString())
-                    .sum(transactionEntityTwo.getSum())
-                    .build());*//*,
+                    .id("1")
+                    .sum(new BigDecimal("1000.00"))
+                    .status(TransactionType.DEPOSIT.toString())
+                    .description("any WITHDRAWAL")
+                    .build(),
                 TransactionRs.builder()
-                    .id(transactionEntityTwo.getId().toString())
-                    .sum(transactionEntityTwo.getSum())
-                    .description(transactionEntityTwo.getDescription())
-                    .build());*//*
-         */
+                    .id("2")
+                    .sum(new BigDecimal("2000.00"))
+                    .status(TransactionType.DEPOSIT.toString())
+                    .description("any WITHDRAWAL")
+                    .build());
     }
 
     @Test
@@ -90,39 +97,41 @@ class TransactionApiControllerTest extends IntegrationTestBase {
 
         userRepository.save(userEntity);
         // Простое утверждение для успешного завершения теста
-        Assert.assertTrue(true);
-
-        /*
+        //Assert.assertTrue(true);
 
         TransactionRs transactionById = getTransactionById("1", 200);
 
         assertThat(transactionById)
             .usingRecursiveComparison()
             .ignoringFields("id")
-            .isEqualTo(CreateTransactionRs.builder()
-                .status(CreateTransactionRq.TypeEnum.DEPOSIT.name())
-                .sum(transactionById.getSum())
+            .ignoringFields("updateDateTime")
+            .ignoringFields("createDateTime")
+            .isEqualTo(TransactionRs.builder()
+                .status(TransactionType.DEPOSIT.toString())
+                .description("any WITHDRAWAL")
+                .sum(new BigDecimal("1000.00"))
                 .build());
 
         assertThat(transactionRepository.findAll())
-            .hasSize(1)
+            .hasSize(2)
             .first()
             .satisfies(transactionRepository -> {
                 assertThat(transactionRepository.getId()).isNotNull();
                 assertThat(transactionRepository.getSum()).isEqualTo("1000.00");
-                assertThat(transactionRepository.getDescription()).isNull();
+                assertThat(transactionRepository.getDescription()).isEqualTo("any WITHDRAWAL");
             });
-        */
-
     }
 
     @Test
     void updateTransactionShouldWork() {
-        /*TransactionUpdateRq request = TransactionUpdateRq.builder()
+        TransactionUpdateRq request = TransactionUpdateRq.builder()
             .id("1")
+            .accountFrom("0123456")
+            .accountTo("1234567")
             .sum(new BigDecimal(3000))
+            .status(TransactionType.WITHDRAWAL.toString())
             .description("any world")
-            .build();*/
+            .build();
 
         final UserEntity userEntity = getUserEntity();
 
@@ -130,7 +139,7 @@ class TransactionApiControllerTest extends IntegrationTestBase {
         // Простое утверждение для успешного завершения теста
         Assert.assertTrue(true);
 
-        /*TransactionUpdateRq transactionUpdateRq = updateTransaction("1", request, 200);
+        TransactionUpdateRq transactionUpdateRq = updateTransaction("1", request, 200);
 
         assertThat(transactionUpdateRq)
             .hasFieldOrPropertyWithValue("sum", request.getSum())
@@ -138,13 +147,14 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .extracting(TransactionUpdateRq::getId)
             .isNotNull();
 
-        assertThat(userRepository.findAll())
-            .hasSize(1)
-            .first()
-            .hasFieldOrPropertyWithValue("sum", request.getSum())
-            .hasFieldOrPropertyWithValue("description", request.getDescription())
-            .extracting(BaseEntity::getId)
-            .isNotNull();*/
+        assertThat(transactionRepository.findAll())
+            .hasSize(2)
+            .last()
+            .satisfies(transaction -> {
+                assertThat(transaction.getSum()).isEqualByComparingTo(new BigDecimal("3000"));
+                assertThat(transaction.getDescription()).isEqualTo(request.getDescription());
+            })
+            .isNotNull();
     }
 
     private static UserEntity getUserEntity() {
@@ -202,7 +212,7 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .getResponseBody();
     }
 
-    /*private List<TransactionRs> getAllTransaction(final int status) {
+    private List<TransactionRs> getAllTransaction(final int status) {
         return webTestClient.get()
             .uri(uriBuilder -> uriBuilder
                 .pathSegment("api", "transaction")
@@ -238,5 +248,5 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .expectBody(TransactionUpdateRq.class)
             .returnResult()
             .getResponseBody();
-    }*/
+    }
 }

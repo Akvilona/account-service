@@ -50,8 +50,8 @@ public interface TransactionMapper {
     @Mapping(target = "status", source = "type")
     @Mapping(target = "sum", source = "sum")
     @Mapping(target = "description", source = "description")
-    @Mapping(target = "accountFrom", source = "accountFrom.number")
-    @Mapping(target = "accountTo", source = "accountTo.number")
+    //@Mapping(target = "accountFrom", source = "accountFrom.number")
+    //@Mapping(target = "accountTo", source = "accountTo.number")
     @Mapping(target = "createDateTime", source = "audit.createDateTime")
     @Mapping(target = "updateDateTime", source = "audit.updateDateTime")
     TransactionRs toTransactionRs(TransactionEntity transaction);
