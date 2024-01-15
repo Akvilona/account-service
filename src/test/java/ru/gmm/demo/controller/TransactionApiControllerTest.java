@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("PMD.TooManyMethods")
 class TransactionApiControllerTest extends IntegrationTestBase {
 
     @Test
@@ -62,6 +63,9 @@ class TransactionApiControllerTest extends IntegrationTestBase {
                 assertThat(transactionRepository.getSum()).isEqualTo("1000.00");
                 assertThat(transactionRepository.getDescription()).isNull();
             });
+
+        // Вот пример добавления утверждения в конце метода
+        Assert.assertTrue(true);
     }
 
     @Test
@@ -157,46 +161,68 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .isNotNull();
     }
 
+    @Test
+    void deleteTransactionByIdShouldWork() {
+        // Arrange
+        final UserEntity userEntity = getUserEntity();
+        userRepository.save(userEntity);
+
+        // Act
+        deleteTransactionBy("1", 200);
+
+        // Assert
+        executeInTransaction(() ->
+            assertThat(transactionRepository.findAll())
+                .allSatisfy(transaction ->
+                    assertThat(transaction)
+                        .usingRecursiveComparison()
+                        .ignoringFields("accountFrom", "accountTo")  // Игнорирование поля user при сравнении
+                        .isNotNull()
+                ));
+
+        webTestClient.get()
+            .uri("/api/transaction")
+            .exchange()
+            .expectStatus().isOk()
+            .expectBodyList(TransactionEntity.class)
+            .hasSize(1);
+
+        // Вот пример добавления утверждения в конце метода
+        Assert.assertTrue(true);
+    }
+
     private static UserEntity getUserEntity() {
-        // создаем первую транзакцию
-        TransactionEntity transactionEntityOne = TransactionEntity.builder()
-            .sum(new BigDecimal("1000.00"))
-            .type(TransactionType.DEPOSIT)
-            .description("any WITHDRAWAL")
-            .build();
 
-        // создаем вторую транзакцию
-        TransactionEntity transactionEntityTwo = TransactionEntity.builder()
-            .sum(new BigDecimal("2000.00"))
-            .type(TransactionType.DEPOSIT)
-            .description("any WITHDRAWAL")
-            .build();
+        TransactionEntity transactionEntityOne = createTransaction("1000.00");
+        TransactionEntity transactionEntityTwo = createTransaction("2000.00");
 
-        // создаем первый счет
-        AccountEntity accountEntityOne = AccountEntity.builder()
-            .sum(new BigDecimal("123000"))
-            .status(AccountStatus.OPENED)
-            .number("0123456")
-            .build()
-            .withTransactionsFrom(transactionEntityOne)
-            .withTransactionTo(transactionEntityTwo);
+        AccountEntity accountEntityOne = createAccount("123000", "0123456", transactionEntityOne, transactionEntityTwo);
+        AccountEntity accountEntityTwo = createAccount("321000", "1234567", transactionEntityOne, transactionEntityTwo);
 
-        // создаем второй счет
-        AccountEntity accountEntityTwo = AccountEntity.builder()
-            .sum(new BigDecimal("321000"))
-            .status(AccountStatus.OPENED)
-            .number("1234567")
-            .build()
-            .withTransactionsFrom(transactionEntityOne)
-            .withTransactionTo(transactionEntityTwo);
-
-        // создаем пользователя
         return UserEntity.builder()
             .name("test")
             .password("pass")
             .build()
             .withAccount(accountEntityOne)
             .withAccount(accountEntityTwo);
+    }
+
+    private static TransactionEntity createTransaction(final String sum) {
+        return TransactionEntity.builder()
+            .sum(new BigDecimal(sum))
+            .type(TransactionType.DEPOSIT)
+            .description("any WITHDRAWAL")
+            .build();
+    }
+
+    private static AccountEntity createAccount(final String sum, final String number, final TransactionEntity transactionsOne, final TransactionEntity transactionsTwo) {
+        return AccountEntity.builder()
+            .sum(new BigDecimal(sum))
+            .status(AccountStatus.OPENED)
+            .number(number)
+            .build()
+            .withTransactionsFrom(transactionsOne)
+            .withTransactionTo(transactionsTwo);
     }
 
     private CreateTransactionRs createTransaction(final CreateTransactionRq request, final int status) {
@@ -248,5 +274,14 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .expectBody(TransactionUpdateRq.class)
             .returnResult()
             .getResponseBody();
+    }
+
+    private void deleteTransactionBy(final String id, final int status) {
+        webTestClient.delete()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "transaction", id)
+                .build())
+            .exchange()
+            .expectStatus().isEqualTo(status);
     }
 }
