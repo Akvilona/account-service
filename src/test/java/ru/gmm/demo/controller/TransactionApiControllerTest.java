@@ -23,54 +23,46 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TransactionApiControllerTest extends IntegrationTestBase {
 
     private static UserEntity getUserEntity() {
-        TransactionEntity transactionEntityFirst = TransactionEntity.builder()
-            .sum(new BigDecimal("1000.0"))
-            .type(TransactionType.DEPOSIT)
-            .build();
-
-        TransactionEntity transactionEntitySecond = TransactionEntity.builder()
+        TransactionEntity transactionEntity1 = TransactionEntity.builder()
             .sum(new BigDecimal("2000.0"))
             .type(TransactionType.DEPOSIT)
             .build();
-
-        TransactionEntity transactionEntity_3 = TransactionEntity.builder()
-            .sum(new BigDecimal("1000.0"))
+        TransactionEntity transactionEntity2 = TransactionEntity.builder()
+            .sum(new BigDecimal("2000.0"))
             .type(TransactionType.DEPOSIT)
             .build();
-
-        TransactionEntity transactionEntity_4 = TransactionEntity.builder()
+        TransactionEntity transactionEntity3 = TransactionEntity.builder()
+            .sum(new BigDecimal("3000.0"))
+            .type(TransactionType.TRANSFER)
+            .build();
+        TransactionEntity transactionEntity4 = TransactionEntity.builder()
             .sum(new BigDecimal("1000.0"))
-            .type(TransactionType.DEPOSIT)
+            .type(TransactionType.WITHDRAWAL)
             .build();
 
-        AccountEntity account = AccountEntity.builder()
+        AccountEntity account1 = AccountEntity.builder()
             .sum(new BigDecimal("123000"))
             .status(AccountStatus.OPENED)
             .number("0123456")
             .build();
-
-        AccountEntity account_2 = AccountEntity.builder()
+        AccountEntity account2 = AccountEntity.builder()
             .sum(new BigDecimal("123000"))
             .status(AccountStatus.OPENED)
             .number("1234567")
             .build();
 
-        account.withTransactionsFrom(transactionEntityFirst);
-        account.withTransactionsFrom(transactionEntitySecond);
-        account.withTransactionsFrom(transactionEntity_3);
-        account.withTransactionsFrom(transactionEntity_4);
-
-        account_2.withTransactionTo(transactionEntityFirst);
-        account_2.withTransactionTo(transactionEntitySecond);
-        account_2.withTransactionTo(transactionEntity_3);
-        account_2.withTransactionTo(transactionEntity_4);
+        account1.withTransactionTo(transactionEntity1);
+        account1.withTransactionTo(transactionEntity2);
+        account1.withTransactionsFrom(transactionEntity3);
+        account2.withTransactionTo(transactionEntity3);
+        account2.withTransactionsFrom(transactionEntity4);
 
         return UserEntity.builder()
             .name("test")
             .password("pass")
             .build()
-            .withAccount(account)
-            .withAccount(account_2);
+            .withAccount(account1)
+            .withAccount(account2);
     }
 
     private static AccountEntity createAccount(final String sum,
