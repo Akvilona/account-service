@@ -22,6 +22,46 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings("PMD.TooManyMethods")
 class TransactionApiControllerTest extends IntegrationTestBase {
 
+    private static UserEntity getUserEntity() {
+        TransactionEntity transactionEntityFirst = TransactionEntity.builder()
+            .sum(new BigDecimal("1000.0"))
+            .type(TransactionType.DEPOSIT)
+            .build();
+        TransactionEntity transactionEntitySecond = TransactionEntity.builder()
+            .sum(new BigDecimal("2000.0"))
+            .type(TransactionType.DEPOSIT)
+            .build();
+
+        AccountEntity account = AccountEntity.builder()
+            .sum(new BigDecimal("123000"))
+            .status(AccountStatus.OPENED)
+            .number("0123456")
+            .build();
+        account.withTransactionsFrom(transactionEntityFirst);
+        account.withTransactionTo(transactionEntityFirst);
+        account.withTransactionsFrom(transactionEntitySecond);
+        account.withTransactionTo(transactionEntitySecond);
+
+        return UserEntity.builder()
+            .name("test")
+            .password("pass")
+            .build()
+            .withAccount(account);
+    }
+
+    private static AccountEntity createAccount(final String sum,
+                                               final String number,
+                                               final TransactionEntity transactionsFrom,
+                                               final TransactionEntity transactionsTo) {
+        return AccountEntity.builder()
+            .sum(new BigDecimal(sum))
+            .status(AccountStatus.OPENED)
+            .number(number)
+            .build()
+            .withTransactionsFrom(transactionsFrom)
+            .withTransactionTo(transactionsTo);
+    }
+
     @Test
     void createTransaction() {
         AccountEntity accountEntity = AccountEntity.builder()
@@ -74,24 +114,25 @@ class TransactionApiControllerTest extends IntegrationTestBase {
         final UserEntity userEntity = getUserEntity();
 
         userRepository.save(userEntity);
-        // Самое простое утверждение для успешного завершения теста
-        Assert.assertTrue(true);
 
-        assertThat(getAllTransaction(200))
+        List<TransactionRs> allTransaction = getAllTransaction(200);
+        assertThat(allTransaction)
             .hasSize(2)
             .usingElementComparatorIgnoringFields("createDateTime", "updateDateTime")
             .containsExactlyInAnyOrder(
                 TransactionRs.builder()
                     .id("1")
+                    .accountFrom("0123456")
+                    .accountTo("0123456")
                     .sum(new BigDecimal("1000.00"))
                     .status(TransactionType.DEPOSIT.toString())
-                    .description("any WITHDRAWAL")
                     .build(),
                 TransactionRs.builder()
                     .id("2")
+                    .accountFrom("0123456")
+                    .accountTo("0123456")
                     .sum(new BigDecimal("2000.00"))
                     .status(TransactionType.DEPOSIT.toString())
-                    .description("any WITHDRAWAL")
                     .build());
     }
 
@@ -189,40 +230,6 @@ class TransactionApiControllerTest extends IntegrationTestBase {
 
         // Вот пример добавления утверждения в конце метода
         Assert.assertTrue(true);
-    }
-
-    private static UserEntity getUserEntity() {
-
-        TransactionEntity transactionEntityOne = createTransaction("1000.00");
-        TransactionEntity transactionEntityTwo = createTransaction("2000.00");
-
-        AccountEntity accountEntityOne = createAccount("123000", "0123456", transactionEntityOne, transactionEntityTwo);
-        AccountEntity accountEntityTwo = createAccount("321000", "1234567", transactionEntityOne, transactionEntityTwo);
-
-        return UserEntity.builder()
-            .name("test")
-            .password("pass")
-            .build()
-            .withAccount(accountEntityOne)
-            .withAccount(accountEntityTwo);
-    }
-
-    private static TransactionEntity createTransaction(final String sum) {
-        return TransactionEntity.builder()
-            .sum(new BigDecimal(sum))
-            .type(TransactionType.DEPOSIT)
-            .description("any WITHDRAWAL")
-            .build();
-    }
-
-    private static AccountEntity createAccount(final String sum, final String number, final TransactionEntity transactionsOne, final TransactionEntity transactionsTwo) {
-        return AccountEntity.builder()
-            .sum(new BigDecimal(sum))
-            .status(AccountStatus.OPENED)
-            .number(number)
-            .build()
-            .withTransactionsFrom(transactionsOne)
-            .withTransactionTo(transactionsTwo);
     }
 
     private CreateTransactionRs createTransaction(final CreateTransactionRq request, final int status) {
