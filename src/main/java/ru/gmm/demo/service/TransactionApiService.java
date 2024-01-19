@@ -1,5 +1,6 @@
 package ru.gmm.demo.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,12 +12,16 @@ import ru.gmm.demo.mapper.TransactionMapper;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.TransactionEntity;
 import ru.gmm.demo.model.api.CreateTransactionRq;
+import ru.gmm.demo.model.api.TransactionRs;
 import ru.gmm.demo.model.api.TransactionUpdateRq;
 import ru.gmm.demo.repository.AccountRepository;
 import ru.gmm.demo.repository.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
+
+import static ru.gmm.demo.exception.ErrorCode.ERR_CODE_003;
 
 @RequiredArgsConstructor
 @Service
@@ -37,7 +42,7 @@ public class TransactionApiService {
 
     private TransactionEntity createDepositTransaction(final CreateTransactionRq request) {
         final AccountEntity accountTo = accountRepository.findOpenedAccountByNumber(request.getAccountTo())
-            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, request.getAccountTo()));
+            .orElseThrow(() -> new ServiceException(ERR_CODE_003, request.getAccountTo()));
 
         final BigDecimal transactionSum = request.getSum();
         accountTo.setSum(accountTo.getSum().add(transactionSum));
@@ -48,7 +53,7 @@ public class TransactionApiService {
 
     private TransactionEntity createWithdrawalTransaction(final CreateTransactionRq request) {
         final AccountEntity accountFrom = accountRepository.findOpenedAccountByNumber(request.getAccountFrom())
-            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, request.getAccountTo()));
+            .orElseThrow(() -> new ServiceException(ERR_CODE_003, request.getAccountTo()));
 
         final BigDecimal transactionSum = request.getSum();
         final BigDecimal remainingBalance = accountFrom.getSum().subtract(transactionSum);
@@ -64,7 +69,7 @@ public class TransactionApiService {
 
     private TransactionEntity createTransferTransaction(final CreateTransactionRq request) {
         final AccountEntity accountFrom = accountRepository.findOpenedAccountByNumber(request.getAccountFrom())
-            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, request.getAccountFrom()));
+            .orElseThrow(() -> new ServiceException(ERR_CODE_003, request.getAccountFrom()));
 
         final BigDecimal transactionSum = request.getSum();
         final BigDecimal remainingBalance = accountFrom.getSum().subtract(transactionSum);
@@ -73,7 +78,7 @@ public class TransactionApiService {
         }
 
         final AccountEntity accountTo = accountRepository.findOpenedAccountByNumber(request.getAccountTo())
-            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_003, request.getAccountTo()));
+            .orElseThrow(() -> new ServiceException(ERR_CODE_003, request.getAccountTo()));
 
         final BigDecimal newBalance = accountTo.getSum().add(transactionSum);
         accountFrom.setSum(remainingBalance);
@@ -87,8 +92,11 @@ public class TransactionApiService {
         return transactionRepository.fetchTransactionEntityList();
     }
 
-    public TransactionEntity findById(final String id) {
-        return transactionRepository.findById(Long.valueOf(id)).orElseThrow();
+    @Transactional(readOnly = true)
+    public TransactionRs findById(final String id) {
+        Optional<TransactionEntity> transactionOptional = transactionRepository.findById(Long.valueOf(id));
+        transactionOptional.orElseThrow(() -> new ServiceException(ERR_CODE_003, id));
+        return  transactionMapper.toTransactionRs(transactionOptional.get());
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

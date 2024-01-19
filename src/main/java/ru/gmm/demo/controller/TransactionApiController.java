@@ -42,9 +42,7 @@ public class TransactionApiController implements TransactionApi {
 
     @Override
     public ResponseEntity<TransactionRs> getTransactionById(final String id) {
-        final TransactionEntity transactionEntity = transactionApiService.findById(id);
-        final TransactionRs transactionRs = transactionMapper.toTransactionRs(transactionEntity);
-        return ResponseEntity.ok(transactionRs);
+        return ResponseEntity.ok(transactionApiService.findById(id));
     }
 
     @Override

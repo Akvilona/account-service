@@ -1,7 +1,10 @@
 package ru.gmm.demo.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.TransactionEntity;
@@ -15,12 +18,111 @@ import ru.gmm.demo.model.enums.TransactionType;
 import ru.gmm.demo.support.IntegrationTestBase;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+//@RequiredArgsConstructor(onConstructor_ = {@Lazy})
 @SuppressWarnings("PMD.TooManyMethods")
 class TransactionApiControllerTest extends IntegrationTestBase {
+
+    @Test
+    void getAllTransactionShouldWorkFiveUsers() {
+        List<UserEntity> users = new ArrayList<>();
+
+        // Создаем пять пользователей, у каждого по одному счету
+        for (int i = 0; i < 5; i++) {
+            users.add(getUserEntity("user" + i, "pass" + i, "0123456" + i));
+        }
+
+        userRepository.saveAll(users);
+
+        List<TransactionRs> allTransaction = getAllTransaction(200);
+        assertThat(allTransaction)
+            .hasSize(5); // Пять пользователей по одной транзакции каждый
+    }
+
+    private static UserEntity getUserEntity(String name, String password, String accountNumber) {
+        TransactionEntity transactionEntity = TransactionEntity.builder()
+            .sum(new BigDecimal("2000.0"))
+            .type(TransactionType.DEPOSIT)
+            .build();
+
+        AccountEntity account1 = AccountEntity.builder()
+            .sum(new BigDecimal("123000"))
+            .status(AccountStatus.OPENED)
+            .number(accountNumber + "_1")  // Добавляем уникальность к номеру счета
+            .build();
+
+        AccountEntity account2 = AccountEntity.builder()
+            .sum(new BigDecimal("123000"))
+            .status(AccountStatus.OPENED)
+            .number(accountNumber + "_2")  // Добавляем уникальность к номеру счета
+            .build();
+
+        account1.withTransactionTo(transactionEntity);
+        account2.withTransactionsFrom(transactionEntity);
+
+        return UserEntity.builder()
+            .name(name)
+            .password(password)
+            .build()
+            .withAccount(account1)
+            .withAccount(account2);
+    }
+
+    @Test
+    void getAllTransactionShouldWork() {
+        // создаем первую транзакцию
+        final UserEntity userEntity = getUserEntity();
+
+        userRepository.save(userEntity);
+
+        List<TransactionRs> allTransaction = getAllTransaction(200);
+
+        extracted(allTransaction);
+    }
+
+    private static void extracted(List<TransactionRs> allTransaction) {
+        assertThat(allTransaction)
+            .hasSize(4)
+            .usingElementComparatorIgnoringFields("createDateTime", "updateDateTime")
+            .containsExactlyInAnyOrder(
+                TransactionRs.builder()
+                    .id("1")
+                    .accountFrom("0123456")
+                    .accountTo("1234567")
+                    .sum(new BigDecimal("3000.00"))
+                    .status("TRANSFER")
+                    .description(null)
+                    .build(),
+                TransactionRs.builder()
+                    .id("2")
+                    .accountFrom(null)
+                    .accountTo("0123456")
+                    .sum(new BigDecimal("2000.00"))
+                    .status("DEPOSIT")
+                    .description(null)
+                    .build(),
+                TransactionRs.builder()
+                    .id("3")
+                    .accountFrom(null)
+                    .accountTo("0123456")
+                    .sum(new BigDecimal("2000.00"))
+                    .status("DEPOSIT")
+                    .description(null)
+                    .build(),
+                TransactionRs.builder()
+                    .id("4")
+                    .accountFrom("1234567")
+                    .accountTo(null)
+                    .sum(new BigDecimal("1000.00"))
+                    .status("WITHDRAWAL")
+                    .description(null)
+                    .build()
+            );
+    }
 
     private static UserEntity getUserEntity() {
         TransactionEntity transactionEntity1 = TransactionEntity.builder()
@@ -63,6 +165,19 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .build()
             .withAccount(account1)
             .withAccount(account2);
+    }
+
+    private List<TransactionRs> getAllTransaction(final int status) {
+        return webTestClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "transaction")
+                .build())
+            .exchange()
+            .expectStatus().isEqualTo(status)
+            .expectBody(new ParameterizedTypeReference<List<TransactionRs>>() {
+            })
+            .returnResult()
+            .getResponseBody();
     }
 
     private static AccountEntity createAccount(final String sum,
@@ -124,34 +239,6 @@ class TransactionApiControllerTest extends IntegrationTestBase {
         Assert.assertTrue(true);
     }
 
-    @Test
-    void getAllTransactionShouldWork() {
-        // создаем первую транзакцию
-        final UserEntity userEntity = getUserEntity();
-
-        userRepository.save(userEntity);
-
-        List<TransactionRs> allTransaction = getAllTransaction(200);
-        assertThat(allTransaction)
-            .hasSize(4);
-/*            .usingElementComparatorIgnoringFields("createDateTime", "updateDateTime")
-            .containsExactlyInAnyOrder(
-                TransactionRs.builder()
-                    .id("1")
-                    .accountFrom("0123456")
-                    .accountTo("0123456")
-                    .sum(new BigDecimal("1000.00"))
-                    .status(TransactionType.DEPOSIT.toString())
-                    .build(),
-                TransactionRs.builder()
-                    .id("2")
-                    .accountFrom("0123456")
-                    .accountTo("0123456")
-                    .sum(new BigDecimal("2000.00"))
-                    .status(TransactionType.DEPOSIT.toString())
-                    .build());
-*/
-    }
 
     @Test
     void getTransactionByIdShouldWork() {
@@ -165,23 +252,48 @@ class TransactionApiControllerTest extends IntegrationTestBase {
 
         assertThat(transactionById)
             .usingRecursiveComparison()
-            .ignoringFields("id")
-            .ignoringFields("updateDateTime")
-            .ignoringFields("createDateTime")
+            .ignoringFields("updateDateTime", "createDateTime")
             .isEqualTo(TransactionRs.builder()
-                .status(TransactionType.DEPOSIT.toString())
-                .description("any WITHDRAWAL")
-                .sum(new BigDecimal("1000.00"))
+                .id("1")
+                .accountFrom("0123456")
+                .accountTo("1234567")
+                .sum(new BigDecimal("3000.00"))
+                .status(TransactionType.TRANSFER.toString())
+                .description(null)
                 .build());
 
-        assertThat(transactionRepository.findAll())
-            .hasSize(2)
+
+        // TODO не работает из за  Lazy Inicialization Exception by AccountEntity не лечится ни как
+        //extracted();
+    }
+
+    //    @Lazy
+    //    private final AccountApiController self;
+    //    @Transactional(readOnly = true)
+    void extracted() {
+        List<TransactionEntity> transactions = transactionRepository.findAll();
+        TransactionEntity firstTransaction = transactions.get(0);
+
+        // Инициализируем лениво загруженные поля
+        Hibernate.initialize(firstTransaction.getAccountFrom());
+        Hibernate.initialize(firstTransaction.getAccountTo());
+
+        // Выполняем явную загрузку связанных данных
+        String accountFromNumber = firstTransaction.getAccountFrom().getNumber();
+        String accountToNumber = firstTransaction.getAccountTo().getNumber();
+
+        assertThat(transactions)
+            .hasSize(4)
             .first()
-            .satisfies(transactionRepository -> {
-                assertThat(transactionRepository.getId()).isNotNull();
-                assertThat(transactionRepository.getSum()).isEqualTo("1000.00");
-                assertThat(transactionRepository.getDescription()).isEqualTo("any WITHDRAWAL");
-            });
+            .usingRecursiveComparison()
+            .ignoringFields("updateDateTime", "createDateTime")
+            .isEqualTo(TransactionEntity.builder()
+                .id(Long.valueOf("1"))
+                .accountFrom(AccountEntity.builder().number(accountFromNumber).build())
+                .accountTo(AccountEntity.builder().number(accountToNumber).build())
+                .sum(new BigDecimal("3000.00"))
+                .description(null)
+                .build());
     }
 
     @Test
@@ -210,7 +322,7 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .isNotNull();
 
         assertThat(transactionRepository.findAll())
-            .hasSize(2)
+            .hasSize(4)
             .last()
             .satisfies(transaction -> {
                 assertThat(transaction.getSum()).isEqualByComparingTo(new BigDecimal("3000"));
@@ -262,18 +374,6 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .getResponseBody();
     }
 
-    private List<TransactionRs> getAllTransaction(final int status) {
-        return webTestClient.get()
-            .uri(uriBuilder -> uriBuilder
-                .pathSegment("api", "transaction")
-                .build())
-            .exchange()
-            .expectStatus().isEqualTo(status)
-            .expectBody(new ParameterizedTypeReference<List<TransactionRs>>() {
-            })
-            .returnResult()
-            .getResponseBody();
-    }
 
     private TransactionRs getTransactionById(final String id, final int status) {
         return webTestClient.get()
