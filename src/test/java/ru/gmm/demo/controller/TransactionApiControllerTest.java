@@ -1,11 +1,8 @@
 package ru.gmm.demo.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.core.ParameterizedTypeReference;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.TransactionEntity;
 import ru.gmm.demo.model.UserEntity;
@@ -24,7 +21,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 //@RequiredArgsConstructor(onConstructor_ = {@Lazy})
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.VariableDeclarationUsageDistance"})
 class TransactionApiControllerTest extends IntegrationTestBase {
 
     @Test
@@ -43,7 +40,7 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .hasSize(5); // Пять пользователей по одной транзакции каждый
     }
 
-    private static UserEntity getUserEntity(String name, String password, String accountNumber) {
+    private static UserEntity getUserEntity(final String name, final String password, final String accountNumber) {
         TransactionEntity transactionEntity = TransactionEntity.builder()
             .sum(new BigDecimal("2000.0"))
             .type(TransactionType.DEPOSIT)
@@ -84,7 +81,7 @@ class TransactionApiControllerTest extends IntegrationTestBase {
         extracted(allTransaction);
     }
 
-    private static void extracted(List<TransactionRs> allTransaction) {
+    private static void extracted(final List<TransactionRs> allTransaction) {
         assertThat(allTransaction)
             .hasSize(4)
             .usingElementComparatorIgnoringFields("createDateTime", "updateDateTime")
@@ -239,7 +236,6 @@ class TransactionApiControllerTest extends IntegrationTestBase {
         Assert.assertTrue(true);
     }
 
-
     @Test
     void getTransactionByIdShouldWork() {
         final UserEntity userEntity = getUserEntity();
@@ -261,7 +257,6 @@ class TransactionApiControllerTest extends IntegrationTestBase {
                 .status(TransactionType.TRANSFER.toString())
                 .description(null)
                 .build());
-
 
         // TODO не работает из за  Lazy Inicialization Exception by AccountEntity не лечится ни как
         //extracted();
@@ -373,7 +368,6 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .returnResult()
             .getResponseBody();
     }
-
 
     private TransactionRs getTransactionById(final String id, final int status) {
         return webTestClient.get()

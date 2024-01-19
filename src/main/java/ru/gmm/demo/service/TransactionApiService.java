@@ -1,6 +1,5 @@
 package ru.gmm.demo.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -96,7 +95,7 @@ public class TransactionApiService {
     public TransactionRs findById(final String id) {
         Optional<TransactionEntity> transactionOptional = transactionRepository.findById(Long.valueOf(id));
         transactionOptional.orElseThrow(() -> new ServiceException(ERR_CODE_003, id));
-        return  transactionMapper.toTransactionRs(transactionOptional.get());
+        return transactionMapper.toTransactionRs(transactionOptional.get());
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
