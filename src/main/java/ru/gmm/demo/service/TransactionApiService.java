@@ -1,8 +1,8 @@
 package ru.gmm.demo.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,17 +19,19 @@ import ru.gmm.demo.repository.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import static ru.gmm.demo.exception.ErrorCode.ERR_CODE_003;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Lazy)
 @Service
 @Slf4j
 public class TransactionApiService {
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
     private final TransactionMapper transactionMapper;
+
+    @Lazy
+    private final TransactionApiService self;
 
     @Transactional
     public TransactionEntity createTransaction(final CreateTransactionRq createTransactionRq) {
@@ -94,17 +96,16 @@ public class TransactionApiService {
 
     @Transactional(readOnly = true)
     public TransactionRs findById(final String id) {
-        Optional<TransactionEntity> transactionOptional = transactionRepository.findById(Long.valueOf(id));
-        transactionOptional.orElseThrow(() -> new ServiceException(ERR_CODE_003, id));
-        return  transactionMapper.toTransactionRs(transactionOptional.get());
+        return transactionRepository.findById(Long.valueOf(id))
+            .map(transactionMapper::toTransactionRs)
+            .orElseThrow(() -> new ServiceException(ERR_CODE_003, id));
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public TransactionEntity updateTransaction(final String id, final TransactionUpdateRq transactionUpdateRq) {
-        final TransactionEntity transactionEntity = transactionRepository.findById(Long.parseLong(id))
-            .orElseThrow();
-
-        return transactionMapper.toTransactionEntity(transactionEntity, transactionUpdateRq);
+        return transactionRepository.findById(Long.parseLong(id))
+            .map(transaction -> transactionMapper.toTransactionEntity(transaction, transactionUpdateRq))
+            .orElseThrow(() -> new ServiceException(ERR_CODE_003, id));
     }
 
     public void deleteTransactionById(final Long id) {

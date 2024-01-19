@@ -1,10 +1,7 @@
 package ru.gmm.demo.controller;
 
-import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import ru.gmm.demo.model.AccountEntity;
 import ru.gmm.demo.model.TransactionEntity;
@@ -23,25 +20,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@RequiredArgsConstructor(onConstructor_ = {@Lazy})
 @SuppressWarnings("PMD.TooManyMethods")
 class TransactionApiControllerTest extends IntegrationTestBase {
-
-    @Test
-    void getAllTransactionShouldWorkFiveUsers() {
-        List<UserEntity> users = new ArrayList<>();
-
-        // Создаем пять пользователей, у каждого по одному счету
-        for (int i = 0; i < 5; i++) {
-            users.add(getUserEntity("user" + i, "pass" + i, "0123456" + i));
-        }
-
-        userRepository.saveAll(users);
-
-        List<TransactionRs> allTransaction = getAllTransaction(200);
-        assertThat(allTransaction)
-            .hasSize(5); // Пять пользователей по одной транзакции каждый
-    }
 
     private static UserEntity getUserEntity(String name, String password, String accountNumber) {
         TransactionEntity transactionEntity = TransactionEntity.builder()
@@ -70,18 +50,6 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .build()
             .withAccount(account1)
             .withAccount(account2);
-    }
-
-    @Test
-    void getAllTransactionShouldWork() {
-        // создаем первую транзакцию
-        final UserEntity userEntity = getUserEntity();
-
-        userRepository.save(userEntity);
-
-        List<TransactionRs> allTransaction = getAllTransaction(200);
-
-        extracted(allTransaction);
     }
 
     private static void extracted(List<TransactionRs> allTransaction) {
@@ -167,19 +135,6 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .withAccount(account2);
     }
 
-    private List<TransactionRs> getAllTransaction(final int status) {
-        return webTestClient.get()
-            .uri(uriBuilder -> uriBuilder
-                .pathSegment("api", "transaction")
-                .build())
-            .exchange()
-            .expectStatus().isEqualTo(status)
-            .expectBody(new ParameterizedTypeReference<List<TransactionRs>>() {
-            })
-            .returnResult()
-            .getResponseBody();
-    }
-
     private static AccountEntity createAccount(final String sum,
                                                final String number,
                                                final TransactionEntity transactionsFrom,
@@ -191,6 +146,47 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .build()
             .withTransactionsFrom(transactionsFrom)
             .withTransactionTo(transactionsTo);
+    }
+
+    @Test
+    void getAllTransactionShouldWorkFiveUsers() {
+        List<UserEntity> users = new ArrayList<>();
+
+        // Создаем пять пользователей, у каждого по одному счету
+        for (int i = 0; i < 5; i++) {
+            users.add(getUserEntity("user" + i, "pass" + i, "0123456" + i));
+        }
+
+        userRepository.saveAll(users);
+
+        List<TransactionRs> allTransaction = getAllTransaction(200);
+        assertThat(allTransaction)
+            .hasSize(5); // Пять пользователей по одной транзакции каждый
+    }
+
+    @Test
+    void getAllTransactionShouldWork() {
+        // создаем первую транзакцию
+        final UserEntity userEntity = getUserEntity();
+
+        userRepository.save(userEntity);
+
+        List<TransactionRs> allTransaction = getAllTransaction(200);
+
+        extracted(allTransaction);
+    }
+
+    private List<TransactionRs> getAllTransaction(final int status) {
+        return webTestClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "transaction")
+                .build())
+            .exchange()
+            .expectStatus().isEqualTo(status)
+            .expectBody(new ParameterizedTypeReference<List<TransactionRs>>() {
+            })
+            .returnResult()
+            .getResponseBody();
     }
 
     @Test
@@ -234,19 +230,24 @@ class TransactionApiControllerTest extends IntegrationTestBase {
                 assertThat(transactionRepository.getSum()).isEqualTo("1000.00");
                 assertThat(transactionRepository.getDescription()).isNull();
             });
-
-        // Вот пример добавления утверждения в конце метода
-        Assert.assertTrue(true);
     }
-
 
     @Test
     void getTransactionByIdShouldWork() {
-        final UserEntity userEntity = getUserEntity();
-
-        userRepository.save(userEntity);
-        // Простое утверждение для успешного завершения теста
-        //Assert.assertTrue(true);
+        TransactionEntity transactionEntity = TransactionEntity.builder()
+            .sum(new BigDecimal("50.00"))
+            .type(TransactionType.TRANSFER)
+            .build();
+        userRepository.save(UserEntity.builder()
+            .password("321")
+            .build()
+            .withAccount(AccountEntity.builder()
+                .number("123")
+                .sum(new BigDecimal("100.00"))
+                .build()
+                .withTransactionTo(transactionEntity)
+                .withTransactionsFrom(transactionEntity)
+            ));
 
         TransactionRs transactionById = getTransactionById("1", 200);
 
@@ -255,45 +256,26 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .ignoringFields("updateDateTime", "createDateTime")
             .isEqualTo(TransactionRs.builder()
                 .id("1")
-                .accountFrom("0123456")
-                .accountTo("1234567")
-                .sum(new BigDecimal("3000.00"))
+                .accountFrom("123")
+                .accountTo("123")
+                .sum(new BigDecimal("50.00"))
                 .status(TransactionType.TRANSFER.toString())
-                .description(null)
                 .build());
-
 
         // TODO не работает из за  Lazy Inicialization Exception by AccountEntity не лечится ни как
-        //extracted();
-    }
-
-    //    @Lazy
-    //    private final AccountApiController self;
-    //    @Transactional(readOnly = true)
-    void extracted() {
-        List<TransactionEntity> transactions = transactionRepository.findAll();
-        TransactionEntity firstTransaction = transactions.get(0);
-
-        // Инициализируем лениво загруженные поля
-        Hibernate.initialize(firstTransaction.getAccountFrom());
-        Hibernate.initialize(firstTransaction.getAccountTo());
-
-        // Выполняем явную загрузку связанных данных
-        String accountFromNumber = firstTransaction.getAccountFrom().getNumber();
-        String accountToNumber = firstTransaction.getAccountTo().getNumber();
-
-        assertThat(transactions)
-            .hasSize(4)
-            .first()
-            .usingRecursiveComparison()
-            .ignoringFields("updateDateTime", "createDateTime")
-            .isEqualTo(TransactionEntity.builder()
-                .id(Long.valueOf("1"))
-                .accountFrom(AccountEntity.builder().number(accountFromNumber).build())
-                .accountTo(AccountEntity.builder().number(accountToNumber).build())
-                .sum(new BigDecimal("3000.00"))
-                .description(null)
-                .build());
+        executeInTransaction(() -> {
+            assertThat(transactionRepository.findById(1L))
+                .get()
+                .satisfies(transaction1 -> {
+                    assertThat(transaction1)
+                        .usingRecursiveComparison()
+                        .ignoringFields("audit", "id", "accountTo", "accountFrom")
+                        .isEqualTo(TransactionEntity.builder()
+                            .type(TransactionType.TRANSFER)
+                            .sum(new BigDecimal("50.00"))
+                            .build());
+                });
+        });
     }
 
     @Test
@@ -373,7 +355,6 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .returnResult()
             .getResponseBody();
     }
-
 
     private TransactionRs getTransactionById(final String id, final int status) {
         return webTestClient.get()
