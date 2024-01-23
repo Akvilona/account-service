@@ -240,6 +240,61 @@ class TransactionApiControllerTest extends IntegrationTestBase {
     }
 
     @Test
+    void createTransactionTRANSFER() {
+        AccountEntity accountEntityFirst = AccountEntity.builder()
+            .sum(new BigDecimal("123000"))
+            .status(AccountStatus.OPENED)
+            .number("123456")
+            .build();
+
+        AccountEntity accountEntitySecond = AccountEntity.builder()
+            .sum(new BigDecimal("123000"))
+            .status(AccountStatus.OPENED)
+            .number("123457")
+            .build();
+
+        UserEntity userEntity = UserEntity.builder()
+            .name("test")
+            .password("123")
+            .build()
+            .withAccount(accountEntityFirst)
+            .withAccount(accountEntitySecond);
+
+        userRepository.save(userEntity);
+
+        CreateTransactionRq request = CreateTransactionRq.builder()
+            .accountFrom(accountEntityFirst.getNumber())
+            .accountTo(accountEntitySecond.getNumber())
+            .sum(new BigDecimal("1000.00"))
+            .type(CreateTransactionRq.TypeEnum.TRANSFER)
+            .build();
+
+        CreateTransactionRs createTransactionRs = createTransaction(request, 200);
+
+        assertThat(createTransactionRs)
+            .usingRecursiveComparison()
+            .ignoringFields("id")
+            .isEqualTo(CreateTransactionRs.builder()
+                .status(CreateTransactionRq.TypeEnum.TRANSFER.name())
+                .sum(request.getSum())
+                .build());
+
+        assertThat(transactionRepository.findAll())
+            .hasSize(1)
+            .first()
+            .satisfies(transactionRepository -> {
+                assertThat(transactionRepository.getId()).isNotNull();
+                assertThat(transactionRepository.getSum()).isEqualTo("1000.00");
+                assertThat(transactionRepository.getDescription()).isNull();
+            });
+
+        assertThat(accountRepository.findById(accountEntityFirst.getId()))
+            .get()
+            .extracting(AccountEntity::getSum)
+            .isEqualTo(new BigDecimal("122000.00"));
+    }
+
+    @Test
     void getTransactionByIdShouldWork() {
         final UserEntity userEntity = getUserEntity();
 
@@ -330,7 +385,7 @@ class TransactionApiControllerTest extends IntegrationTestBase {
     }
 
     @Test
-    //    @Disabled
+        //    @Disabled
     void deleteTransactionByIdShouldWork() {
         // Arrange
         final UserEntity userEntity = getUserEntity();
