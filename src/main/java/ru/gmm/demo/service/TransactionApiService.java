@@ -33,6 +33,15 @@ public class TransactionApiService {
 
     @Transactional
     public TransactionEntity createTransaction(final CreateTransactionRq createTransactionRq) {
+        AccountEntity accountEntityFrom = accountRepository.findOpenedAccountByNumber(createTransactionRq.getAccountFrom())
+            .orElseThrow(() -> new ServiceException(ERR_CODE_003, createTransactionRq.getAccountFrom()));
+
+        final BigDecimal transactionSum = createTransactionRq.getSum();
+        final BigDecimal remainingBalance = accountEntityFrom.getSum().subtract(transactionSum);
+        if (remainingBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ServiceException(ErrorCode.ERR_CODE_004, createTransactionRq.getAccountFrom());
+        }
+
         return switch (createTransactionRq.getType()) {
             case TRANSFER -> createTransferTransaction(createTransactionRq);
             case DEPOSIT -> createDepositTransaction(createTransactionRq);
