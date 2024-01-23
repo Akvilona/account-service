@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static ru.gmm.demo.exception.ErrorCode.ERR_CODE_003;
+import static ru.gmm.demo.exception.ErrorCode.ERR_CODE_008;
 
 @RequiredArgsConstructor
 @Service
@@ -68,12 +69,11 @@ public class TransactionApiService {
 
     private TransactionEntity createTransferTransaction(final CreateTransactionRq request) {
         if (request.getAccountFrom().equals(request.getAccountTo())) {
-            throw new ServiceException(ERR_CODE_003, request.getAccountFrom());
+            throw new ServiceException(ERR_CODE_008, request.getAccountFrom());
         }
 
         final AccountEntity accountFrom = accountRepository.findOpenedAccountByNumber(request.getAccountFrom())
-            .orElseThrow(() -> new ServiceException(ErrorCode.ERR_CODE_008, request.getAccountFrom()));
-
+            .orElseThrow(() -> new ServiceException(ERR_CODE_003, request.getAccountFrom()));
 
         final BigDecimal transactionSum = request.getSum();
         final BigDecimal remainingBalance = accountFrom.getSum().subtract(transactionSum);
@@ -83,7 +83,6 @@ public class TransactionApiService {
 
         final AccountEntity accountTo = accountRepository.findOpenedAccountByNumber(request.getAccountTo())
             .orElseThrow(() -> new ServiceException(ERR_CODE_003, request.getAccountTo()));
-
 
         final BigDecimal newBalance = accountTo.getSum().add(transactionSum);
         accountFrom.setSum(remainingBalance);

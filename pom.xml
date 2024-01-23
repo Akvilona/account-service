@@ -102,13 +102,6 @@
             <artifactId>annotations</artifactId>
             <version>${annotations.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.25.1</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -151,7 +144,7 @@
             </plugin>
             <plugin>
                 <groupId>org.openapitools</groupId>
-                <artifactId> </artifactId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
                 <version>${openapi-generator-maven-plugin.version}</version>
                 <executions>
                     <execution>
