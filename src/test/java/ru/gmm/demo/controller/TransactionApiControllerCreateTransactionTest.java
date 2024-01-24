@@ -34,7 +34,6 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
 
         CreateTransactionRq request = CreateTransactionRq.builder()
             .accountTo(accountEntity.getNumber())
-            .accountFrom(accountEntity.getNumber())
             .sum(new BigDecimal("1000.00"))
             .type(CreateTransactionRq.TypeEnum.DEPOSIT)
             .build();
@@ -58,7 +57,6 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
                 assertThat(transactionRepository.getDescription()).isNull();
             });
 
-        //todo: СДЕЛАНО: добавить проверку что деньги начислились
         assertThat(accountRepository.findById(accountEntity.getId()))
             .get()
             .extracting(AccountEntity::getSum)
@@ -119,47 +117,29 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
             .extracting(AccountEntity::getSum)
             .isEqualTo(new BigDecimal("122000.00"));
 
-        //todo: СДЕЛАНО добавить проверку что деньги с другого счета с̶н̶я̶л̶и̶с̶ь̶ зачислились
         assertThat(accountRepository.findById(accountEntitySecond.getId()))
             .get()
             .extracting(AccountEntity::getSum)
             .isEqualTo(new BigDecimal("124000.00"));
-
-        // деньги со счета снялись
-        assertThat(accountRepository.findById(accountEntityFirst.getId()))
-            .get()
-            .extracting(AccountEntity::getSum)
-            .isEqualTo(new BigDecimal("122000.00"));
     }
 
     @Test
     void createTransactionWithdrawalSuccessPath() {
-
-        //todo: СДЕЛАНО добавить проверку что деньги со счета снялись
         AccountEntity accountEntityFist = AccountEntity.builder()
             .sum(new BigDecimal("123000.00"))
             .status(AccountStatus.OPENED)
             .number("123456")
             .build();
-
-        AccountEntity accountEntitySecpmd = AccountEntity.builder()
-            .sum(new BigDecimal("0.00"))
-            .status(AccountStatus.CLOSED)
-            .number("123457")
-            .build();
-
         UserEntity userEntity = UserEntity.builder()
             .name("user")
             .password("123")
             .build()
-            .withAccount(accountEntityFist)
-            .withAccount(accountEntitySecpmd);
+            .withAccount(accountEntityFist);
 
         userRepository.save(userEntity);
 
         CreateTransactionRq createTransactionRq = CreateTransactionRq.builder()
             .accountFrom(accountEntityFist.getNumber())
-            .accountTo(accountEntitySecpmd.getNumber())
             .type(CreateTransactionRq.TypeEnum.WITHDRAWAL)
             .sum(new BigDecimal("1000.00"))
             .build();
@@ -180,23 +160,17 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
             .satisfies(transactionRepository -> {
                 assertThat(transactionRepository.getId()).isNotNull();
                 assertThat(transactionRepository.getSum()).isEqualTo("1000.00");
-                assertThat(transactionRepository.getType().toString()).isEqualTo(createTransactionRq.getType().toString());
+                assertThat(transactionRepository.getType()).hasToString(createTransactionRq.getType().toString());
             });
 
         assertThat(accountRepository.findById(accountEntityFist.getId()))
             .get()
             .extracting(AccountEntity::getSum)
             .isEqualTo(new BigDecimal("122000.00"));
-
-        assertThat(accountRepository.findById(accountEntitySecpmd.getId()))
-            .get()
-            .extracting(AccountEntity::getSum)
-            .isEqualTo(new BigDecimal("0.00"));
     }
 
     @Test
     void createTransactionTransferErrCode008() {
-        //todo СДЕЛАНО: check if ERR_CODE_008 was throws
         AccountEntity accountEntity = AccountEntity.builder()
             .number("123456")
             .status(AccountStatus.OPENED)
@@ -219,14 +193,13 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
             .sum(new BigDecimal("1000.00"))
             .build();
 
-        Result result = createTransactionCode008(createTransactionRq, 400);
-        assertThat(result.getCode()).isEqualTo("ERR.CODE.008");
-
+        assertThat(createTransactionError(createTransactionRq, 400))
+            .extracting(Result::getCode)
+            .isEqualTo("ERR.CODE.008");
     }
 
     @Test
     void createTransactionTransferAccountFromNotExistErrCode003() {
-        //todo СДЕЛАНО check if ERR_CODE_003 was throws
         AccountEntity accountEntity = AccountEntity.builder()
             .number("12345")
             .sum(new BigDecimal("123000.00"))
@@ -248,15 +221,13 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
             .type(CreateTransactionRq.TypeEnum.DEPOSIT)
             .build();
 
-        Result result = createTransactionCode008(transactionRq, 400);
-        assertThat(result.getCode()).isEqualTo("ERR.CODE.003");
-        assertThat(result.getDescription()).isEqualTo("Счет с id 11111 не найден");
-
+        assertThat(createTransactionError(transactionRq, 400))
+            .extracting(Result::getCode, Result::getDescription)
+            .containsExactly("ERR.CODE.003", "Счет с id 11111 не найден");
     }
 
     @Test
     void createTransactionTransferNotEnoughMoneyErrCode004() {
-        //todo СДЕЛАНО check if ERR_CODE_004 was throws
         AccountEntity accountEntityFrom = AccountEntity.builder()
             .sum(new BigDecimal("1000.00"))
             .number("12345")
@@ -283,9 +254,9 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
             .type(CreateTransactionRq.TypeEnum.DEPOSIT)
             .build();
 
-        Result result = createTransactionCode008(createTransactionRq, 400);
-        assertThat(result.getCode()).isEqualTo("ERR.CODE.004");
-        assertThat(result.getDescription()).isEqualTo("Счет с id 12345 имеет недостаточно средств");
+        assertThat(createTransactionError(createTransactionRq, 400))
+            .extracting(Result::getCode, Result::getDescription)
+            .containsExactly("ERR.CODE.004", "Счет с id 12345 имеет недостаточно средств");
     }
 
     @Test
@@ -306,7 +277,7 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
             .getResponseBody();
     }
 
-    private Result createTransactionCode008(final CreateTransactionRq request, final int status) {
+    private Result createTransactionError(final CreateTransactionRq request, final int status) {
         return webTestClient.post()
             .uri(uriBuilder -> uriBuilder
                 .pathSegment("api", "transaction")
