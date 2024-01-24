@@ -261,7 +261,7 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
 
     @Test
     void createTransactionTransferAccountToNotExistErrCode003() {
-        //todo СДНЛПНО check if ERR_CODE_003 was throws
+        //todo СДЕЛАНО check if ERR_CODE_003 was throws
         AccountEntity accountEntityFrom = AccountEntity.builder()
             .sum(new BigDecimal("2000.00"))
             .number("12345")
