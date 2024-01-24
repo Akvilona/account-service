@@ -262,6 +262,35 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
     @Test
     void createTransactionTransferAccountToNotExistErrCode003() {
         //todo check if ERR_CODE_003 was throws
+        AccountEntity accountEntityFrom = AccountEntity.builder()
+            .sum(new BigDecimal("2000.00"))
+            .number("12345")
+            .build();
+
+        AccountEntity accountEntityTo = AccountEntity.builder()
+            .sum(new BigDecimal("0.00"))
+            .number("12346")
+            .build();
+
+        UserEntity userEntity = UserEntity.builder()
+            .name("user")
+            .password("123456")
+            .build()
+            .withAccount(accountEntityFrom)
+            .withAccount(accountEntityTo);
+
+        userRepository.save(userEntity);
+
+        CreateTransactionRq createTransactionRq = CreateTransactionRq.builder()
+            .accountFrom(accountEntityFrom.getNumber())
+            .accountTo("111111")
+            .sum(new BigDecimal("2000.00"))
+            .type(CreateTransactionRq.TypeEnum.TRANSFER)
+            .build();
+
+        assertThat(createTransactionError(createTransactionRq, 400))
+            .extracting(Result::getCode, Result::getDescription)
+            .containsExactly("ERR.CODE.003", "Счет с id 111111 не найден");
     }
 
     private CreateTransactionRs createTransaction(final CreateTransactionRq request, final int status) {
