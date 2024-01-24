@@ -218,7 +218,7 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
             .accountFrom("11111")
             .accountTo("12345")
             .sum(new BigDecimal("1000.00"))
-            .type(CreateTransactionRq.TypeEnum.DEPOSIT)
+            .type(CreateTransactionRq.TypeEnum.TRANSFER)
             .build();
 
         assertThat(createTransactionError(transactionRq, 400))
@@ -251,12 +251,12 @@ class TransactionApiControllerCreateTransactionTest extends IntegrationTestBase 
             .accountFrom(accountEntityFrom.getNumber())
             .accountTo(accountEntityTo.getNumber())
             .sum(new BigDecimal("2000.00"))
-            .type(CreateTransactionRq.TypeEnum.DEPOSIT)
+            .type(CreateTransactionRq.TypeEnum.TRANSFER)
             .build();
 
         assertThat(createTransactionError(createTransactionRq, 400))
             .extracting(Result::getCode, Result::getDescription)
-            .containsExactly("ERR.CODE.004", "Счет с id 12345 имеет недостаточно средств");
+            .containsExactly("ERR.CODE.004", "Счет с id 1 имеет недостаточно средств");
     }
 
     @Test
