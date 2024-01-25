@@ -1,5 +1,4 @@
-@startuml
-
+@startuml # этот фал будет так же отображаться и на https://www.planttext.com/
 package "ru.gmm.demo.model" {
 
   class BaseEntity {
