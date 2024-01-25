@@ -1,0 +1,64 @@
+@startuml
+
+package "ru.gmm.demo.model" {
+
+  class BaseEntity {
+    + id: Long <<Mandatory>> # Уникальный идентификатор
+    + createDateTime: LocalDateTime <<Mandatory>> # Дата и время создания
+    + updateDateTime: LocalDateTime <<Nullable>> # Дата и время последнего обновления
+  }
+
+  class UserEntity {
+    + id: Long <<Mandatory>> # Уникальный идентификатор пользователя
+    + createDateTime: LocalDateTime <<Mandatory>> # Дата и время создания пользователя
+    + updateDateTime: LocalDateTime <<Nullable>> # Дата и время последнего обновления пользователя
+    + email: String <<Mandatory>> # Электронная почта пользователя
+    + name: String <<Nullable>> # Имя пользователя
+    + surname: String <<Nullable>> # Фамилия пользователя
+    + password: String <<Mandatory>> # Пароль пользователя
+  }
+
+  class AccountEntity {
+    + id: Long <<Mandatory>> # Уникальный идентификатор счета
+    + createDateTime: LocalDateTime <<Mandatory>> # Дата и время создания счета
+    + updateDateTime: LocalDateTime <<Nullable>> # Дата и время последнего обновления счета
+    + number: String <<Mandatory>> # Номер счета
+    + sum: BigDecimal <<Mandatory>> # Сумма на счете
+    + status: String <<Mandatory>> # Статус счета
+    + userId: Long <<Mandatory>> # Уникальный идентификатор пользователя, владеющего счетом
+  }
+
+  class TransactionEntity {
+    + id: Long <<Mandatory>> # Уникальный идентификатор транзакции
+    + createDateTime: LocalDateTime <<Mandatory>> # Дата и время создания транзакции
+    + updateDateTime: LocalDateTime <<Nullable>> # Дата и время последнего обновления транзакции
+    + sum: BigDecimal <<Mandatory>> # Сумма транзакции
+    + status: String <<Mandatory>> # Статус транзакции
+    + description: String <<Nullable>> # Описание транзакции
+    + accountFromId: Long <<Nullable>> # Уникальный идентификатор счета отправителя
+    + accountToId: Long <<Nullable>> # Уникальный идентификатор счета получателя
+  }
+
+  class Audit {
+    + createDateTime: LocalDateTime <<Mandatory>> # Дата и время создания записи
+    + updateDateTime: LocalDateTime <<Mandatory>> # Дата и время последнего обновления записи
+  }
+
+  enum AccountStatus {
+    OPENED
+    CLOSED
+  }
+
+  enum TransactionType {
+    DEPOSIT
+    WITHDRAWAL
+    TRANSFER
+  }
+
+  UserEntity --o{ AccountEntity: "1..*" # Один пользователь может иметь много счетов
+  AccountEntity }o--{ TransactionEntity: "1..*" # Один счет может быть связан с множеством транзакций (AccountFrom)
+  AccountEntity }o--{ TransactionEntity: "1..*" # Один счет может быть связан с множеством транзакций (AccountTo)
+
+}
+
+@enduml
