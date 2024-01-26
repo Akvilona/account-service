@@ -156,11 +156,8 @@
                                 ${project.basedir}/src/main/resources/openapi/openapi.yml
                             </inputSpec>
                             <generatorName>spring</generatorName>
-                            <apiPackage>ru.gmm.demo.controller.api</apiPackage>
-                            <modelPackage>ru.gmm.demo.model.api</modelPackage>
-                            <supportingFilesToGenerate>
-                                ApiUtil.java
-                            </supportingFilesToGenerate>
+                            <apiPackage>com.account.accountservice.controller.api</apiPackage>
+                            <modelPackage>com.account.accountservice.model.api</modelPackage>
                             <configOptions>
                                 <useTags>true</useTags>
                                 <openApiNullable>false</openApiNullable>
@@ -171,6 +168,29 @@
                                 <!--suppress UnresolvedMavenProperty -->
                                 <additionalModelTypeAnnotations>@lombok.Builder @lombok.NoArgsConstructor @lombok.AllArgsConstructor
                                 </additionalModelTypeAnnotations>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>client</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>
+                                ${project.basedir}/src/main/resources/openapi/openapi-fraud.yml
+                            </inputSpec>
+                            <generatorName>java</generatorName>
+                            <library>webclient</library>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <apiPackage>com.froud.fraudservice.client.api</apiPackage>
+                            <modelPackage>com.froud.fraudservice.client.dto</modelPackage>
+                            <invokerPackage>com.froud.fraudservice.client.invoker</invokerPackage>
+                            <configOptions>
+                                <openApiNullable>false</openApiNullable>
+                                <useJakartaEe>true</useJakartaEe>
                             </configOptions>
                         </configuration>
                     </execution>
