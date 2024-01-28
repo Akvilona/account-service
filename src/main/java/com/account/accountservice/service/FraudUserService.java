@@ -4,6 +4,8 @@
 
 package com.account.accountservice.service;
 
+import com.account.accountservice.exception.ErrorCode;
+import com.account.accountservice.exception.ServiceException;
 import com.account.accountservice.model.api.FraudUser;
 import com.froud.fraudservice.client.api.FraudUserApi;
 import com.froud.fraudservice.client.dto.FraudUserFraudRequest;
@@ -26,6 +28,10 @@ public class FraudUserService {
 
         FraudUserFraudRequest result = fraudClient.postFraudUserById(fraudUserRequest)
             .block();
+
+        if (result == null) {
+            throw new ServiceException(ErrorCode.ERR_CODE_009);
+        }
 
         return FraudUser.builder()
             .id(result.getId())

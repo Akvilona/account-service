@@ -1,0 +1,170 @@
+openapi: 3.0.2
+components:
+  schemas:
+    FraudUserFraudRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        firstName:
+          type: string
+          example: userName
+        userEmail:
+          type: string
+          example: example@mail.ru
+        age:
+          type: integer
+          example: 25
+      required:
+        - firstName
+        - userEmail
+info:
+  title: fraud user app
+  description: fraud user app description
+  termsOfService: 'https://editor.swagger.io/ or https://editor-next.swagger.io/'
+  contact:
+    email: example@gmail.com
+    url: 'https://editor-next.swagger.io/'
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 0.0.1-SNAPSHOT
+externalDocs:
+  description: Find out more about swagger
+  url: 'https://swagger.io/specification/'
+servers:
+  - url: 'http://localhost:8082'
+tags:
+  - name: Fraud User
+  - name: Depo Data
+paths:
+  '/users/{id}':
+    delete:
+      tags:
+        - Fraud User
+      summary: Delete Fraud User by ID
+      operationId: deleteFraudUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: id of the Fraud User
+      responses:
+        '200':
+          description: Successful operation
+  /users:
+    get:
+      tags:
+        - Fraud User
+      summary: Check Fraud User by email number
+      operationId: checkFraudUserByEmail
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+          description: email number of the Fraud User
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: boolean
+    post:
+      tags:
+        - Fraud User
+      summary: Add Fraud User to DB
+      operationId: postFraudUserById
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+               $ref: '#/components/schemas/FraudUserFraudRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FraudUserFraudRequest'
+  /depo-data:
+    get:
+      tags:
+        - Depo Data
+      summary: getDepoData
+      operationId: getDepoData
+      parameters:
+        - name: dateFrom
+          in: query
+          description: С какой даты делать выборку в формате yyyy-mm-dd
+          required: true
+          schema:
+            type: string
+          example: 2020-12-31T00:00:00.000Z
+        - name: dateTo
+          in: query
+          description: По какую даты делать выборку в формате yyyy-mm-dd
+          required: true
+          schema:
+            type: string
+          example: 2024-12-31T00:00:00.000Z
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    depositorType:
+                      type: string
+                    balanceAccountNumber:
+                      type: string
+                    personalAccountNumber:
+                      type: string
+                    reminderActive:
+                      type: number
+                    reminderPassive:
+                      type: number
+                    taxBase:
+                      type: number
+                    vatSumTimeDiff:
+                      type: number
+                    decreaseSumTimeDiff:
+                      type: number
+                    sumLoss:
+                      type: number
+                    ndsPercent:
+                      type: number
+                    finResult:
+                      type: number
+                    addCapital:
+                      type: number
+                    finResultVat:
+                      type: number
+                    addCapital2:
+                      type: number
+                    sumOna:
+                      type: number
+                    finResultVat2:
+                      type: number
+                    addCapital3:
+                      type: number
+                    sumTakenLoss:
+                      type: number
+                    saldo61701:
+                      type: number
+                    saldo61703:
+                      type: number
+                    saldo10609:
+                      type: number

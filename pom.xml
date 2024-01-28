@@ -179,7 +179,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>
-                                ${project.basedir}/src/main/resources/openapi/openapi-fraud.yml
+                                ${project.basedir}/src/main/resources/openapi/fraud-openapi.yml
                             </inputSpec>
                             <generatorName>java</generatorName>
                             <library>webclient</library>

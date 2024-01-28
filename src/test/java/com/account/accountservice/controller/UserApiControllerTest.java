@@ -13,14 +13,12 @@ import com.account.accountservice.model.support.BaseEntity;
 import com.account.accountservice.support.IntegrationTestBase;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 
 @SuppressWarnings({"IllegalMethodCall", "PMD.TooManyMethods", "PMD.JUnitTestsShouldIncludeAssert"})
 class UserApiControllerTest extends IntegrationTestBase {
@@ -32,9 +30,6 @@ class UserApiControllerTest extends IntegrationTestBase {
             .password("12345678")
             .build();
 
-        Mockito.when(fraudClient.checkFraud(any()))
-            .thenReturn(false);
-
         UserRegistrationRs userRegistrationRs = postUser(request, 200);
 
         assertThat(userRegistrationRs)
@@ -42,7 +37,7 @@ class UserApiControllerTest extends IntegrationTestBase {
             .extracting(UserRegistrationRs::getId)
             .isNotNull();
 
-        Assertions.assertThat(userRepository.findAll())
+        assertThat(userRepository.findAll())
             .hasSize(1)
             .first()
             .hasFieldOrPropertyWithValue("email", request.getEmail())

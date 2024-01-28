@@ -32,6 +32,7 @@ public interface UserMapper {
     @Mapping(target = "surname", source = "userUpdateRq.surname")
     void updateWithUserUpdateRq(@MappingTarget UserEntity userEntity, UserUpdateRq userUpdateRq);
 
+    @Mapping(target = "id", source = "userEntity.id")
     UserRegistrationRs mapToUserRegistrationRs(UserEntity userEntity);
 
     UserRs mapToUserRs(UserEntity userEntity);

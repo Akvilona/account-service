@@ -1,6 +1,6 @@
 openapi: 3.0.2
 # for build full openapi file:
-# create one file   -> Created C:\Java\account-service\src\main\resources\openapi\openapi.yaml from C:\Java\account-service\src\main\resources\openapi\openapi.yml
+# create one file   ->
 #PS C:\Java\account-service>
 # Swagger Editor    -> https://editor-next.swagger.io/ or https://editor.swagger.io/
 # start the program -> http://localhost:8080/swagger-ui/index.html
