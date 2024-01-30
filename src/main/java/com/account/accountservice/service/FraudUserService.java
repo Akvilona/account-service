@@ -43,4 +43,8 @@ public class FraudUserService {
     public void deleteFraudUserByIdInInFraudService(final Long id) {
         fraudClient.deleteFraudUserById(id);
     }
+
+    public Boolean checkFraudUserByEmailABoolean(final String email) {
+        return fraudClient.checkFraudUserByEmail(email).block();
+    }
 }

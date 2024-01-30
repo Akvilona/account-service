@@ -15,7 +15,8 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../schemas/user/FraudUser.yml'
+            type: boolean
+            #$ref: '../schemas/user/FraudUser.yml'
       description: ID, email, number of the Fraud User
 post:
   tags:
