@@ -1,20 +1,18 @@
 package com.account.accountservice.controller;
 
 import com.account.accountservice.model.UserEntity;
-import com.account.accountservice.model.api.TransactionRs;
-import com.account.accountservice.model.api.TransactionUpdateRq;
 import com.account.accountservice.model.enums.TransactionType;
 import com.account.accountservice.support.DataProvider;
 import com.account.accountservice.support.IntegrationTestBase;
-import org.assertj.core.api.AssertionsForClassTypes;
-import org.assertj.core.api.AssertionsForInterfaceTypes;
+import com.openapi.accountservice.server.model.api.TransactionRs;
+import com.openapi.accountservice.server.model.api.TransactionUpdateRq;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
 class TransactionApiControllerTest extends IntegrationTestBase {
@@ -93,7 +91,6 @@ class TransactionApiControllerTest extends IntegrationTestBase {
                 .accountTo("1234567")
                 .sum(new BigDecimal("3000.00"))
                 .status(TransactionType.TRANSFER.toString())
-                .description(null)
                 .build());
     }
 
@@ -120,12 +117,12 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .extracting(TransactionUpdateRq::getId)
             .isNotNull();
 
-        AssertionsForInterfaceTypes.assertThat(transactionRepository.findAll())
+        assertThat(transactionRepository.findAll())
             .hasSize(4)
             .last()
             .satisfies(transaction -> {
-                AssertionsForClassTypes.assertThat(transaction.getSum()).isEqualByComparingTo(new BigDecimal("3000"));
-                AssertionsForClassTypes.assertThat(transaction.getDescription()).isEqualTo(request.getDescription());
+                assertThat(transaction.getSum()).isEqualByComparingTo(new BigDecimal("3000"));
+                assertThat(transaction.getDescription()).isEqualTo(request.getDescription());
             })
             .isNotNull();
     }
@@ -138,9 +135,9 @@ class TransactionApiControllerTest extends IntegrationTestBase {
         deleteTransactionBy("1", 200);
 
         executeInTransaction(() ->
-            AssertionsForInterfaceTypes.assertThat(transactionRepository.findAll())
+            assertThat(transactionRepository.findAll())
                 .allSatisfy(transaction ->
-                    AssertionsForClassTypes.assertThat(transaction)
+                    assertThat(transaction)
                         .usingRecursiveComparison()
                         .ignoringFields("accountFrom", "accountTo")  // Игнорирование поля user при сравнении
                         .isNotNull()

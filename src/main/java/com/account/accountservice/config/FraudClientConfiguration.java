@@ -1,6 +1,6 @@
 package com.account.accountservice.config;
 
-import com.froud.fraudservice.client.api.FraudUserApi;
+import com.openapi.fraudservice.client.api.FraudUserApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

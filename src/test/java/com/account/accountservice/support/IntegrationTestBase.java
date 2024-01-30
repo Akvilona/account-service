@@ -3,7 +3,7 @@ package com.account.accountservice.support;
 import com.account.accountservice.repository.AccountRepository;
 import com.account.accountservice.repository.TransactionRepository;
 import com.account.accountservice.repository.UserRepository;
-import com.froud.fraudservice.client.dto.FraudUserFraudRequest;
+import com.openapi.fraudservice.client.api.FraudUserApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,7 +23,7 @@ public class IntegrationTestBase extends DatabaseAwareTestBase {
     protected TransactionRepository transactionRepository;
 
     @MockBean
-    protected FraudUserFraudRequest fraudClient;
+    protected FraudUserApi fraudUserApi;
 
     @Override
     protected String getSchema() {

@@ -2,10 +2,10 @@ package com.account.accountservice.mapper;
 
 import com.account.accountservice.model.AccountEntity;
 import com.account.accountservice.model.UserEntity;
-import com.account.accountservice.model.api.AccountRegistrationRq;
-import com.account.accountservice.model.api.AccountRegistrationRs;
-import com.account.accountservice.model.api.AccountRs;
-import com.account.accountservice.model.api.AccountUpdateRq;
+import com.openapi.accountservice.server.model.api.AccountRegistrationRq;
+import com.openapi.accountservice.server.model.api.AccountRegistrationRs;
+import com.openapi.accountservice.server.model.api.AccountRs;
+import com.openapi.accountservice.server.model.api.AccountUpdateRq;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

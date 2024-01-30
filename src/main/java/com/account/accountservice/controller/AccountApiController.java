@@ -1,13 +1,13 @@
 package com.account.accountservice.controller;
 
-import com.account.accountservice.controller.api.AccountApi;
 import com.account.accountservice.mapper.AccountMapper;
 import com.account.accountservice.model.AccountEntity;
-import com.account.accountservice.model.api.AccountRegistrationRq;
-import com.account.accountservice.model.api.AccountRegistrationRs;
-import com.account.accountservice.model.api.AccountRs;
-import com.account.accountservice.model.api.AccountUpdateRq;
 import com.account.accountservice.service.AccountApiService;
+import com.openapi.accountservice.server.controller.api.AccountApi;
+import com.openapi.accountservice.server.model.api.AccountRegistrationRq;
+import com.openapi.accountservice.server.model.api.AccountRegistrationRs;
+import com.openapi.accountservice.server.model.api.AccountRs;
+import com.openapi.accountservice.server.model.api.AccountUpdateRq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

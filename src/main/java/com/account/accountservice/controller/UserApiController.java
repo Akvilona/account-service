@@ -5,15 +5,15 @@
 
 package com.account.accountservice.controller;
 
-import com.account.accountservice.controller.api.UserApi;
 import com.account.accountservice.mapper.UserMapper;
 import com.account.accountservice.model.UserEntity;
-import com.account.accountservice.model.api.UserAccountRs;
-import com.account.accountservice.model.api.UserRegistrationRq;
-import com.account.accountservice.model.api.UserRegistrationRs;
-import com.account.accountservice.model.api.UserRs;
-import com.account.accountservice.model.api.UserUpdateRq;
 import com.account.accountservice.service.UserApiService;
+import com.openapi.accountservice.server.controller.api.UserApi;
+import com.openapi.accountservice.server.model.api.UserAccountRs;
+import com.openapi.accountservice.server.model.api.UserRegistrationRq;
+import com.openapi.accountservice.server.model.api.UserRegistrationRs;
+import com.openapi.accountservice.server.model.api.UserRs;
+import com.openapi.accountservice.server.model.api.UserUpdateRq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

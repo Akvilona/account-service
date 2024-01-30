@@ -4,14 +4,14 @@
 
 package com.account.accountservice.controller;
 
-import com.account.accountservice.controller.api.TransactionApi;
 import com.account.accountservice.mapper.TransactionMapper;
 import com.account.accountservice.model.TransactionEntity;
-import com.account.accountservice.model.api.CreateTransactionRq;
-import com.account.accountservice.model.api.CreateTransactionRs;
-import com.account.accountservice.model.api.TransactionRs;
-import com.account.accountservice.model.api.TransactionUpdateRq;
 import com.account.accountservice.service.TransactionApiService;
+import com.openapi.accountservice.server.controller.api.TransactionApi;
+import com.openapi.accountservice.server.model.api.CreateTransactionRq;
+import com.openapi.accountservice.server.model.api.CreateTransactionRs;
+import com.openapi.accountservice.server.model.api.TransactionRs;
+import com.openapi.accountservice.server.model.api.TransactionUpdateRq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

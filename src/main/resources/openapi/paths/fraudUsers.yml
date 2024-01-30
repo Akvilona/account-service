@@ -21,7 +21,7 @@ post:
   tags:
     - Fraud User
   summary: Add Fraud User to base
-  operationId: postFraudUserById
+  operationId: postFraudUser
   requestBody:
     required: true
     content:

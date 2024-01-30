@@ -3,13 +3,12 @@ package com.account.accountservice.controller;
 import com.account.accountservice.exception.Result;
 import com.account.accountservice.model.AccountEntity;
 import com.account.accountservice.model.UserEntity;
-import com.account.accountservice.model.api.AccountRegistrationRq;
-import com.account.accountservice.model.api.AccountRegistrationRs;
-import com.account.accountservice.model.api.AccountRs;
-import com.account.accountservice.model.api.AccountUpdateRq;
 import com.account.accountservice.model.enums.AccountStatus;
 import com.account.accountservice.support.IntegrationTestBase;
-import org.assertj.core.api.Assertions;
+import com.openapi.accountservice.server.model.api.AccountRegistrationRq;
+import com.openapi.accountservice.server.model.api.AccountRegistrationRs;
+import com.openapi.accountservice.server.model.api.AccountRs;
+import com.openapi.accountservice.server.model.api.AccountUpdateRq;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 
@@ -152,7 +151,7 @@ class AccountApiControllerTest extends IntegrationTestBase {
         accountRepository.save(account1);
         accountRepository.save(account2);
 
-        Assertions.assertThat(getAllAccount())
+        assertThat(getAllAccount())
             .hasSize(2)
             .containsExactlyInAnyOrder(
                 AccountRs.builder()

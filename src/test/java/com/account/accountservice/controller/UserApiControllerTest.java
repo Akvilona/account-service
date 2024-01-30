@@ -3,22 +3,24 @@ package com.account.accountservice.controller;
 import com.account.accountservice.exception.Result;
 import com.account.accountservice.model.AccountEntity;
 import com.account.accountservice.model.UserEntity;
-import com.account.accountservice.model.api.AccountRs;
-import com.account.accountservice.model.api.UserAccountRs;
-import com.account.accountservice.model.api.UserRegistrationRq;
-import com.account.accountservice.model.api.UserRegistrationRs;
-import com.account.accountservice.model.api.UserRs;
-import com.account.accountservice.model.api.UserUpdateRq;
 import com.account.accountservice.model.support.BaseEntity;
 import com.account.accountservice.support.IntegrationTestBase;
-import org.assertj.core.api.Assertions;
+import com.openapi.accountservice.server.model.api.AccountRs;
+import com.openapi.accountservice.server.model.api.UserAccountRs;
+import com.openapi.accountservice.server.model.api.UserRegistrationRq;
+import com.openapi.accountservice.server.model.api.UserRegistrationRs;
+import com.openapi.accountservice.server.model.api.UserRs;
+import com.openapi.accountservice.server.model.api.UserUpdateRq;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.core.ParameterizedTypeReference;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 @SuppressWarnings({"IllegalMethodCall", "PMD.TooManyMethods", "PMD.JUnitTestsShouldIncludeAssert"})
 class UserApiControllerTest extends IntegrationTestBase {
@@ -29,6 +31,9 @@ class UserApiControllerTest extends IntegrationTestBase {
             .email("test@mail.ru")
             .password("12345678")
             .build();
+
+        Mockito.when(fraudUserApi.checkFraudUserByEmail(any()))
+            .thenReturn(Mono.just(false));
 
         UserRegistrationRs userRegistrationRs = postUser(request, 200);
 
@@ -64,7 +69,7 @@ class UserApiControllerTest extends IntegrationTestBase {
         userRepository.save(userEntity1);
         userRepository.save(userEntity2);
 
-        Assertions.assertThat(getAllUsers())
+        assertThat(getAllUsers())
             .hasSize(2)
             .containsExactlyInAnyOrder(
                 UserRs.builder()
@@ -103,7 +108,7 @@ class UserApiControllerTest extends IntegrationTestBase {
 
     @Test
     void getUserByIdShouldReturnErrCode002() {
-        Assertions.assertThat(getUserByIdError("999", 400))
+        assertThat(getUserByIdError("999", 400))
             .isEqualTo(Result.builder()
                 .code("ERR.CODE.002")
                 .description("Пользователь с id 999 не найден")
@@ -172,7 +177,7 @@ class UserApiControllerTest extends IntegrationTestBase {
 
         userRepository.save(userEntity);
 
-        Assertions.assertThat(getUserAccountRs(userEntity.getId().toString(), 200))
+        assertThat(getUserAccountRs(userEntity.getId().toString(), 200))
             .hasFieldOrPropertyWithValue("id", userEntity.getId().toString())
             .hasFieldOrPropertyWithValue("name", userEntity.getName())
             .hasFieldOrPropertyWithValue("email", userEntity.getEmail())
@@ -224,7 +229,7 @@ class UserApiControllerTest extends IntegrationTestBase {
 
         deleteUser(userEntity.getId().toString());
 
-        Assertions.assertThat(userRepository.findAll())
+        assertThat(userRepository.findAll())
             .isEmpty();
     }
 
@@ -248,7 +253,7 @@ class UserApiControllerTest extends IntegrationTestBase {
         deleteUser(userEntity.getId().toString());
 
         executeInTransaction(() ->
-            Assertions.assertThat(userRepository.findAll())
+            assertThat(userRepository.findAll())
                 .hasSize(1)
                 .first()
                 .usingRecursiveComparison()

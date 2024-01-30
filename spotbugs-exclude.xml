@@ -21,4 +21,10 @@
     <Match>
         <Bug pattern="NM_CONFUSING"/>
     </Match>
+    <Match>
+        <Or>
+            <Package name="com.openapi.fraudservice.client.api.*"/>
+            <Package name="com.openapi.fraudservice.client.invoker.*"/>
+        </Or>
+    </Match>
 </FindBugsFilter>

@@ -6,10 +6,10 @@ package com.account.accountservice.mapper;
 
 import com.account.accountservice.model.AccountEntity;
 import com.account.accountservice.model.TransactionEntity;
-import com.account.accountservice.model.api.CreateTransactionRq;
-import com.account.accountservice.model.api.CreateTransactionRs;
-import com.account.accountservice.model.api.TransactionRs;
-import com.account.accountservice.model.api.TransactionUpdateRq;
+import com.openapi.accountservice.server.model.api.CreateTransactionRq;
+import com.openapi.accountservice.server.model.api.CreateTransactionRs;
+import com.openapi.accountservice.server.model.api.TransactionRs;
+import com.openapi.accountservice.server.model.api.TransactionUpdateRq;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

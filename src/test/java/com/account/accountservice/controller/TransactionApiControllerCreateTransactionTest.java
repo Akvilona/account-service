@@ -3,10 +3,10 @@ package com.account.accountservice.controller;
 import com.account.accountservice.exception.Result;
 import com.account.accountservice.model.AccountEntity;
 import com.account.accountservice.model.UserEntity;
-import com.account.accountservice.model.api.CreateTransactionRq;
-import com.account.accountservice.model.api.CreateTransactionRs;
 import com.account.accountservice.model.enums.AccountStatus;
 import com.account.accountservice.support.IntegrationTestBase;
+import com.openapi.accountservice.server.model.api.CreateTransactionRq;
+import com.openapi.accountservice.server.model.api.CreateTransactionRs;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 

@@ -6,9 +6,9 @@ package com.account.accountservice.service;
 
 import com.account.accountservice.exception.ErrorCode;
 import com.account.accountservice.exception.ServiceException;
-import com.account.accountservice.model.api.FraudUser;
-import com.froud.fraudservice.client.api.FraudUserApi;
-import com.froud.fraudservice.client.dto.FraudUserFraudRequest;
+import com.openapi.accountservice.server.model.api.FraudUser;
+import com.openapi.fraudservice.client.api.FraudUserApi;
+import com.openapi.fraudservice.client.dto.FraudUserFraudRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
