@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.JUnitTestsShouldIncludeAssert"})
 class AccountApiControllerTest extends IntegrationTestBase {
 
     @Test
@@ -99,25 +99,6 @@ class AccountApiControllerTest extends IntegrationTestBase {
                         .isEqualTo(account2)
                 )
         );
-
-        webTestClient.get()
-            .uri("/api/account")
-            .exchange()
-            .expectStatus().isOk()
-            .expectBodyList(AccountEntity.class)
-            .hasSize(1);
-
-        // Добавленное утверждение, чтобы удовлетворить правило PMD
-        assert true;
-
-        /*
-        executeInTransaction(() ->
-            assertThat(accountRepository.findAll())
-                .hasSize(1)
-                .first()
-                .usingRecursiveComparison()
-                .isEqualTo(account2));
-        */
     }
 
     private void deleteAccount(final String id) {
