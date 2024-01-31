@@ -4,8 +4,6 @@
 
 package com.account.accountservice.service;
 
-import com.account.accountservice.exception.ErrorCode;
-import com.account.accountservice.exception.ServiceException;
 import com.openapi.accountservice.server.model.api.FraudUser;
 import com.openapi.fraudservice.client.api.FraudUserApi;
 import com.openapi.fraudservice.client.dto.FraudUserFraudRequest;
@@ -17,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class FraudUserService {
-    private final FraudUserApi fraudClient;
+    private final FraudUserApi fraudUserApi;
 
     public FraudUser createFraudUserInFraudService(final FraudUser fraudUser) {
         FraudUserFraudRequest fraudUserRequest = new FraudUserFraudRequest();
@@ -26,12 +24,8 @@ public class FraudUserService {
         fraudUserRequest.setFirstName(fraudUser.getName());
         fraudUserRequest.setAge(18);
 
-        FraudUserFraudRequest result = fraudClient.postFraudUserById(fraudUserRequest)
+        FraudUserFraudRequest result = fraudUserApi.postFraudUserById(fraudUserRequest)
             .block();
-
-        if (result == null) {
-            throw new ServiceException(ErrorCode.ERR_CODE_009);
-        }
 
         return FraudUser.builder()
             .id(result.getId())
@@ -41,10 +35,10 @@ public class FraudUserService {
     }
 
     public void deleteFraudUserByIdInInFraudService(final Long id) {
-        fraudClient.deleteFraudUserById(id);
+        fraudUserApi.deleteFraudUserById(id);
     }
 
     public Boolean checkFraudUserByEmailABoolean(final String email) {
-        return fraudClient.checkFraudUserByEmail(email).block();
+        return fraudUserApi.checkFraudUserByEmail(email).block();
     }
 }

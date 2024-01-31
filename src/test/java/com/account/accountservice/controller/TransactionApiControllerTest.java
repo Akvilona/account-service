@@ -4,6 +4,8 @@ import com.account.accountservice.model.UserEntity;
 import com.account.accountservice.model.enums.TransactionType;
 import com.account.accountservice.support.DataProvider;
 import com.account.accountservice.support.IntegrationTestBase;
+import com.openapi.accountservice.server.model.api.CreateTransactionRq;
+import com.openapi.accountservice.server.model.api.CreateTransactionRs;
 import com.openapi.accountservice.server.model.api.TransactionRs;
 import com.openapi.accountservice.server.model.api.TransactionUpdateRq;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.TooManyMethods"})
 class TransactionApiControllerTest extends IntegrationTestBase {
 
     @Test
@@ -128,6 +130,56 @@ class TransactionApiControllerTest extends IntegrationTestBase {
     }
 
     @Test
+    void grtTransactionByIdErrCode003() {
+        final UserEntity userEntity = DataProvider.getUserEntity();
+
+        userRepository.save(userEntity);
+
+        TransactionRs transactionById = getTransactionById("1000", 400);
+
+        assertThat(transactionById)
+            .extracting(TransactionRs::getDescription)
+            .isEqualTo("Счет с id 1000 не найден");
+
+    }
+
+    @Test
+    void createTransactionErrCode003Deposit() {
+        CreateTransactionRq createTransactionRqDeposit = CreateTransactionRq.builder()
+            .accountFrom("0123456")
+            .accountTo("0123456_999")
+            .sum(new BigDecimal(3000))
+            .type(CreateTransactionRq.TypeEnum.DEPOSIT)
+            .description("any world")
+            .build();
+
+        CreateTransactionRs transactionRegistrationRs = createWithdrawalTransaction(createTransactionRqDeposit, 400);
+
+        assertThat(transactionRegistrationRs)
+            .extracting(CreateTransactionRs::getDescription)
+            .isEqualTo("Счет с id 0123456_999 не найден");
+
+    }
+
+    @Test
+    void createTransactionErrCode003Withdrawal() {
+        CreateTransactionRq createTransactionRqDeposit = CreateTransactionRq.builder()
+            .accountFrom("0123456")
+            .accountTo("0123456_999")
+            .sum(new BigDecimal(3000))
+            .type(CreateTransactionRq.TypeEnum.WITHDRAWAL)
+            .description("any world")
+            .build();
+
+        CreateTransactionRs transactionRegistrationRs = createWithdrawalTransaction(createTransactionRqDeposit, 400);
+
+        assertThat(transactionRegistrationRs)
+            .extracting(CreateTransactionRs::getDescription)
+            .isEqualTo("Счет с id 0123456_999 не найден");
+
+    }
+
+    @Test
     void deleteTransactionByIdShouldWork() {
         final UserEntity userEntity = DataProvider.getUserEntity();
         userRepository.save(userEntity);
@@ -165,6 +217,19 @@ class TransactionApiControllerTest extends IntegrationTestBase {
             .exchange()
             .expectStatus().isEqualTo(status)
             .expectBody(TransactionUpdateRq.class)
+            .returnResult()
+            .getResponseBody();
+    }
+
+    private CreateTransactionRs createWithdrawalTransaction(final CreateTransactionRq request, final int status) {
+        return webTestClient.post()
+            .uri(uriBuilder -> uriBuilder
+                .pathSegment("api", "transaction")
+                .build())
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isEqualTo(status)
+            .expectBody(CreateTransactionRs.class)
             .returnResult()
             .getResponseBody();
     }

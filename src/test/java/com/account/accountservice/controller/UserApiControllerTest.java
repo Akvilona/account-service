@@ -26,6 +26,27 @@ import static org.mockito.ArgumentMatchers.any;
 class UserApiControllerTest extends IntegrationTestBase {
 
     @Test
+    void createUserFraudUserTRUE() {
+        UserRegistrationRq request = UserRegistrationRq.builder()
+            .email("test@mail.ru")
+            .password("12345678")
+            .build();
+
+        Mockito.when(fraudUserApi.checkFraudUserByEmail(any()))
+            .thenReturn(Mono.just(true));
+
+        UserRegistrationRs userRegistrationRs = postUser(request, 200);
+
+        assertThat(userRegistrationRs)
+            .hasFieldOrPropertyWithValue("email", request.getEmail())
+            .extracting(UserRegistrationRs::getId)
+            .isNotNull();
+
+        assertThat(userRepository.findAll())
+            .hasSize(0);
+    }
+
+    @Test
     void createUser() {
         UserRegistrationRq request = UserRegistrationRq.builder()
             .email("test@mail.ru")
